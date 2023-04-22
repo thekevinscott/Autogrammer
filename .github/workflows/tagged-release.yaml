@@ -3,7 +3,8 @@ name: Cut release from new tag
 on:
   push:
     tags:
-      - "v*"
+      - "codesynth*"
+      - "json2gbnfjs*"
 
 jobs:
   tagged-release:

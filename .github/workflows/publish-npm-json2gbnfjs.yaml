@@ -1,8 +1,8 @@
-name: Publish Package to npm
+name: Publish json2gbnf to NPM
 on:
   push:
     tags:
-      - "v*"
+      - "json2gbnfjs*"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,14 +36,14 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/json2gbnfjs
         run: pnpm install
 
       - name: Build package
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/json2gbnfjs
         run: pnpm build
 
       - run: pnpm publish --no-git-checks
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/json2gbnfjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
