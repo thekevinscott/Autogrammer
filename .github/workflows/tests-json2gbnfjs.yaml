@@ -108,7 +108,7 @@ jobs:
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: thekevinscott/codesynthionist
+          slug: thekevinscott/autogrammerionist
 
   build:
     name: 'Build'

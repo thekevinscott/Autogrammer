@@ -1,14 +1,14 @@
 {
-  "name": "codesynth",
+  "name": "autogrammer",
   "type": "module",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thekevinscott/codesynth.git"
+    "url": "https://github.com/thekevinscott/autogrammer.git"
   },
-  "main": "./dist/codesynth.js",
+  "main": "./dist/autogrammer.js",
   "exports": {
-    ".": "./dist/codesynth.js"
+    ".": "./dist/autogrammer.js"
   },
   "scripts": {
     "lint": "wireit",

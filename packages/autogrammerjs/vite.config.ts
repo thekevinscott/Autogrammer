@@ -8,7 +8,7 @@ export default defineConfig({
       entry: 'src/index.ts',
       formats: ['es', 'umd',],
       fileName: 'index',
-      name: 'CodeSynth',
+      name: 'Autogrammer',
     },
   },
   plugins: [dts(),],

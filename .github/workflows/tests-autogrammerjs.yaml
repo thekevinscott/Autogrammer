@@ -1,12 +1,12 @@
-name: 'Tests // Codesynth'
+name: 'Tests // AutogrammerJS'
 on:
   # push:
   pull_request:
     paths:
       # This covers _anything_ under the specific package directory, as well as
       # this workflow file, and relevant JS files at the root.
-      - 'packages/codesynth/**'
-      - '.github/workflows/tests-codesynth.yaml'
+      - 'packages/autogrammerjs/**'
+      - '.github/workflows/tests-autogrammerjs.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -56,11 +56,11 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: pnpm install
 
       - name: 'Lint'
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: 'pnpm lint'
 
   unit-test:
@@ -96,18 +96,18 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: pnpm install
 
       - name: 'Test'
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: 'pnpm test -- --coverage'
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: thekevinscott/codesynth
+          slug: thekevinscott/autogrammer
 
   build:
     name: 'Build'
@@ -142,13 +142,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: pnpm install
 
       - name: 'Build'
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: 'pnpm build'
 
       - name: 'Check build output'
-        working-directory: ./packages/codesynth
+        working-directory: ./packages/autogrammerjs
         run: 'pnpm build:check'

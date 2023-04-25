@@ -4,23 +4,23 @@ import { ConstructorOptions, SUPPORTED_LANGUAGES, SupportedLanguage, isSupported
 import { buildPrompt, } from './utils.js';
 import { Variables, } from './grammars/get-grammar.js';
 
-export class CodeSynth<L extends SupportedLanguage> {
+export class Autogrammer<L extends SupportedLanguage> {
   language: L;
   contortionist: Contortionist<undefined>;
 
   /**
-   * Instantiates an instance of CodeSynth.
+   * Instantiates an instance of Autogrammer.
    * 
    * ```javascript
-   * import CodeSynth from 'codesynth';
+   * import Autogrammer from 'autogrammer';
    * 
-   * const synth = new CodeSynth({
+   * const synth = new Autogrammer({
    *   language: 'javascript',
    *   model: {},
    * });
    * ```
    * 
-   * @returns an instance of a CodeSynth class.
+   * @returns an instance of a Autogrammer class.
    */
   constructor({ language, model, }: ConstructorOptions<L>) {
     if (!isSupportedLanguage(language)) {

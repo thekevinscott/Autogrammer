@@ -1,15 +1,15 @@
 version = 1
 
 test_patterns = [
-  "packages/codesynth/src/**/*.ts",
-  "packages/codesynth/src/**/*.ts",
+  "packages/autogrammer/src/**/*.ts",
+  "packages/autogrammer/src/**/*.ts",
 ]
 
 exclude_patterns = [
-  "packages/codesynth/src/**/*.test.ts", 
-  "packages/codesynth/test/**/*.ts", 
-  "packages/codesynth/src/**/*.test.ts", 
-  "packages/codesynth/test/**/*.ts", 
+  "packages/autogrammer/src/**/*.test.ts", 
+  "packages/autogrammer/test/**/*.ts", 
+  "packages/autogrammer/src/**/*.test.ts", 
+  "packages/autogrammer/test/**/*.ts", 
   # "examples/**", 
   # "scripts/**", 
   # "test/**", 
