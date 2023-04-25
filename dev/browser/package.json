@@ -1,5 +1,5 @@
 {
-  "name": "@codesynth/dev-browser",
+  "name": "@autogrammer/dev-browser",
   "type": "module",
   "private": true,
   "scripts": {

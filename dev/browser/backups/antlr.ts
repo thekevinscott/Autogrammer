@@ -1,4 +1,4 @@
-import { Antlr4Parser } from '../../../packages/codesynth/src/index.js';
+import { Antlr4Parser } from '../../../packages/autogrammer/src/index.js';
 const parser = new Antlr4Parser();
 for (const code of [
   // `function foo() {}`,

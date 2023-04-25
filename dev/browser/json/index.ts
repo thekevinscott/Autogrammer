@@ -1,4 +1,4 @@
-import { buildJSON } from '../../../packages/codesynth/src/build-json.js';
+import { buildJSON } from '../../../packages/autogrammer/src/build-json.js';
 const form = document.getElementById('form');
 const button = document.getElementById('submit');
 const jsonEditor = document.getElementById('json');

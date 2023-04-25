@@ -1,5 +1,5 @@
 // import './antlr';
-import Coder from '../../../packages/codesynth/src/index.js';
+import Coder from '../../../packages/autogrammer/src/index.js';
 
 const coder = new Coder({
   model: 'Xenova/gpt2',

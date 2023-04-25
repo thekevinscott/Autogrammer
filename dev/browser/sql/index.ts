@@ -1,8 +1,8 @@
-import Codesynth from '../../../packages/codesynth/src/index.js';
+import Autogrammer from '../../../packages/autogrammer/src/index.js';
 import { pipeline } from '@xenova/transformers';
 // const model = pipeline('text-generation', 'Xenova/gpt2');
 
-const synth = new Codesynth({
+const synth = new Autogrammer({
   language: 'sql',
   // model,
   model: {

@@ -1,10 +1,10 @@
 {
-  "name": "@codesynth/root",
+  "name": "@autogrammer/root",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thekevinscott/codesynth.git"
+    "url": "https://github.com/thekevinscott/autogrammer.git"
   },
   "scripts": {},
   "wireit": {},

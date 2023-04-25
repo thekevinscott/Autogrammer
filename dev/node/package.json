@@ -11,7 +11,7 @@
     "build": {
       "command": "tsc -p ./tsconfig.json",
       "dependencies": [
-        "../../packages/codesynth:build",
+        "../../packages/autogrammer:build",
         "../../packages/contortionist:build"
       ],
       "files": [

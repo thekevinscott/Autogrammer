@@ -3,9 +3,9 @@
 <a href="https://www.npmjs.com/package/json2gbnf"><img alt="Latest json2gbnf NPM Version" src="https://badge.fury.io/js/json2gbnf.svg" /></a>
 <a href="https://github.com/thekevinscott/json2gbnf/blob/master/packages/json2gbnf/LICENSE"><img alt="License for json2gbnf" src="https://img.shields.io/npm/l/json2gbnf" /></a>
 <a href="https://www.npmjs.com/package/json2gbnf"><img alt="Downloads per week on NPM for json2gbnf" src="https://img.shields.io/npm/dw/json2gbnf" /></a>
-<a href="https://github.com/thekevinscott/codesynth/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/codesynth/actions/workflows/tests.yml/badge.svg" alt="Status of tests for json2gbnf repository" /></a>
-<a href="https://codecov.io/gh/thekevinscott/codesynth"><img alt="Code Coverage for json2gbnf" src="https://img.shields.io/codecov/c/github/thekevinscott/codesynth" /></a>
-<a href="https://deepsource.io/gh/thekevinscott/codesynth/?ref=repository-badge"><img alt="DeepSource issues for json2gbnf" src="https://deepsource.io/gh/thekevinscott/codesynth.svg/?label=active+issues&show_trend=true" /></a>
+<a href="https://github.com/thekevinscott/autogrammer/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/autogrammer/actions/workflows/tests.yml/badge.svg" alt="Status of tests for json2gbnf repository" /></a>
+<a href="https://codecov.io/gh/thekevinscott/autogrammer"><img alt="Code Coverage for json2gbnf" src="https://img.shields.io/codecov/c/github/thekevinscott/autogrammer" /></a>
+<a href="https://deepsource.io/gh/thekevinscott/autogrammer/?ref=repository-badge"><img alt="DeepSource issues for json2gbnf" src="https://deepsource.io/gh/thekevinscott/autogrammer.svg/?label=active+issues&show_trend=true" /></a>
 
 A library for parsing JSON schema definitions into  `.gbnf` grammar files in Javascript.
 

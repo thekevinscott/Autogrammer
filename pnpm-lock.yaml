@@ -59,7 +59,7 @@ importers:
         specifier: ^0.14.0
         version: 0.14.4
 
-  packages/codesynth:
+  packages/autogrammer:
     dependencies:
       contort:
         specifier: ^0.0.10
