@@ -23,7 +23,7 @@
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
     "build:check": {
-      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts "
+      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./README.md && path-exists ./LICENSE"
     },
     "build:esm": {
       "command": "tsc"

@@ -1,5 +1,23 @@
 name: 'Tests // Codesynth'
-on: [push]
+on:
+  # push:
+  pull_request:
+    paths:
+      # This covers _anything_ under the specific package directory, as well as
+      # this workflow file, and relevant JS files at the root.
+      - 'packages/codesynth/**'
+      - '.github/workflows/tests-codesynth.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
+      # Notes:
+      #
+      # `paths` works _per commit_. That means that if you push a commit
+      # that only changes the README, a paths '**.ts' won't run, and then
+      # the PR will not be mergable.
+      #
+      # Also, relative paths (./packages) don't work. Take off the dot. 
 
 env:
   FORCE_COLOR: "1"

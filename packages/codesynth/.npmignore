@@ -5,3 +5,4 @@ tsconfig.json
 tsconfig.test.json
 vite.config.ts
 .eslintrc.js
+coverage

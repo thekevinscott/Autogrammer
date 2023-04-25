@@ -1,8 +1,10 @@
-name: Publish json2gbnf to NPM
+name: Publish JSON2GBNFjs to NPM
+
 on:
   push:
     tags:
-      - "json2gbnfjs*"
+      - "json2gbnfjs-v*"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,6 +44,10 @@ jobs:
       - name: Build package
         working-directory: ./packages/json2gbnfjs
         run: pnpm build
+
+      - name: 'Check build output'
+        working-directory: ./packages/json2gbnfjs
+        run: 'pnpm build:check'
 
       - run: pnpm publish --no-git-checks
         working-directory: ./packages/json2gbnfjs

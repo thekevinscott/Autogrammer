@@ -1,20 +1,24 @@
-name: Publish CodeSynth to NPM
+name: "Cut Release for CodeSynth"
+
 on:
   push:
     tags:
       - "codesynth-v*"
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  tagged-release:
+    name: "Cut Release for CodeSynth"
+    runs-on: "ubuntu-latest"
 
     steps:
-      - name: Checkout
+      - name: 'Checkout repository'
         uses: actions/checkout@v4
+        with:
+          lfs: 'true'
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v3
         name: Install pnpm
@@ -39,15 +43,22 @@ jobs:
         working-directory: ./packages/codesynth
         run: pnpm install
 
-      - name: Build package
+      - name: 'Build'
         working-directory: ./packages/codesynth
-        run: pnpm build
+        run: 'pnpm build'
 
       - name: 'Check build output'
         working-directory: ./packages/codesynth
         run: 'pnpm build:check'
 
-      - run: pnpm publish --no-git-checks
+      - name: 'Pack'
         working-directory: ./packages/codesynth
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: 'pnpm pack'
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          files: |
+            packages/codesynth/codesynth-*.tgz
