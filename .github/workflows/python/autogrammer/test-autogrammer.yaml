@@ -1,0 +1,47 @@
+name: 'Tests // Python / Autogrammer'
+on:
+  pull_request:
+    paths:
+      - 'packages/python/packages/autogrammer/**'
+      - '.github/workflows/tests-py-autogrammer.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  lint:
+    name: "Lint"
+    uses: ./.github/workflows/shared/python/lint.yaml
+    with:
+      package: ./packages/python/packages/autogrammer
+
+  unit-test:
+    name: "Unit Test ${{ matrix.pyversion }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # https://github.com/actions/python-versions/blob/main/versions-manifest.json
+          # - pyversion: "3.12"
+          - pyversion: "3.11"
+            enable_coverage: true
+          - pyversion: "3.10"
+            more_hypothesis_examples_if_cron: true
+    runs-on: ubuntu-latest
+    uses: ./.github/workflows/shared/python/unit-test.yaml
+    with:
+      package: ./packages/python/packages/autogrammer
+
+  build:
+    name: "Build"
+    uses: ./.github/workflows/shared/python/build.yaml
+    with:
+      package: ./packages/python/packages/autogrammer
+
+
+permissions:
+  contents: read

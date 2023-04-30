@@ -1,0 +1,12 @@
+name: Publish Autogrammer (Javascript) to NPM
+
+on:
+  push:
+    tags:
+      - "js/autogrammer-v*"
+
+jobs:
+  publish:
+    uses: ./.github/workflows/shared/javascript/publish.yaml
+    with:
+      package: "./packages/javascript/packages/autogrammer"

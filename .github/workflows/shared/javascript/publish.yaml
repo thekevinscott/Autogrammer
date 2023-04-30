@@ -1,13 +1,14 @@
-name: Publish JSON2GBNFjs to NPM
-
 on:
-  push:
-    tags:
-      - "js/json2gbnf-v*"
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        description: "Path to package"
+        type: string
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  publish:
+    runs-on: "ubuntu-latest"
 
     steps:
       - name: Checkout
@@ -38,18 +39,18 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/javascript/packages/json2gbnf
+        working-directory: ${{ inputs.package }}
         run: pnpm install
 
       - name: Build package
-        working-directory: ./packages/javascript/packages/json2gbnf
+        working-directory: ${{ inputs.package }}
         run: pnpm build
 
       - name: 'Check build output'
-        working-directory: ./packages/javascript/packages/json2gbnf
+        working-directory: ${{ inputs.package }}
         run: 'pnpm build:check'
 
-      - run: pnpm publish --no-git-checks
-        working-directory: ./packages/javascript/packages/json2gbnf
+      - run: pnpm publish --no-git-checks --provenance --access public
+        working-directory: ${{ inputs.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,16 @@
+name: "Cut Release for Autogrammer (Javascript)"
+
+on:
+  push:
+    tags:
+      - "js/autogrammer-v*"
+
+jobs:
+  release:
+    name: "Cut Release for Autogrammer (Javascript)"
+    uses: ./.github/workflows/shared/javascript/release.yaml
+
+    with:
+      package: "./packages/javascript/packages/autogrammer"
+      files: |
+        packages/javascript/packages/autogrammer/autogrammer-*.tgz

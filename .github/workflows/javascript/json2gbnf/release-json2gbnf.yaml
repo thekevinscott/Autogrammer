@@ -1,0 +1,16 @@
+name: "Cut Release for JSON2GBNF (Javascript)"
+
+on:
+  push:
+    tags:
+      - "js/json2gbnf-v*"
+
+jobs:
+  release:
+    name: "Cut Release for JSON2GBNF (Javascript)"
+    uses: ./.github/workflows/shared/javascript/release.yaml
+
+    with:
+      package: "./packages/javascript/packages/json2gbnf"
+      files: |
+        packages/javascript/packages/json2gbnf/json2gbnf-*.tgz

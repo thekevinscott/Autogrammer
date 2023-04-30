@@ -1,0 +1,32 @@
+name: 'Tests // JS / Autogrammer'
+on:
+  pull_request:
+    paths:
+      - 'packages/javascript/packages/autogrammer/**'
+      - '.github/workflows/tests-js-autogrammer.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  lint:
+    name: "Lint"
+    uses: ./.github/workflows/shared/javascript/lint.yaml
+    with:
+      package: ./packages/javascript/packages/autogrammer
+
+  unit-test:
+    name: "Unit Test"
+    uses: ./.github/workflows/shared/javascript/unit-test.yaml
+    with:
+      package: ./packages/javascript/packages/autogrammer
+
+  build:
+    name: "Build"
+    uses: ./.github/workflows/shared/javascript/build.yaml
+    with:
+      package: ./packages/javascript/packages/autogrammer

@@ -1,0 +1,16 @@
+name: Publish JSON2GBNF (Python) to PyPI
+
+on:
+  push:
+    tags:
+      - "py/json2gbnf-v*"
+
+jobs:
+  publish:
+    uses: ./.github/workflows/shared/python/publish.yaml
+    with:
+      package: "./packages/python/packages/json2gbnf"
+
+permissions:
+  id-token: write
+  contents: read

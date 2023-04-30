@@ -1,20 +1,27 @@
-name: Publish Autogrammer (Javascript) to NPM
 on:
-  push:
-    tags:
-      - "js/autogrammer-v*"
-jobs:
-  build:
-    runs-on: ubuntu-latest
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        description: "Path to package"
+        type: string
 
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  lint:
+    name: 'Lint'
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 'Checkout repository'
         uses: actions/checkout@v4
+        with:
+          lfs: 'true'
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
 
       - uses: pnpm/action-setup@v3
         name: Install pnpm
@@ -36,18 +43,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/javascript/packages/autogrammer
+        working-directory: ${{ inputs.package }}
         run: pnpm install
 
-      - name: Build package
-        working-directory: ./packages/javascript/packages/autogrammer
-        run: pnpm build
-
-      - name: 'Check build output'
-        working-directory: ./packages/javascript/packages/autogrammer
-        run: 'pnpm build:check'
-
-      - run: pnpm publish --no-git-checks
-        working-directory: ./packages/javascript/packages/autogrammer
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: 'Lint'
+        working-directory: ${{ inputs.package }}
+        run: 'pnpm lint'

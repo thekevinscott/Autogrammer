@@ -1,0 +1,16 @@
+name: Publish Autogrammer (Python) to PyPI
+
+on:
+  push:
+    tags:
+      - "py/autogrammer-v*"
+
+jobs:
+  publish:
+    uses: ./.github/workflows/shared/python/publish.yaml
+    with:
+      package: "./packages/python/packages/autogrammer"
+
+permissions:
+  id-token: write
+  contents: read

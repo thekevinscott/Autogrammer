@@ -1,0 +1,12 @@
+name: Publish JSON2GBNFjs to NPM
+
+on:
+  push:
+    tags:
+      - "js/json2gbnf-v*"
+
+jobs:
+  publish:
+    uses: ./.github/workflows/shared/javascript/publish.yaml
+    with:
+      package: "./packages/javascript/packages/json2gbnf"
