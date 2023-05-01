@@ -10,7 +10,7 @@ const exec = util.promisify(_exec);
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '../..');
-const CONTORT_DIR = path.resolve(ROOT_DIR, 'packages/contort');
+const CONTORT_DIR = path.resolve(ROOT_DIR, './');
 
 export const buildContortionist = async () => {
   await exec('pnpm build', {

@@ -7,6 +7,6 @@ on:
 
 jobs:
   publish:
-    uses: ./.github/workflows/shared/javascript/publish.yaml
+    uses: ./.github/workflows/js-shared-publish.yaml
     with:
       package: "./packages/gbnf/javascript"

@@ -1,9 +1,9 @@
 # GBNF
 
 <a href="https://www.npmjs.com/package/gbnf"><img alt="Latest GBNF NPM Version" src="https://badge.fury.io/js/gbnf.svg" /></a>
-<a href="https://github.com/thekevinscott/gbnf/blob/master/LICENSE"><img alt="License for GBNF" src="https://img.shields.io/npm/l/gbnf" /></a>
+<a href="https://github.com/thekevinscott/autogrammer/packages/gbnf/blob/master/LICENSE"><img alt="License for GBNF" src="https://img.shields.io/npm/l/gbnf" /></a>
 <a href="https://www.npmjs.com/package/gbnf"><img alt="Downloads per week on NPM for GBNF" src="https://img.shields.io/npm/dw/gbnf" /></a>
-<a href="https://github.com/thekevinscott/gbnf/actions/workflows/tests-js.yaml"><img src="https://github.com/thekevinscott/gbnf/actions/workflows/tests-js.yaml/badge.svg" alt="Status of Javascript Tests for GBNF repository" /></a>
+<a href="https://github.com/thekevinscott/autogrammer/packages/gbnf/actions/workflows/tests-js.yaml"><img src="https://github.com/thekevinscott/autogrammer/packages/gbnf/actions/workflows/tests-js.yaml/badge.svg" alt="Status of Javascript Tests for GBNF repository" /></a>
 <a href="https://codecov.io/gh/thekevinscott/gbnf"><img alt="Code Coverage for GBNF" src="https://img.shields.io/codecov/c/github/thekevinscott/gbnf" /></a>
 <a href="https://deepsource.io/gh/thekevinscott/gbnf/?ref=repository-badge"><img alt="DeepSource issues for GBNF" src="https://deepsource.io/gh/thekevinscott/gbnf.svg/?label=active+issues&show_trend=true" /></a>
 

@@ -3,15 +3,7 @@ import path from 'path';
 
 export default defineConfig({
   build: {
-    lib: {
-      entry: 'src/umd.ts',
-      formats: ['umd',],
-      fileName: 'index',
-      name: 'GBNF',
-    },
-    sourcemap: true,
-    target: 'esnext',
-    minify: true,
+    emptyOutDir: false,
   },
   test: {
     coverage: {

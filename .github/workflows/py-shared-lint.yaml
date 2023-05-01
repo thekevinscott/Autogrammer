@@ -21,6 +21,9 @@ jobs:
           cache: pip
           cache-dependency-path: ${{ inputs.package}}/dev-deps/python3.11/lint.txt
 
+      - run: python3 -m venv .venv/dev && source .venv/dev/bin/activate
+        working-directory: ${{ inputs.package }}
+
       - run: pip install -U pip setuptools wheel 
         working-directory: ${{ inputs.package }}
 

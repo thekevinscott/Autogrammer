@@ -15,18 +15,18 @@ env:
 jobs:
   lint:
     name: "Lint"
-    uses: ./.github/workflows/shared/javascript/lint.yaml
+    uses: ./.github/workflows/js-shared-lint.yaml
     with:
       package: ./packages/gbnf/javascript
 
   unit-test:
     name: "Unit Test"
-    uses: ./.github/workflows/shared/javascript/unit-test.yaml
+    uses: ./.github/workflows/js-shared-unit-test.yaml
     with:
       package: ./packages/gbnf/javascript
 
   build:
     name: "Build"
-    uses: ./.github/workflows/shared/javascript/build.yaml
+    uses: ./.github/workflows/js-shared-build.yaml
     with:
       package: ./packages/gbnf/javascript

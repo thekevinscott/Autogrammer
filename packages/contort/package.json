@@ -5,7 +5,8 @@
   "description": "Control what LLMs can, and can't, say",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thekevinscott/autogrammer.git"
+    "url": "https://github.com/thekevinscott/autogrammer.git",
+    "directory": "packages/contort"
   },
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
@@ -18,11 +19,13 @@
   "scripts": {
     "copy:package-files": "wireit",
     "lint": "wireit",
-    "test:unit": "pnpm test",
-    "test": "vitest",
-    "test:integration": "vitest --config ./vitest.config.ts --pool=forks --bail 1",
+    "test:unit": "wireit",
+    "test": "wireit",
+    "test:integration": "wireit",
     "clean": "wireit",
     "build": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
     "build:check": "wireit"
   },
   "wireit": {
@@ -30,16 +33,34 @@
       "command": "rimraf ./dist"
     },
     "lint": {
-      "command": "eslint -c ../../.eslintrc.cjs src --ext .ts"
+      "command": "eslint -c ./.eslintrc.cjs src --ext .ts"
+    },
+    "test:unit": {
+      "command": "vitest --config ./vitest.config.unit.ts"
+    },
+    "test": {
+      "command": "pnpm test:unit -- run && pnpm test:integration -- run "
+    },
+    "test:integration": {
+      "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1",
+      "dependencies": [
+        "../mock-llm-api:build"
+      ]
     },
     "build:check": {
       "command": "path-exists ./dist/index.umd.cjs "
     },
+    "build:esm": {
+      "command": "vite build -c vite.config.esm.ts"
+    },
+    "build:umd": {
+      "command": "vite build -c vite.config.umd.ts"
+    },
     "copy:package-files": {
-      "command": "cp ../../README.md ./README.md && cp ../../LICENSE ./LICENSE"
+      "command": "cp ../../LICENSE ./LICENSE"
     },
     "build": {
-      "command": "vite build && pnpm copy:package-files && pnpm build:check",
+      "command": "pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
       "dependencies": [
         "clean"
       ],
@@ -49,6 +70,8 @@
         "./src/**/*.ts",
         "package.json",
         "vite.config.ts",
+        "vite.config.umd.ts",
+        "vite.config.esm.ts",
         "tsconfig.json"
       ],
       "output": [

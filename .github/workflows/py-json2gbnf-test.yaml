@@ -15,7 +15,7 @@ env:
 jobs:
   lint:
     name: "Lint"
-    uses: ./.github/workflows/shared/python/lint.yaml
+    uses: ./.github/workflows/py-shared-lint.yaml
     with:
       package: ./packages/json2gbnf/python
 
@@ -31,13 +31,13 @@ jobs:
             enable_coverage: true
           - pyversion: "3.10"
             more_hypothesis_examples_if_cron: true
-    uses: ./.github/workflows/shared/python/unit-test.yaml
+    uses: ./.github/workflows/py-shared-unit-test.yaml
     with:
       package: ./packages/json2gbnf/python
 
   build:
     name: "Build"
-    uses: ./.github/workflows/shared/python/build.yaml
+    uses: ./.github/workflows/py-shared-build.yaml
     with:
       package: ./packages/json2gbnf/python
 

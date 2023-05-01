@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     name: "Cut Release for gbnf (Javascript)"
-    uses: ./.github/workflows/shared/javascript/release.yaml
+    uses: ./.github/workflows/js-shared-release.yaml
 
     with:
       package: "./packages/gbnf/javascript"

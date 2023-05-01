@@ -24,6 +24,9 @@ jobs:
         with:
           version: 8
 
+      - run: python3 -m venv .venv/dev && source .venv/dev/bin/activate
+        working-directory: ${{ inputs.package }}
+
       - run: pip install -U pip setuptools wheel 
         working-directory: ${{ inputs.package }}
 
@@ -35,5 +38,5 @@ jobs:
         run: pip install .
         working-directory: ${{ inputs.package }}
 
-      - run: make build_package 
+      - run: make build
         working-directory: ${{ inputs.package }}

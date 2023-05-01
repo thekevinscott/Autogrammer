@@ -4,15 +4,7 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
-    lib: {
-      entry: 'src/index.ts',
-      fileName: 'index',
-      formats: ['es', 'umd',],
-      name: 'Contortionist',
-    },
-    sourcemap: true,
-    target: 'esnext',
-    minify: true,
+    emptyOutDir: false,
   },
   plugins: [
     externalizeDeps({

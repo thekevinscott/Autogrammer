@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    uses: ./.github/workflows/shared/python/publish.yaml
+    uses: ./.github/workflows/py-shared-publish.yaml
     with:
       package: "./packages/gbnf/python"
 

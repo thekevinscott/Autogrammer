@@ -5,7 +5,8 @@
   "version": "0.1.7",
   "repository": {
     "type": "git",
-    "url": "https://github.com/thekevinscott/gbnf.git"
+    "url": "https://github.com/thekevinscott/autogrammer.git",
+    "directory": "packages/gbnf"
   },
   "files": [
     "dist"
@@ -19,14 +20,29 @@
     }
   },
   "scripts": {
+    "clean": "wireit",
     "lint": "wireit",
-    "test": "vitest",
+    "test:unit": "wireit",
+    "test": "wireit",
+    "test:integration": "wireit",
     "build": "wireit",
     "build:check": "wireit",
     "build:esm": "wireit",
     "build:umd": "wireit"
   },
   "wireit": {
+    "clean": {
+      "command": "rimraf ./dist"
+    },
+    "test:unit": {
+      "command": "vitest --config ./vitest.config.unit.ts"
+    },
+    "test": {
+      "command": "pnpm test:unit -- run && pnpm test:integration -- run "
+    },
+    "test:integration": {
+      "command": "vitest --config ./vitest.config.integration.ts"
+    },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
@@ -34,17 +50,22 @@
       "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./LICENSE"
     },
     "build:esm": {
-      "command": "tsc"
+      "command": "vite build -c ./vite.config.esm.ts"
     },
     "build:umd": {
-      "command": "vite build"
+      "command": "vite build -c ./vite.config.umd.ts"
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../LICENSE ./LICENSE",
+      "command": "pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
+      "dependencies": [
+        "clean"
+      ],
       "files": [
         "./src/**/*.ts",
         "package.json",
         "vite.config.ts",
+        "vite.config.umd.ts",
+        "vite.config.esm.ts",
         "tsconfig.json"
       ],
       "output": [

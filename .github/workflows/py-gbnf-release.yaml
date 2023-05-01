@@ -8,7 +8,7 @@ on:
 jobs:
   tagged-release:
     name: "Cut Release for gbnf (Python)"
-    uses: ./.github/workflows/shared/python/release.yaml
+    uses: ./.github/workflows/py-shared-release.yaml
 
     with:
       package: "./packages/gbnf/python"

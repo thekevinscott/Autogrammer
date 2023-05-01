@@ -15,8 +15,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/thekevinscott/gbnf"
-"Bug Tracker" = "https://github.com/thekevinscott/gbnf/issues"
+"Homepage" = "https://github.com/thekevinscott/autogrammer/packages/gbnf"
+"Bug Tracker" = "https://github.com/thekevinscott/autogrammer/packages/gbnf/issues"
 
 
 # [tool.setuptools]

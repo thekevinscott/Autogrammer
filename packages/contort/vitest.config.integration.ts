@@ -6,21 +6,20 @@ export default defineConfig({
     testTimeout: 20000,
     hookTimeout: 60000,
     include: [
-      'test/tests/**/*.test.ts',
-      'src/packages/contortionist/**/*.ts',
+      'integration-tests/**/*.test.ts',
     ],
     exclude: [
-      // 'packages/**/*.test.*',
+      'src/**/*.ts',
     ],
     watchExclude: [
       'tmp/**/*',
     ],
     globals: true,
     typecheck: {
-      tsconfig: './tests/tsconfig.json',
+      tsconfig: './integration-tests/tsconfig.json',
     },
     setupFiles: [
-      path.resolve(__dirname, './test/setup/index.ts'),
+      path.resolve(__dirname, './integration-tests/setup/index.ts'),
     ],
   },
 });

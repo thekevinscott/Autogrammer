@@ -12,14 +12,14 @@
 
 import { rimraf } from "rimraf";
 import { chromium, } from 'playwright';
-import { ClientsideTestRunner, ServersideTestRunner, SupportedDriver, setLogLevel, } from 'testeroni';
+import { BundleOptions, ClientsideTestRunner, ServersideTestRunner, SupportedDriver, setLogLevel, } from 'testeroni';
 import path from 'path';
 import {
   mkdirp,
   readdir,
 } from 'fs-extra';
 import * as url from 'url';
-import { main as contortionistUMDFilePath } from '../../packages/contort/package.json' assert { type: "json" };
+import { main as contortionistUMDFilePath } from '../../package.json' assert { type: "json" };
 import { bundle } from "../utils/bundle-wrapper.js";
 import {
   configureNonStreamingServer as _configureNonStreamingServer,
@@ -28,7 +28,7 @@ import {
 import MockLLMAPI from "../utils/mock-llm-api.js";
 import { makeLlamaCPPResponse } from "../__mocks__/mock-llama-cpp-response.js";
 
-setLogLevel('verbose');
+setLogLevel('warn');
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -161,7 +161,7 @@ describe('llama.cpp', async () => {
   describe('Browser', () => {
     describe.each([
       ['umd', 'Contortionist', {
-        files: [path.resolve(ROOT, './packages/contort', contortionistUMDFilePath)],
+        files: [path.resolve(ROOT, contortionistUMDFilePath)],
       }],
       ['esbuild', 'contort', {
         dependencies: {
@@ -173,8 +173,7 @@ describe('llama.cpp', async () => {
           'contort': 'workspace:*',
         }
       }],
-
-    ])('%s', async (bundlerName, windowContortName, bundleOptions) => {
+    ] as [string, string, BundleOptions][])('%s', async (bundlerName, windowContortName, bundleOptions) => {
       const browserDir = path.resolve(TMP, 'browser');
       const outDir = path.resolve(browserDir, bundlerName);
 
@@ -212,8 +211,8 @@ describe('llama.cpp', async () => {
         const { endpoint, mockLLMAPI } = configureNonStreamingServer(content);
         _mockLLMAPI = mockLLMAPI;
         const result = await browserRunner.page.evaluate(({ endpoint, n, key }) => {
-          const Contort = window[key] as unknown as new (config: any) => any;
-          const contortionist = new Contort({
+          const Contortionist = window[key] as unknown as new (config: any) => any;
+          const contortionist = new Contortionist({
             model: {
               protocol: 'llama.cpp',
               endpoint,
@@ -235,8 +234,8 @@ describe('llama.cpp', async () => {
         const { endpoint, mockLLMAPI } = configureStreamingServer(content, n);
         _mockLLMAPI = mockLLMAPI;
         const result = await browserRunner.page.evaluate(({ endpoint, n, key }) => {
-          const Contort = window[key] as unknown as new (config: any) => any;
-          const contortionist = new Contort({
+          const Contortionist = window[key] as unknown as new (config: any) => any;
+          const contortionist = new Contortionist({
             model: {
               protocol: 'llama.cpp',
               endpoint,
@@ -256,8 +255,8 @@ describe('llama.cpp', async () => {
         const { endpoint, mockLLMAPI } = configureStreamingServer(content, n);
         _mockLLMAPI = mockLLMAPI;
         const result = await browserRunner.page.evaluate(async ({ endpoint, n, key }) => {
-          const Contort = window[key] as unknown as new (config: any) => any;
-          const contortionist = new Contort({
+          const Contortionist = window[key] as unknown as new (config: any) => any;
+          const contortionist = new Contortionist({
             model: {
               protocol: 'llama.cpp',
               endpoint,
@@ -282,8 +281,8 @@ describe('llama.cpp', async () => {
         const { endpoint, mockLLMAPI } = configureStreamingServer(content, n);
         _mockLLMAPI = mockLLMAPI;
         const result = await browserRunner.page.evaluate(async ({ endpoint, n, key }) => {
-          const Contort = window[key] as unknown as new (config: any) => any;
-          const contortionist = new Contort({
+          const Contortionist = window[key] as unknown as new (config: any) => any;
+          const contortionist = new Contortionist({
             model: {
               protocol: 'llama.cpp',
               endpoint,
