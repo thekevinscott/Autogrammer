@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "es2022",
+    "moduleResolution": "NodeNext",
     "target": "esnext",
-    "moduleResolution": "nodenext",
     "types": ["node", "vite/client"]
   },
   "include": ["./**/*.ts"]

@@ -1,4 +1,4 @@
-import Contortionist from '../../../packages/contort/src/index.js';
+import Contortionist from '../../../dist/index.js';
 import chess from '../grammars/chess.gbnf?raw';
 
 import {

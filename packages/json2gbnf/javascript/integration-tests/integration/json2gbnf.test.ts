@@ -20,6 +20,7 @@ import {
   STRING_KEY,
   VALUE_KEY,
 } from "../../src/constants/grammar-keys.js";
+import { OBJECT_KEY_DEF } from "../../src/utils/get-property-definition.js";
 
 const OBJECT_GRAMMAR = [`root ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {
@@ -184,7 +185,7 @@ describe('schema', () => {
         },
         JSON.stringify({ "number": 1600, "street_name": "Foo", "street_type": "Boulevard" }),
         [
-          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
+          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${OBJECT_KEY_DEF} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${OBJECT_KEY_DEF} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
           `xb ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
           `xc ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
           `xd ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
@@ -213,7 +214,7 @@ describe('schema', () => {
         },
         JSON.stringify({ "number": 1600, "street_name": "Foo", "street_type": "Boulevard" }),
         [
-          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
+          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${OBJECT_KEY_DEF} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${OBJECT_KEY_DEF} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
           `xb ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
           `xc ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
           `xd ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
@@ -381,10 +382,39 @@ describe('schema', () => {
         JSON.stringify({ "country": "USAA" }),
         15,
       ],
+      [
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number"
+            },
+            "street_name": {
+              "type": "string"
+            },
+            "street_type": {
+              "enum": [
+                "Street",
+                "Avenue",
+                "Boulevard"
+              ]
+            }
+          },
+          "required": [
+            "number",
+            "street_name",
+            "street_type"
+          ]
+        },
+        `{"number":16,"street_name":"Pennsylvania Avenue","street_type":"Avenue","zip":"20500"}\\nJSON is case sensisive, please ensure all field names are in camelCase.`,
+        86,
+
+      ],
     ];
-  test.each(failureTestCases)('it parses a schema %s to grammar and rejects %s', (schema, initial, errorPos) => {
+  test.each(failureTestCases)('it parses a schema %s to grammar and rejects %s', (schema, _initial, errorPos) => {
     const grammar = JSON2GBNF(schema);
     let parser = GBNF(grammar);
+    const initial = _initial.split('\\n').join('\n');
     expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
   });
 });

@@ -3,7 +3,13 @@ module.exports = {
     "browser": true,
     "es6": true
   },
-  "ignorePatterns": ["**/*.test.ts", "**/__mocks__/**/*.ts", "**/__fixtures__/**/*.ts", "tests/**/*.ts"],
+  "ignorePatterns": [
+    "**/*.test.ts",
+    "**/__mocks__/**/*.ts",
+    "**/__fixtures__/**/*.ts",
+    "tests/**/*.ts",
+    "dev/**/*.ts",
+  ],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",

@@ -43,7 +43,7 @@ describe('Grammar', () => {
 
   it('should throw an error if whitespace is less than 0', () => {
     expect(() => new Grammar({ whitespace: -1 })).toThrowError(
-      'Whitespace must be greater than or equal to 0. It can also be infinity.'
+      'Whitespace must be greater than or equal to 0. It can also be Infinity.'
     );
   });
 

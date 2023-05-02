@@ -42,9 +42,15 @@
 </head>
 <body>
   <form id="form">
-    <textarea id="input" name="input">Write me a function in C that adds two numbers:</textarea>
+    <textarea id="input" name="input">Write me JSON that captures the following address. Ensure you include the zip code in the JSON output.
+
+Address:
+      
+```
+1600 Pennsylvania Avenue NW, Washington, DC 20500
+```</textarea>
     <div>
-    <select id="grammar-selector">
+    <select id="language-selector">
       <option value=""> - </option>
     </select>
     <select id="model-selector">
@@ -52,16 +58,13 @@
     </select>
 
     </div>
-    <wc-monaco-editor id="grammar"></wc-monaco-editor>
+    <wc-monaco-editor id="language-options"></wc-monaco-editor>
 
     <button id="submit" type="submit">Generate</button>
   </form>
   <hr />
   <label>Output</label>
   <pre id="output">
-  </pre>
-  <label>Output (No Grammar)</label>
-  <pre id="output-no-grammar">
   </pre>
   <script type="module" src="./index.ts"></script>
 </body>

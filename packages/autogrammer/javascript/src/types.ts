@@ -7,6 +7,6 @@ export type SupportedLanguage =
   'json';
 
 export interface ConstructorOptions<L extends SupportedLanguage> {
-  language: L;
-  model: ContortionistOptions<ModelProtocol>['model'];
+  language?: L;
+  model?: ContortionistOptions<ModelProtocol>['model'];
 }

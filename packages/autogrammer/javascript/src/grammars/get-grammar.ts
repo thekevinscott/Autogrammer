@@ -1,8 +1,10 @@
 import { SupportedLanguage, } from "../types.js";
-import Mustache from 'mustache';
+// import Mustache from 'mustache';
+import JSON2GBNF from 'json2gbnf';
 // import type { Grammar } from 'contort';
 import SQL_GRAMMAR from './sql.gbnf?raw' assert { type: 'text' };
 import JSON_GRAMMAR from './json.gbnf?raw' assert { type: 'text' };
+import { type JSONSchema, } from "json2gbnf";
 // import PYTHON_GRAMMAR from './python.gbnf?raw';
 // import JAVASCRIPT_GRAMMAR from './javascript.gbnf?raw';
 
@@ -24,23 +26,29 @@ function parseSQLVariables(variables: Variables_SQL | string): Variables_SQL {
   return variables;
 };
 
-function buildGrammar<L extends SupportedLanguage>(language: L, grammarTemplate: string, variables: Variables<L> = {}) {
+
+function buildGrammar(language: 'sql', variables: Variables<'sql'>): string;
+function buildGrammar(language: 'json', variables: JSONSchema): string;
+function buildGrammar(language: SupportedLanguage, options: JSONSchema | Variables<'sql'>) {
   if (isLanguage(language, 'sql')) {
-    const sqlVariables = Object.entries(parseSQLVariables(variables));
-    return Mustache.render(grammarTemplate, sqlVariables.reduce((obj, [key, value,]) => {
-      if (value.length === 0) {
-        return obj;
-      }
-      return {
-        ...obj,
-        [key]: value.map(v => JSON.stringify(v)).join(" | "),
-      };
-    }, {
-      selectlist: 'string',
-      tablename: 'string',
-    }));
+    throw new Error('Not yet implemented');
+    // const sqlVariables = Object.entries(parseSQLVariables(options));
+    // return Mustache.render(grammarTemplate, sqlVariables.reduce((obj, [key, value,]) => {
+    //   if (value.length === 0) {
+    //     return obj;
+    //   }
+    //   return {
+    //     ...obj,
+    //     [key]: value.map(v => JSON.stringify(v)).join(" | "),
+    //   };
+    // }, {
+    //   selectlist: 'string',
+    //   tablename: 'string',
+    // }));
+  } else if (isLanguage(language, 'json')) {
+    return JSON2GBNF(options);
   }
-  return grammarTemplate;
+  // return grammarTemplate;
 };
 
 const GRAMMARS: Record<SupportedLanguage, string> = {
@@ -54,5 +62,6 @@ export function getGrammar<L extends SupportedLanguage>(
   language: L,
   variables?: Variables<L>,
 ): string {
-  return buildGrammar<L>(language, GRAMMARS[language], variables);
+  return 'fo';
+  // return buildGrammar<L>(language, GRAMMARS[language], variables);
 }

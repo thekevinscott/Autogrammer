@@ -28,6 +28,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 30px 0;
     }
     form div {
       flex: 1;
@@ -43,18 +44,28 @@
       flex-direction: column;
       height: 100vh;
     }
+    #prompt-container {
+      max-height: 160px;
+    }
+    #json-container {
+      max-height: 350px;
+    }
   </style>
 </head>
 <body>
   <form id="form">
-    <div>
+    <div id="prompt-container">
+      <label>Prompt</label>
+    <wc-monaco-editor id="prompt"></wc-monaco-editor>
+    </div>
+    <div id="json-container">
+      <label>JSON Schema</label>
     <wc-monaco-editor id="json"></wc-monaco-editor>
     </div>
-    <button id="submit" type="submit">Generate JSON grammar</button>
+    <button id="submit" type="submit">Generate JSON based on the schema above</button>
   </form>
   <pre id="output">
   </pre>
-  <script type="module" src="https://cdn.jsdelivr.net/gh/vanillawc/wc-monaco-editor@1/index.js"></script>
   <script type="module" src="./index.ts"></script>
 </body>
 </html>

@@ -4,26 +4,28 @@ import {
 } from '@xenova/transformers';
 env.allowRemoteModels = true;
 env.allowLocalModels = false;
-import Autogrammer from 'autogrammer';
+
+import * as webllm from "@mlc-ai/web-llm";
+
+import Autogrammer, {
+  isSupportedLanguage,
+} from 'autogrammer';
 import '@vanillawc/wc-monaco-editor';
-import { ModelDefinition, ModelProtocol, } from 'contort';
-// const model = {
-//   protocol: 'llamafile',
-//   endpoint: import.meta.env.VITE_LLAMAFILE_ENDPOINT_URL,
-// };
-// debugger;
-// const model = pipeline('text-generation', 'Xenova/phi-1_5_dev');
-// const model = pipeline('text-generation', 'BricksDisplay/phi-1_5-q4');
-// const model = pipeline('text-generation', 'Xenova/tiny-random-PhiForCausalLM');
+import type {
+  ModelDefinition,
+  ModelProtocol,
+} from 'contort';
 
+interface MonacoEditor extends HTMLElement {
+  value: string;
+}
 
-const form = document.getElementById('form');
-const button = document.getElementById('submit');
+const form = document.getElementById('form') as HTMLFormElement;
+const button = document.getElementById('submit') as HTMLButtonElement;
 const input = document.getElementById('input') as HTMLTextAreaElement;
-const grammarEditor = document.getElementById('grammar');
-const output = document.getElementById('output');
-const outputNoGrammar = document.getElementById('output-no-grammar');
-const selectGrammar = document.getElementById('grammar-selector') as HTMLSelectElement;
+const languageOptionsEditor = document.getElementById('language-options') as MonacoEditor;
+const output = document.getElementById('output') as HTMLPreElement;
+const selectLanguage = document.getElementById('language-selector') as HTMLSelectElement;
 const selectModel = document.getElementById('model-selector') as HTMLSelectElement;
 
 [
@@ -32,18 +34,34 @@ const selectModel = document.getElementById('model-selector') as HTMLSelectEleme
 ].forEach((language) => {
   const option = document.createElement('option');
   option.value = language;
+  if (language === 'json') {
+    option.selected = true;
+  }
   option.innerText = language;
-  selectGrammar.appendChild(option);
+  selectLanguage.appendChild(option);
 });
 
 type ModelGetter = () => ModelDefinition<ModelProtocol>;
-const models = [
-  'Xenova/gpt2',
-  // 'Xenova/codegen-350M-mono',
-  // 'Xenova/llama-160m',
-  // 'Xenova/WizardCoder-1B-V1.0',
-].reduce<Record<string, ModelGetter>>((acc, model) => {
-  const modelGetter: ModelGetter = () => pipeline('text-generation', model);
+const models = ([
+  ...[
+    'Xenova/gpt2',
+    'Xenova/codegen-350M-mono',
+    'Xenova/llama-160m',
+    'Xenova/WizardCoder-1B-V1.0',
+  ].map(model => ([
+    `Transformers.js - ${model}`,
+    () => pipeline('text-generation', model),
+  ])),
+  ...[
+    "Llama-3-8B-Instruct-q4f32_1",
+    "Phi1.5-q4f32_1-1k",
+  ].map(model => ([
+    `web-llm - ${model}`,
+    () => webllm.CreateEngine(model, {
+      initProgressCallback: console.log,
+    }),
+  ])),
+] as [string, ModelGetter][]).reduce<Record<string, ModelGetter>>((acc, [model, modelGetter,]) => {
   return {
     ...acc,
     [model]: modelGetter,
@@ -58,93 +76,91 @@ const models = [
     endpoint: import.meta.env.VITE_LLAMAFILE_ENDPOINT_URL,
   }),
 });
-Object.keys(models).forEach(model => {
+Object.keys(models).reverse().forEach((model, i) => {
   const option = document.createElement('option');
   option.value = model;
   option.innerText = model;
-  // if (model === 'Xenova/codegen-350M-mono') {
-  //   option.selected = true;
-  // }
+  if (i === 0) {
+    option.selected = true;
+  }
   selectModel.appendChild(option);
 });
 
-let abortController: AbortController = new AbortController();
-
-selectGrammar.onchange = () => {
-  grammarEditor.setAttribute('value', selectGrammar.value);
-  abortController.abort();
+const loadedModels = new Map<string, ModelDefinition<ModelProtocol>>();
+const getModel = async (): Promise<ModelDefinition<ModelProtocol>> => {
+  if (!loadedModels.get(selectModel.value)) {
+    loadedModels.set(selectModel.value, await models[selectModel.value]());
+  }
+  const model = loadedModels.get(selectModel.value);
+  if (!model) {
+    throw new Error('Model not loaded');
+  }
+  return model;
 };
 
+const autogrammer = new Autogrammer({});
+
+selectLanguage.onchange = () => {
+  languageOptionsEditor.setAttribute('value', selectLanguage.value);
+  autogrammer?.abort();
+};
+
+console.log(form);
 form.onsubmit = async (e) => {
   e.preventDefault();
   await synthesize(input.value + "\n");
 };
 
-const loadedModels = new Map();
-
 const n = 150;
 
+let generating = false;
+
+const origButtonText = button.innerText;
 const synthesize = async (prompt: string) => {
-  if (!loadedModels.get(selectModel.value)) {
-    loadedModels.set(selectModel.value, await models[selectModel.value]());
-  }
-  const model = loadedModels.get(selectModel.value);
-  console.log('Synthesize!');
-  button.setAttribute('disabled', '');
-  await Promise.all([
-    (async () => {
-      const autogrammer = new Autogrammer({
-        model,
-      });
+  if (generating) {
+    autogrammer?.abort();
+    generating = false;
+  } else {
+    button.innerText = 'Abort';
+    generating = true;
 
-      try {
-        autogrammer.grammar = grammarEditor.value;
+    autogrammer.model = await getModel();
+    const language = selectLanguage.value;
+    if (isSupportedLanguage(language)) {
+      autogrammer.language = language;
+    }
 
-        await autogrammer.execute(prompt, {
+    try {
+
+      const languageOptions = JSON.parse(languageOptionsEditor.value);
+      await autogrammer.execute(prompt, {
+        languageOptions,
+        modelOptions: {
           n,
+
           stream: true,
-          callback: ({ partial, chunk, }) => {
-            console.log('grammar', partial);
+          callback: ({ partial, }) => {
             output.textContent = partial;
           },
-        });
-        console.log('complete, grammar');
-      } catch (err) {
-        console.error(err);
-      }
-    })(),
-    (async () => {
-      const contortionist = new Contortionist({
-        model,
+        },
       });
-      try {
-        await contortionist.execute(prompt, {
-          n,
-          stream: true,
-          callback: ({ partial, chunk, }) => {
-            console.log('nogrammar', partial);
-            outputNoGrammar.textContent = partial;
-          },
-        });
-        console.log('complete, no grammar');
-      } catch (err) {
-        console.error(err);
-      }
-    })(),
-  ]);
-  console.log('done synthesizing!');
-
-  button.removeAttribute('disabled');
-  abortController = new AbortController();
-
+    } catch (err) {
+      console.error(err);
+    } finally {
+      button.innerText = origButtonText;
+      generating = false;
+    }
+    console.log('done synthesizing!');
+  }
 };
 
-synthesize(input.value + '\n');
-
-// grammarEditor.value = `
-// root ::= item+
-
-// # Excludes various line break characters
-// item ::= "def " [a-zA-z]+ "(" arg ("," arg)* "):" \n
-// arg ::= [a-zA-z]+
-// `;
+languageOptionsEditor.value = JSON.stringify({
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    number: { type: 'number', },
+    street_name: { type: 'string', },
+    street_type: { enum: ['Street', 'Avenue', 'Boulevard',], },
+  },
+  required: ['number', 'street_name', 'street_type',],
+}, null, 2);

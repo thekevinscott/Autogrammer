@@ -1,51 +1,65 @@
-import { buildJSON } from '../../../../../../json2gbnf/javascript/packages/autogrammer/src/build-json.js';
-const form = document.getElementById('form');
-const button = document.getElementById('submit');
-const jsonEditor = document.getElementById('json');
-const output = document.getElementById('output');
+import Autogrammer from "../../../packages/autogrammer/src/index.js";
+import '@vanillawc/wc-monaco-editor';
 
+interface MonacoEditor {
+  value: string;
+}
+const form = document.getElementById('form') as HTMLFormElement;
+const button = document.getElementById('submit') as HTMLButtonElement;
+const promptEditor = document.getElementById('prompt') as unknown as MonacoEditor;
+const jsonEditor = document.getElementById('json') as unknown as MonacoEditor;
+const output = document.getElementById('output') as HTMLPreElement;
+const buttonText = button.innerText;
+
+let generating = false;
+const autogrammer = new Autogrammer({
+  model: {
+    protocol: 'llama.cpp',
+    endpoint: import.meta.env.VITE_LLAMACPP_ENDPOINT_URL,
+  },
+  language: 'json',
+});
 form.onsubmit = async (e) => {
   e.preventDefault();
-  button.setAttribute('disabled', '');
-  try {
-    output.innerHTML = await generateJSON(jsonEditor.value);
-  } finally {
-    button.removeAttribute('disabled');
+  if (generating) {
+    generating = false;
+    autogrammer.abort();
+    button.innerText = buttonText;
+  } else {
+    generating = true;
+    button.innerText = 'Abort';
+    try {
+      autogrammer.synthesize(promptEditor.value, {
+        languageOptions: JSON.parse(jsonEditor.value),
+        modelOptions: {
+          n: 1000,
+          // n_predict: 1000,
+          callback: ({ partial }) => {
+            console.log(partial)
+            output.innerHTML = partial;
+          },
+        }
+      });
+    } finally {
+      generating = false;
+      button.innerText = buttonText;
+    }
   }
 };
 
-const generateJSON = async (prompt: string) => {
-  try {
-    const value = JSON.parse(jsonEditor.value);
-    const rules = buildJSON(value);
-    console.log('rules', rules);
-    return rules.join('\n');
-  } catch (err) {
-    throw new Error(`Invalid JSON: ${err.message}`);
-  }
-};
+promptEditor.value = `Parse the following address into a JSON object. 
 
+It should contain the fields street name, number, and street type, in that order.
+
+It should also contain the zip code.
+
+"1600 Pennsylvania Avenue NW, Washington, DC 20500"`;
 jsonEditor.value = JSON.stringify({
   type: 'object',
   properties: {
-    str: {
-      type: 'string',
-    },
-    arr: {
-      type: 'array',
-      items: {
-        type: 'number',
-      }
-    },
-    obj: {
-      type: {
-        type: 'object',
-        properties: {
-          foo: {
-            type: 'boolean',
-          }
-        }
-      },
-    }
-  }
+    number: { type: 'number' },
+    street_name: { type: 'string' },
+    street_type: { enum: ['Street', 'Avenue', 'Boulevard'] },
+  },
+  required: ['number', 'street_name', 'street_type']
 }, null, 2);

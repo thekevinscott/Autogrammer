@@ -84,6 +84,9 @@ importers:
       autogrammer:
         specifier: workspace:*
         version: link:../..
+      contort:
+        specifier: workspace:*
+        version: link:../../../../contort
     devDependencies:
       vite:
         specifier: ^5.1.4

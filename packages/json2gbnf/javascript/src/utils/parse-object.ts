@@ -59,7 +59,7 @@ export const parseObject = (
     const LB = grammar.getConst(LEFT_BRACE_KEY, { left: false, });
     const RB = grammar.getConst(RIGHT_BRACE_KEY, { right: false, });
     const SEPARATOR = grammar.getConst(COMMA_KEY, { left: false, });
-    const PROPERTY_KEY = additionalProperties ? grammar.addRule(getPropertyDefinition(SEPARATOR)) : undefined;
+    const PROPERTY_KEY = additionalProperties ? grammar.addRule(getPropertyDefinition(SEPARATOR, COLON)) : undefined;
 
     const objectProperties: { rule: string; key: string }[] = Object.entries(properties).map(([key, value,]) => ({
       rule: grammar.addRule(join(

@@ -11,16 +11,16 @@ import type {
   SupportedLanguage,
 } from './types.js';
 import { buildPrompt, } from './utils.js';
-import { Variables, } from './grammars/get-grammar.js';
 import {
   isSupportedLanguage,
 } from './type-guards.js';
 import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
+import JSON2GBNF, { JSONSchema, } from 'json2gbnf';
 
 export class Autogrammer {
-  #language: SupportedLanguage;
+  #language?: SupportedLanguage;
   #contortionist: Contortionist<ModelProtocol>;
 
   /**
@@ -38,17 +38,21 @@ export class Autogrammer {
    * @returns an instance of a Autogrammer class.
    */
   constructor({ language, model, }: ConstructorOptions<SupportedLanguage>) {
-    if (!isSupportedLanguage(language)) {
-      throw new Error(`Unsupported language: ${language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
+    if (language !== undefined) {
+      this.language = language;
     }
-    this.#language = language;
-    this.#contortionist = new Contortionist({
-      model,
-      grammar: getGrammar(language),
-    });
+    if (model) {
+      this.#contortionist = new Contortionist({
+        model,
+        grammar: this.language ? getGrammar(this.language) : undefined,
+      });
+    }
   }
 
   get language(): SupportedLanguage {
+    if (this.#language === undefined) {
+      throw new Error('Language not set.');
+    }
     if (!isSupportedLanguage(this.#language)) {
       throw new Error(`Unsupported language: ${this.#language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
     }
@@ -61,6 +65,7 @@ export class Autogrammer {
     this.#language = language;
   }
 
+
   set model(model: ModelDefinition<ModelProtocol>) {
     this.#contortionist = new Contortionist({
       model,
@@ -68,30 +73,29 @@ export class Autogrammer {
     });
   }
 
-  public async synthesize<L extends SupportedLanguage>(
+  public async execute(
     prompt: string,
     {
       languageOptions,
       modelOptions = {},
     }: {
-      languageOptions?: Variables<L>,
+      languageOptions?: JSONSchema,
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     },
   ): Promise<string> {
-    if (languageOptions !== undefined) {
-      if (this.#language === 'sql') {
-        this.#contortionist.grammar = getGrammar<'sql'>(this.#language, languageOptions);
-        // console.log(this.contortionist.grammar);
-        // } else if (this.language === 'json') {
-        //   const grammar = await compile(languageOptions, 'Root');
-        //   console.log(grammar);
-        //   this.contortionist.grammar = grammar;
-      } else {
-        throw new Error('I dont know this one');
-      }
+    const contortionist = this.#contortionist;
+    if (!contortionist) {
+      throw new Error('No model');
     }
-    const builtPrompt = buildPrompt(prompt, this.#language);
-    return await this.#contortionist.execute(builtPrompt, {
+    contortionist.grammar = JSON2GBNF(languageOptions, {
+      fixedOrder: false,
+      whitespace: 1,
+    });
+    if (!contortionist.grammar) {
+      throw new Error('no grammar');
+    }
+    const builtPrompt = buildPrompt(prompt, this.language);
+    return await contortionist.execute(builtPrompt, {
       ...modelOptions,
     });
   };

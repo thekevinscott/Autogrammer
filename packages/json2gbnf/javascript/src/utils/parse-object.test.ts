@@ -20,6 +20,7 @@ import {
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
 import { join, joinWith } from './join.js';
+import { OBJECT_KEY_DEF } from './get-property-definition.js';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
@@ -268,13 +269,13 @@ describe('parseObject', () => {
     const PROPERTY_KEY = `(${join(
       COMMA_KEY,
       QUOTE_KEY,
-      STRING_KEY,
+      OBJECT_KEY_DEF,
       QUOTE_KEY,
       COLON_KEY,
       VALUE_KEY,
       `(${join(COMMA_KEY,
         QUOTE_KEY,
-        STRING_KEY,
+        OBJECT_KEY_DEF,
         QUOTE_KEY,
         COLON_KEY,
         VALUE_KEY,
@@ -294,21 +295,6 @@ describe('parseObject', () => {
       const mockGrammar = getMockGrammar({
         addRule: vi.fn().mockImplementation((key: string) => key),
       });
-      const PROPERTY_KEY = `(${join(
-        COMMA_KEY,
-        QUOTE_KEY,
-        STRING_KEY,
-        QUOTE_KEY,
-        COLON_KEY,
-        VALUE_KEY,
-        `(${join(COMMA_KEY,
-          QUOTE_KEY,
-          STRING_KEY,
-          QUOTE_KEY,
-          COLON_KEY,
-          VALUE_KEY,
-        )})*`,
-      )})?`;
       const expected = join(
         LEFT_BRACE_KEY,
         `(${joinWith(

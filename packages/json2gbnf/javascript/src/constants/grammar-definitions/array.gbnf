@@ -1,1 +1,1 @@
-"[" ({{VALUE_KEY}} ("," {{VALUE_KEY}})*)? "]"
+"[" ({{VALUE_KEY}} ("," {{VALUE_KEY}})*)? "]" 
