@@ -33,6 +33,7 @@
   "license": "ISC",
   "dependencies": {
     "@11ty/eleventy-dev-server": "^2.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
     "chokidar": "^3.6.0",
     "commander": "^11.0.0",
     "concurrently": "^8.2.2",

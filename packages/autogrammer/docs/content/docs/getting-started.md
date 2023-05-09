@@ -21,5 +21,9 @@ const grammer = new Autogrammer({
   language: 'json',
 });
 
-grammar.prompt('Return the following address in a JSON object:\n\n```1600 Pennsylvania Avenue NW, Washington, DC 20500```');
+const prompt = `Return the following address in a JSON object:
+
+1600 Pennsylvania Avenue NW, Washington, DC 20500`;
+
+const result = await grammar.prompt(prompt);
 ```

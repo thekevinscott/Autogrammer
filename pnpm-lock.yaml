@@ -163,6 +163,67 @@ importers:
         specifier: ^0.14.0
         version: 0.14.4
 
+  packages/codecell:
+    dependencies:
+      '@vanillawc/wc-codemirror':
+        specifier: ^2.1.0
+        version: 2.1.0
+      lit:
+        specifier: ^3.1.3
+        version: 3.1.3
+    devDependencies:
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.3.1
+        version: 7.8.0(@typescript-eslint/parser@7.8.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
+      '@vitest/coverage-istanbul':
+        specifier: ^1.4.0
+        version: 1.5.3(vitest@1.5.3(@types/node@20.12.7)(terser@5.31.0))
+      '@vitest/coverage-v8':
+        specifier: ^1.5.3
+        version: 1.5.3(vitest@1.5.3(@types/node@20.12.7)(terser@5.31.0))
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.0
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.0)
+      path-exists-cli:
+        specifier: ^2.0.0
+        version: 2.0.0
+      rimraf:
+        specifier: ^5.0.5
+        version: 5.0.5
+      rollup:
+        specifier: ^4.12.1
+        version: 4.17.2
+      rollup-plugin-dts:
+        specifier: ^6.1.0
+        version: 6.1.0(rollup@4.17.2)(typescript@5.4.5)
+      rollup-plugin-esbuild:
+        specifier: ^6.1.1
+        version: 6.1.1(esbuild@0.20.2)(rollup@4.17.2)
+      rollup-plugin-string:
+        specifier: ^3.0.0
+        version: 3.0.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.4.5
+      vite:
+        specifier: ^5.1.5
+        version: 5.2.10(@types/node@20.12.7)(terser@5.31.0)
+      vite-plugin-dts:
+        specifier: ^3.7.3
+        version: 3.9.0(@types/node@20.12.7)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
+      vite-plugin-externalize-deps:
+        specifier: ^0.8.0
+        version: 0.8.0(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
+      vitest:
+        specifier: ^1.5.3
+        version: 1.5.3(@types/node@20.12.7)(terser@5.31.0)
+      wireit:
+        specifier: ^0.14.4
+        version: 0.14.4
+
   packages/contort:
     dependencies:
       gbnf:
@@ -312,6 +373,9 @@ importers:
       '@11ty/eleventy-dev-server':
         specifier: ^2.0.0
         version: 2.0.0
+      '@11ty/eleventy-plugin-syntaxhighlight':
+        specifier: ^5.0.0
+        version: 5.0.0
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
@@ -564,6 +628,9 @@ packages:
   '@11ty/eleventy-plugin-bundle@2.0.2':
     resolution: {integrity: sha512-zGyPp1g6bi+VC2I5ylwj4w29nivDmx4Uki5gWY6v3MT/1muK0JTtnc1KOMC7yUurv6YwtwdiLYyFK2eFyKv2wg==}
     engines: {node: '>=18'}
+
+  '@11ty/eleventy-plugin-syntaxhighlight@5.0.0':
+    resolution: {integrity: sha512-y9BUmP1GofmbJgxM1+ky/UpFCpD8JSOeLeKItUs0WApgnrHk9haHziW7lS86lbArX5SiCVo4zTTw9x53gvRCaA==}
 
   '@11ty/eleventy-utils@1.0.2':
     resolution: {integrity: sha512-Zy2leMK1DQR6Q6ZPSagv7QpJaAz9uVbb+RmVetYFp3foMeQtOSZx7w2u5daRFmP+PeNq9vO9H4xtBToYFWZwHA==}
@@ -3444,6 +3511,10 @@ packages:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
+  prismjs@1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
@@ -4382,6 +4453,10 @@ snapshots:
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
+
+  '@11ty/eleventy-plugin-syntaxhighlight@5.0.0':
+    dependencies:
+      prismjs: 1.29.0
 
   '@11ty/eleventy-utils@1.0.2':
     dependencies:
@@ -7580,6 +7655,8 @@ snapshots:
       '@jest/schemas': 29.6.3
       ansi-styles: 5.2.0
       react-is: 18.3.1
+
+  prismjs@1.29.0: {}
 
   process-nextick-args@2.0.1: {}
 

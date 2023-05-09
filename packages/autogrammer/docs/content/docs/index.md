@@ -4,9 +4,21 @@ layout: 'layouts/page.html'
 displayOrder: 0
 ---
 
-Sometimes LLMs don't do what you want them to do.
+Sometimes LLMs don't do what you want them to do.  For instance, you can ask an LLM to generate a code output:
 
-For instance, you can ask an LLM to generate a code output:
+```javascript
+import {
+  pipeline,
+  env,
+} from '@xenova/transformers';
+env.allowRemoteModels = true;
+env.allowLocalModels = false;
+
+const model = await pipeline('text-generation', 'Xenova/gpt2');
+
+const result = await model('Write me a list of numbers:\n');
+console.log('result', result);
+```
 
 Sometimes it'll generate what you want - sometimes it won't. Sometimes it'll wrap it in surrounding text, sometimes it won't. The smaller the model, the harder it will be to control the output.
 

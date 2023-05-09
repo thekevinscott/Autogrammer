@@ -1,30 +1,7 @@
 import { LitElement, PropertyValueMap, css, html } from 'lit';
-// import * as esbuild from 'esbuild-wasm'
-// await esbuild.initialize({
-//   wasmURL: 'https://cdn.jsdelivr.net/npm/esbuild-wasm/esbuild.wasm',
-// })
 import { property, state } from 'lit/decorators.js';
 import { Ref, createRef, ref } from 'lit/directives/ref.js';
 import '@vanillawc/wc-codemirror';
-// import * as webllm from "@mlc-ai/web-llm";
-// import {
-//   pipeline,
-//   env,
-// } from '@xenova/transformers';
-// env.allowRemoteModels = true;
-// env.allowLocalModels = false;
-import Autogrammer from 'autogrammer';
-// const model = webllm.CreateEngine("phi-2-q4f32_1-MLC", {
-// const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-// const model = webllm.CreateEngine("Llama-3-8B-Instruct-q4f32_1", {
-//   initProgressCallback: console.log,
-// });
-// const model = pipeline('text-generation', 'Xenova/gpt2');
-(window as any)['autogrammer'] = new Autogrammer({
-  language: 'json',
-  // model: webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-  // model,
-});
 
 export const TAG_NAME = 'code-editor';
 
@@ -33,7 +10,7 @@ interface WCCodeMirror extends HTMLElement {
   editor: any;
 }
 
-export class CodeEditor extends LitElement {
+export class CodeCell extends LitElement {
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
     slot {
@@ -130,3 +107,4 @@ export class CodeEditor extends LitElement {
 
   }
 }
+
