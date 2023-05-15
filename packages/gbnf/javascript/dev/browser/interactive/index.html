@@ -10,6 +10,10 @@
       flex-direction: column;;
     }
 
+    form > * {
+      flex: 1;
+    }
+
     select {
       flex: 1;
       max-width: none;
@@ -46,8 +50,12 @@
       </select>
       <button id="submit" type="submit">Parse</button>
     </div>
+    <div>
     <wc-monaco-editor id="grammar"></wc-monaco-editor>
+    </div>
+    <div>
     <wc-monaco-editor id="input"></wc-monaco-editor>
+    </div>
     <pre id="output"></pre>
 
   </form>

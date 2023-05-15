@@ -4,366 +4,206 @@ import {
   expect,
 } from 'vitest';
 // import SQL2GBNF from 'sql2gbnf';
-import { ROOT_ID, SQL2GBNF } from '../../src/sql2gbnf.js';
+import {
+  SQL2GBNF,
+} from '../../src/sql2gbnf.js';
 import GBNF, {
-  WHITESPACE_KEY,
-  // InputParseError,
+  InputParseError,
   GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
 } from 'gbnf';
 import { GLOBAL_CONSTANTS } from '../../src/constants/constants.js';
-import {
-  BOOLEAN_KEY,
-  COMMA_KEY,
-  NULL_KEY,
-  NUMBER_KEY,
-  DOUBLE_QUOTE_KEY,
-  SEMI_KEY,
-  STRING_KEY,
-  SINGLE_QUOTE_KEY,
-  LEFT_PAREN_KEY,
-  RIGHT_PAREN_KEY,
-} from '../../src/constants/grammar-keys.js';
-import {
-  AGGREGATOR_FUNCTION_KEY,
-  AND,
-  AND_MORE,
-  ANY_OPERATOR_KEY,
-  ANY_WHERE_CLAUSE,
-  AS,
-  BETWEEN,
-  BETWEEN_WHERE_CLAUSE,
-  DIR,
-  DISTINCT,
-  FROM_KEY,
-  IN,
-  IN_WHERE_CLAUSE,
-  IS,
-  LIKE_KEY,
-  LIMIT_CLAUSE,
-  LIMIT,
-  NOT,
-  NUMERIC_OPERATORS_KEY,
-  NUMERIC_WHERE_CLAUSE,
-  OPTIONAL_WHITESPACE_KEY,
-  ORDER_CLAUSE,
-  ORDER,
-  OR,
-  OR_MORE,
-  SELECT_COLUMNS_KEY,
-  SELECT_KEY,
-  SELECT_LIST_KEY,
-  SELECT_QUERY,
-  STRING_WILDCARD_WITH_DOUBLE_QUOTES_KEY,
-  STRING_WILDCARD_WITH_SINGLE_QUOTES_KEY,
-  STRING_WITH_DOUBLE_QUOTES_KEY,
-  STRING_WITH_QUOTES_KEY,
-  STRING_WITH_SINGLE_QUOTES_KEY,
-  STR_OPERATORS_KEY,
-  TABLE,
-  VALUE_KEY,
-  WHERE_CLAUSE,
-  WHERE_INNER,
-  WHERE,
-  WILDCARD_WHERE_CLAUSE,
-  FULL,
-  INNER,
-  JOIN,
-  LEFT,
-  OUTER,
-  RIGHT,
-  JOIN_CLAUSE,
-  JOIN_TYPE,
-  FULL_OUTER_TYPE,
-} from '../../src/parse.js';
+import { NO_SCHEMA_GRAMMAR } from './no-schema-grammar.js';
+import { noSchemaTests } from './no-schema-tests.js';
 
 describe('no schema', () => {
-  const NO_SCHEMA_GRAMMAR = [
-    `${AGGREGATOR_FUNCTION_KEY} ::= "min" | "MIN" | "max" | "MAX" | "avg" | "AVG" | "sum" | "SUM" | "count" | "COUNT"`,
-    `${AND} ::= "and" | "AND"`,
-    `${AND_MORE} ::= ${WHITESPACE_KEY} ${AND} ${WHERE_INNER}`,
-    [
-      ANY_WHERE_CLAUSE,
-      '::=',
-      ANY_OPERATOR_KEY,
-      OPTIONAL_WHITESPACE_KEY,
-      VALUE_KEY,
-    ].join(' '),
-    [
-      ANY_OPERATOR_KEY,
-      "::=",
-      '"="',
-      "|",
-      IS,
-    ].join(" "),
-    `${AS} ::= "as" | "AS"`,
-    `${BETWEEN} ::= "between" | "BETWEEN"`,
-    [
-      BETWEEN_WHERE_CLAUSE,
-      '::=',
-      BETWEEN,
-      WHITESPACE_KEY,
-      NUMBER_KEY,
-      WHITESPACE_KEY,
-      AND,
-      WHITESPACE_KEY,
-      NUMBER_KEY,
-    ].join(' '),
-    `${DIR} ::= "asc" | "ASC" | "desc" | "DESC"`,
-    `${DISTINCT} ::= "distinct" | "DISTINCT"`,
-    `${FROM_KEY} ::= "from" | "FROM"`,
-    `${FULL} ::= "full" | "FULL"`,
-    `${IN} ::= "in" | "IN"`,
-    [
-      IN_WHERE_CLAUSE,
-      '::=',
-      IN,
-      WHITESPACE_KEY,
-      LEFT_PAREN_KEY,
-      STRING_WITH_QUOTES_KEY,
-      `(${COMMA_KEY} ${OPTIONAL_WHITESPACE_KEY} ${STRING_WITH_QUOTES_KEY})*`,
-      RIGHT_PAREN_KEY,
-    ].join(' '),
-    `${INNER} ::= "inner" | "INNER"`,
-    `${IS} ::= "is" | "IS"`,
-    `${JOIN} ::= "join" | "JOIN"`,
-    [
-      JOIN_CLAUSE,
-      '::=',
-      WHITESPACE_KEY,
-      `(${JOIN_TYPE})?`,
-      JOIN,
-      WHITESPACE_KEY,
-    ].join(' '),
-    `${JOIN_TYPE} ::= (${INNER} ${WHITESPACE_KEY}) | (${LEFT} ${WHITESPACE_KEY}) | (${RIGHT} ${WHITESPACE_KEY}) | (${FULL_OUTER_TYPE})`,
-    `${LEFT} ::= "left" | "LEFT"`,
-    `${LIKE_KEY} ::= "like" | "LIKE"`,
-    `${LIMIT} ::= "limit" | "LIMIT"`,
-    [
-      LIMIT_CLAUSE,
-      '::=',
-      WHITESPACE_KEY,
-      LIMIT,
-      `(${WHITESPACE_KEY} ${NUMBER_KEY} ${COMMA_KEY})?`,
-      WHITESPACE_KEY,
-      NUMBER_KEY,
-    ].join(' '),
-    `${NOT} ::= "not" | "NOT"`,
-    [
-      NUMERIC_WHERE_CLAUSE,
-      '::=',
-      NUMERIC_OPERATORS_KEY,
-      OPTIONAL_WHITESPACE_KEY,
-      NUMBER_KEY,
-    ].join(' '),
-    [
-      NUMERIC_OPERATORS_KEY,
-      "::=",
-      '">"',
-      '|',
-      '"<"',
-      "|",
-      '">="',
-      "|",
-      '"<="',
-    ].join(" "),
-    [
-      OPTIONAL_WHITESPACE_KEY,
-      '::=',
-      `(${WHITESPACE_KEY})?`,
-    ].join(' '),
-    `${OR} ::= "or" | "OR"`,
-    `${ORDER} ::= "order by" | "ORDER BY"`,
-    [
-      ORDER_CLAUSE,
-      '::=',
-      WHITESPACE_KEY,
-      ORDER,
-      WHITESPACE_KEY,
-      STRING_KEY,
-      `(${WHITESPACE_KEY} ${DIR})?`,
-    ].join(' '),
-    `${OR_MORE} ::= ${WHITESPACE_KEY} ${OR} ${WHERE_INNER}`,
-    `${OUTER} ::= "outer" | "OUTER"`,
-    `${FULL_OUTER_TYPE} ::= (${FULL} ${WHITESPACE_KEY})? (${OUTER} ${WHITESPACE_KEY})?`,
-    `${RIGHT} ::= "right" | "RIGHT"`,
-    `root ::= ${ROOT_ID}`,
-    `${SELECT_KEY} ::= "select" | "SELECT"`,
-    `${SELECT_COLUMNS_KEY} ::= ${SELECT_LIST_KEY} (${COMMA_KEY} ${OPTIONAL_WHITESPACE_KEY} ${SELECT_LIST_KEY})*`,
-    `${SELECT_LIST_KEY} ::= (${STRING_KEY} | (agg ${LEFT_PAREN_KEY} ${STRING_KEY} ${RIGHT_PAREN_KEY})) (${WHITESPACE_KEY} as ${WHITESPACE_KEY} ${STRING_KEY})?`,
-    [
-      SELECT_QUERY,
-      '::=',
-      SELECT_KEY,
-      `(${WHITESPACE_KEY} ${DISTINCT})?`,
-      WHITESPACE_KEY,
-      `(${SELECT_COLUMNS_KEY} | "*")`,
-      WHITESPACE_KEY,
-      FROM_KEY,
-      WHITESPACE_KEY,
-      TABLE,
-      `(${JOIN_CLAUSE})?`,
-      `(${WHERE_CLAUSE})?`,
-      `(${ORDER_CLAUSE})?`,
-      `(${LIMIT_CLAUSE})?`,
-      `(${SEMI_KEY})?`,
-    ].join(' '),
-    `${ROOT_ID} ::= ${SELECT_QUERY}`,
-    `${STRING_WITH_DOUBLE_QUOTES_KEY} ::= ${DOUBLE_QUOTE_KEY} ${STRING_KEY} ${DOUBLE_QUOTE_KEY}`,
-    `${STRING_WILDCARD_WITH_DOUBLE_QUOTES_KEY} ::= ${DOUBLE_QUOTE_KEY} ${STRING_KEY} "%" ${DOUBLE_QUOTE_KEY}`,
-    `${STRING_WILDCARD_WITH_SINGLE_QUOTES_KEY} ::= ${SINGLE_QUOTE_KEY} ${STRING_KEY} "%" ${SINGLE_QUOTE_KEY}`,
-    [
-      STR_OPERATORS_KEY,
-      "::=",
-      LIKE_KEY,
-    ].join(" "),
-    `${STRING_WITH_QUOTES_KEY} ::= (${STRING_WITH_SINGLE_QUOTES_KEY} | ${STRING_WITH_DOUBLE_QUOTES_KEY})`,
-    `${STRING_WITH_SINGLE_QUOTES_KEY} ::= ${SINGLE_QUOTE_KEY} ${STRING_KEY} ${SINGLE_QUOTE_KEY}`,
-    `${TABLE} ::= ${STRING_KEY}`,
-    [
-      VALUE_KEY,
-      '::=',
-      `(${NUMBER_KEY} | ${NULL_KEY} | ${BOOLEAN_KEY} | ${STRING_WITH_QUOTES_KEY})`,
-    ].join(' '),
-    `${WHERE} ::= "where" | "WHERE"`,
-    `${WHERE_CLAUSE} ::= ${WHITESPACE_KEY} ${WHERE} (${NOT})? ${WHERE_INNER} (${AND_MORE} | ${OR_MORE})*`,
-    [
-      WHERE_INNER,
-      '::=',
-      WHITESPACE_KEY,
-      STRING_KEY,
-      OPTIONAL_WHITESPACE_KEY,
-      `(${[
-        ANY_WHERE_CLAUSE,
-        NUMERIC_WHERE_CLAUSE,
-        WILDCARD_WHERE_CLAUSE,
-        IN_WHERE_CLAUSE,
-        BETWEEN_WHERE_CLAUSE,
-      ].join(' | ')
-      })`,
-    ].join(' '),
-    [
-      WILDCARD_WHERE_CLAUSE,
-      '::=',
-      STR_OPERATORS_KEY,
-      OPTIONAL_WHITESPACE_KEY,
-      `(${STRING_WILDCARD_WITH_SINGLE_QUOTES_KEY} | ${STRING_WILDCARD_WITH_DOUBLE_QUOTES_KEY})`,
-    ].join(' '),
-  ];
+  // test('it parses schema to grammar', () => {
+  //   const grammar = SQL2GBNF();
+  //   expect(grammar).toEqual([
+  //     ...NO_SCHEMA_GRAMMAR,
+  //     ...GBNF_GLOBAL_CONSTANTS,
+  //     ...GLOBAL_CONSTANTS
+  //   ].join('\n'));
+  // });
 
-  test.each([
-    'selec',
-    'SELEC',
-    'select *',
-    'select fo',
-    'select foo,bar,froo',
-    'select * from',
-    'select * FROM',
-    'SELECT * FROM',
-    'select fromm from',
-    'select col from table',
-    'select col as foo from table',
-    'select fooy as foo,bary as bar from table',
-    'SELECT col FROM table',
-    'SELECT col FROM table;',
-    'SELECT col FROM table WHERE',
-    'SELECT col FROM table where',
-    'SELECT foo,bar FROM table;',
-    'SELECT foo,bar,baz FROM table;',
-    'SELECT foo, bar, baz FROM table;',
-    'SELECT MIN(col) FROM table',
-    'SELECT min(col) FROM table',
-    'SELECT MAX(col) FROM table',
-    'SELECT max(col) FROM table',
-    'SELECT COUNT(col) FROM table',
-    'SELECT count(col) FROM table',
-    'SELECT SUM(col) FROM table',
-    'SELECT sum(col) FROM table',
-    'SELECT AVG(col) FROM table',
-    'SELECT avg(col) FROM table',
-    'SELECT col FROM table where col',
-    'SELECT col FROM table WHERE col',
-    'SELECT col FROM table WHERE col=',
-    'SELECT col FROM table WHERE col =',
-    'SELECT col FROM table WHERE col =1',
-    'SELECT col FROM table WHERE col =1;',
-    'SELECT col FROM table WHERE col = 1',
-    'SELECT col FROM table WHERE col = 1;',
-    'SELECT col FROM table WHERE col = true;',
-    'SELECT col FROM table WHERE col = TRUE;',
-    'SELECT col FROM table WHERE col = false;',
-    'SELECT col FROM table WHERE col = FALSE;',
-    'SELECT col FROM table WHERE col = null;',
-    'SELECT col FROM table WHERE col = NULL;',
-    'SELECT col FROM table WHERE col IS null;',
-    'SELECT col FROM table WHERE col is NULL;',
-    'SELECT col FROM table WHERE col = \'foo\'',
-    'SELECT col FROM table WHERE col = "foo"',
-    'SELECT col FROM table WHERE col = \'foo\';',
-    'SELECT col FROM table WHERE col = "foo";',
-    'SELECT col FROM table WHERE col = "foo" and bar > 1',
-    'SELECT col FROM table WHERE col = "foo" AND bar > 1',
-    'SELECT col FROM table WHERE col = "foo" or bar > 1',
-    'SELECT col FROM table WHERE col = "foo" OR bar > 1',
-    'SELECT col FROM table WHERE col IN ("foo")',
-    'SELECT col FROM table WHERE col IN (\'foo\')',
-    'SELECT col FROM table WHERE col IN ("foo","bar")',
-    'SELECT col FROM table WHERE col in ("foo","bar")',
-    'SELECT col FROM table WHERE col in ("foo","bar",\'baz\')',
-    'SELECT col FROM table WHERE col in ("foo", "bar")',
-    'SELECT col FROM table WHERE col BETWEEN 2 AND 10',
-    'SELECT col FROM table WHERE col between 2 and 10',
-    'SELECT col FROM table order by',
-    'SELECT col FROM table order by col',
-    'SELECT col FROM table order by col;',
-    'SELECT col FROM table order by col desc',
-    'SELECT col FROM table order by col DESC',
-    'SELECT col FROM table order by col ASC',
-    'SELECT col FROM table order by col asc',
-    'SELECT col FROM table limit',
-    'SELECT col FROM table limit 5',
-    'SELECT col FROM table limit 5;',
-    'SELECT col FROM table limit 2, ',
-    'SELECT col FROM table limit 2, 5',
-    'SELECT col FROM table limit 2, 5;',
-    'SELECT distinct col FROM table;',
-    'SELECT DISTINCT col FROM table;',
-    'SELECT foo,bar,baz FROM table where foo = 1 and bar = "bar" AND baz = \'baz\' order by bar desc limit 2, 5;',
-    'SELECT DISTINCT col FROM table INNER',
-    'SELECT DISTINCT col FROM table inner',
-    'SELECT DISTINCT col FROM table JOIN',
-    'SELECT DISTINCT col FROM table join',
-    'SELECT DISTINCT col FROM table INNER JOIN',
-    'SELECT DISTINCT col FROM table inner join',
-    'SELECT DISTINCT col FROM table LEFT JOIN',
-    'SELECT DISTINCT col FROM table left join',
-    'SELECT DISTINCT col FROM table RIGHT JOIN',
-    'SELECT DISTINCT col FROM table right join',
-    'SELECT DISTINCT col FROM table OUTER JOIN',
-    'SELECT DISTINCT col FROM table outer join',
-    'SELECT DISTINCT col FROM table FULL OUTER JOIN',
-    'SELECT DISTINCT col FROM table full outer join',
-    'SELECT DISTINCT col FROM table FULL JOIN',
-    'SELECT DISTINCT col FROM table full join',
-  ])('it parses schema to grammar with input "%s"', (initial) => {
+  test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
     const grammar = SQL2GBNF();
-    expect(grammar).toEqual([
-      ...NO_SCHEMA_GRAMMAR,
-      ...GBNF_GLOBAL_CONSTANTS,
-      ...GLOBAL_CONSTANTS
-    ].join('\n'));
+    // console.log(grammar);
     let parser = GBNF(grammar);
-    parser = parser.add(initial);
+    parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
   });
 
-  // test.only.each([
-  //   ['select select', 0],
-  //   ['select SELECT', 0],
-  //   ['select from ', 0],
-  // ])('it rejects %s for a non-schema', (_initial, errorPos) => {
-  //   const grammar = SQL2GBNF();
-  //   let parser = GBNF(grammar);
-  //   const initial = _initial.split('\\n').join('\n');
-  //   expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
-  // });
+  describe('whitespace', () => {
+    describe('verbose', () => {
+
+      test('it accepts a SQL query with any whitespace', () => {
+        const grammar = SQL2GBNF({
+          whitespace: 'verbose',
+        });
+        let parser = GBNF(grammar);
+        const initial = `SELECT first_name, \n last_name \n FROM \n employees \n WHERE   department \n = 'Sales';`;
+        parser = parser.add(initial);
+        expect(parser.size).toBeGreaterThan(0);
+      });
+
+      test.each([
+        `select foo, bar,  froo`,
+        'SELECT foo, bar FROM table;',
+        `SELECT foo, bar, baz FROM table;`,
+        'SELECT col FROM table WHERE col=',
+        'SELECT col FROM table WHERE col =1',
+        'SELECT col FROM table WHERE col =1;',
+        `SELECT first_name,last_name`,
+        `SELECT first_name,\\t last_name,fo\\n`,
+        `SELECT first_name, \\n last_name FROM \\n f \\t f1 WHERE x>`,
+        `SELECT first_name, last_name FROM f f1 WHERE \\t x >1`,
+        `SELECT first_name, \\n last_name FROM f \\n f1 WHERE x > 1 LIMIT 0,1`,
+        `select fooy as foo,bary as bar from table`,
+        'SELECT foo,bar,baz FROM table where foo = 1 and bar = "bar" AND baz = \'baz\' order by bar desc limit 2, 5;',
+        `SELECT conference FROM p JOIN foo ON foo.school_name=p.school_name`,
+        `SELECT order_id FROM orders HAVING SUM(oi.quantity * oi.unit_price)>'2023-12-31'`,
+        `SELECT order_id FROM orders HAVING SUM(oi.quantity * oi.unit_price)>500`,
+        `SELECT order_id, COUNT(*) FROM orders GROUP BY order_id HAVING foo="foo";`,
+        `SELECT employee_id, salary, SUM(salary) OVER() AS total_salary FROM salaries;`,
+      ])('it accepts any missing whitespace: %s', (initial) => {
+        const grammar = SQL2GBNF({
+          whitespace: 'verbose',
+        });
+        let parser = GBNF(grammar);
+        parser = parser.add(initial.split('\\n').join('\n').split('\\t').join('\t'));
+        expect(parser.size).toBeGreaterThan(0);
+      });
+    })
+
+    describe('default', () => {
+      test.each([
+        `SELECT first_name, last_name FROM employees WHERE department = 'Sales';`,
+        `SELECT first_name, COUNT(age) FROM employees WHERE department = 'Sales';`,
+      ])('it accepts a SQL query with singular whitespace', (initial) => {
+        const grammar = SQL2GBNF({
+          whitespace: 'default',
+        });
+        let parser = GBNF(grammar);
+        parser = parser.add(initial);
+        expect(parser.size).toBeGreaterThan(0);
+      });
+
+      test.each([
+        [`SELECT first_name,last_name`, 18],
+        [`SELECT first_name, last_name,fo`, 29],
+        [`SELECT first_name, last_name FROM f f1 WHERE x>`, 46],
+        [`SELECT first_name, last_name FROM f f1 WHERE x >1`, 48],
+        [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,1`, 59],
+      ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
+        const grammar = SQL2GBNF({
+          whitespace: 'default',
+        });
+        let parser = GBNF(grammar);
+        expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
+      });
+    })
+
+    describe('succinct', () => {
+      test.each([
+        'SELECT col FROM table WHERE col IN ("foo","bar")',
+        'SELECT col FROM table WHERE col in ("foo","bar")',
+        'SELECT col FROM table WHERE col in ("foo","bar",\'baz\')',
+        `SELECT first_name,last_name FROM employees WHERE department='Sales';`,
+        `SELECT SUM(foo+bar) FROM orders`,
+        `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary`,
+        `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary,LAG(salary,1) OVER(ORDER BY employee_id) AS previous_salary FROM salaries;`,
+      ])('it accepts a SQL query without whitespace', (initial) => {
+        const grammar = SQL2GBNF({
+          whitespace: 'succinct',
+        });
+        // console.log(grammar)
+        let parser = GBNF(grammar);
+        parser = parser.add(initial);
+        expect(parser.size).toBeGreaterThan(0);
+      });
+
+      test.each([
+        [`SELECT first_name, last_name`, 18],
+        [`SELECT first_name,last_name, fo`, 28],
+        [`SELECT first_name,last_name FROM f f1 WHERE x >`, 46],
+        [`SELECT first_name,last_name FROM f f1 WHERE x> `, 46],
+        [`SELECT first_name,last_name FROM f f1 WHERE x>1 LIMIT 0, `, 54],
+      ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
+        const grammar = SQL2GBNF({
+          whitespace: 'succinct',
+        });
+        let parser = GBNF(grammar);
+        expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
+      });
+    })
+
+  })
+
+  test.each([
+    ['1', 0],
+    ['select;', 6],
+    ['select 1', 7],
+    ['select .', 7],
+  ])('it rejects %s for a non-schema', (_initial, errorPos) => {
+    const grammar = SQL2GBNF();
+    let parser = GBNF(grammar);
+    const initial = _initial.split('\\n').join('\n');
+    expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
+  });
+
+  describe('Cases', () => {
+    describe('Upper case', () => {
+      const grammar = SQL2GBNF({
+        whitespace: 'verbose',
+        case: 'upper',
+      });
+      test('it only accepts uppercase SQL keywords', () => {
+        const initial = `SELECT order_id FROM orders
+        WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31'
+        GROUP BY o.order_id, o.order_date, c.customer_name 
+        HAVING SUM(oi.quantity * oi.unit_price) > 500 
+        ORDER BY total_amount DESC;`;
+        let parser = GBNF(grammar);
+        parser = parser.add(initial);
+        expect(parser.size).toBeGreaterThan(0);
+      });
+
+      test('it rejects lowercase SQL keywords', () => {
+        const initial = `select order_id from orders
+        where o.order_date between '2023-01-01' and '2023-12-31'
+        group by o.order_id, o.order_date, c.customer_name 
+        having sum(oi.quantity * oi.unit_price) > 500 
+        order by total_amount desc;`;
+        let parser = GBNF(grammar);
+        expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, 0));
+      });
+    });
+
+    describe('Lower case', () => {
+      const grammar = SQL2GBNF({
+        case: 'lower',
+        whitespace: 'verbose',
+      });
+      test('it only accepts uppercase SQL keywords', () => {
+        const initial = `select order_id from orders
+        where o.order_date between '2023-01-01' and '2023-12-31'
+        group by o.order_id, o.order_date, c.customer_name 
+        having sum(oi.quantity * oi.unit_price) > 500 
+        order by total_amount desc;`;
+        let parser = GBNF(grammar);
+        parser = parser.add(initial);
+        expect(parser.size).toBeGreaterThan(0);
+      });
+
+      test('it rejects lowercase SQL keywords', () => {
+        const initial = `SELECT order_id FROM orders
+        WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31'
+        GROUP BY o.order_id, o.order_date, c.customer_name 
+        HAVING SUM(oi.quantity * oi.unit_price) > 500 
+        ORDER BY total_amount DESC;`;
+        let parser = GBNF(grammar);
+        expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, 0));
+      });
+    });
+  })
 });

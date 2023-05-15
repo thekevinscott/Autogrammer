@@ -1,7 +1,6 @@
 import GBNF, { Rule, Range, RuleType, } from 'gbnf';
 
-const GrammarParser = GBNF('root ::= "foo"');
-const grammar = new GrammarParser('fo');
+const grammar = GBNF('root ::= "foo"', 'fo');
 grammar.add('o');
 console.log(grammar.rules)
 console.log(RuleType.ALT)

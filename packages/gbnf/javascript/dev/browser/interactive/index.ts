@@ -1,5 +1,5 @@
 import '@vanillawc/wc-monaco-editor';
-import GBNF from '../../../packages/gbnfjs/src/index.js';
+import GBNF from '../../../src/index.js';
 const grammars = import.meta.glob('./grammars/*.gbnf', {
   eager: true,
   query: '?raw',
@@ -53,11 +53,12 @@ const log = (...messages) => {
 }
 
 const parseGBNF = (grammarContents: string, inputContents: string) => {
+  output.innerText = '';
   log('grammar', grammarContents);
-  const GrammarParser = getGrammarParser(grammarContents.split('\\').join('\\\\'));
-  const parser = new GrammarParser(inputContents);
+  const parser = getGrammarParser(grammarContents.split('\\').join('\\\\'));
+  parser.add(inputContents)
   log(`Parsed "${inputContents}" successfully`)
-  log(parser.rules);
+  log([...parser.rules()]);
 }
 
 (inputEditor as any).value = '1=1';

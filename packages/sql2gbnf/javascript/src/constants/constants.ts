@@ -5,11 +5,12 @@ import {
   nullDef,
   charDef,
   integerDef,
+  positiveIntegerDef,
 } from './grammar-definitions.js';
 import {
   STRING_KEY,
-  NUMBER_KEY,
-  BOOLEAN_KEY,
+  NUMBER,
+  BOOLEAN,
   NULL_KEY,
   CHAR_KEY,
   INTEGER_KEY,
@@ -19,15 +20,17 @@ import {
   RIGHT_PAREN_KEY,
   SEMI_KEY,
   SINGLE_QUOTE_KEY,
+  POSITIVE_INTEGER_KEY,
 } from './grammar-keys.js';
 
 export const GLOBAL_CONSTANTS = [
   `${STRING_KEY} ::= ${stringDef}`,
-  `${NUMBER_KEY} ::= ${numberDef}`,
-  `${BOOLEAN_KEY} ::= ${boolDef}`,
+  `${NUMBER} ::= ${numberDef}`,
+  `${BOOLEAN} ::= ${boolDef}`,
   `${NULL_KEY} ::= ${nullDef}`,
   `${CHAR_KEY} ::= ${charDef}`,
   `${INTEGER_KEY} ::= ${integerDef}`,
+  `${POSITIVE_INTEGER_KEY} ::= ${positiveIntegerDef}`,
   `${COMMA_KEY} ::= ","`,
   `${DOUBLE_QUOTE_KEY} ::= "\\""`,
   `${SINGLE_QUOTE_KEY} ::= "'"`,
