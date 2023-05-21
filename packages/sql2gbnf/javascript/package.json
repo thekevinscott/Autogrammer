@@ -24,6 +24,7 @@
     "copy:gbnf": "wireit",
     "copy:assets": "wireit",
     "lint": "wireit",
+    "test:coverage": "wireit",
     "test:integration": "wireit",
     "test:unit": "wireit",
     "test": "wireit",
@@ -33,6 +34,12 @@
     "build:umd": "wireit"
   },
   "wireit": {
+    "test:coverage": {
+      "command": "vitest --config ./vitest.config.coverage.ts run",
+      "dependencies": [
+        "../../gbnf/javascript:build"
+      ]
+    },
     "test:integration": {
       "command": "vitest --config ./vitest.config.integration.ts run",
       "dependencies": [

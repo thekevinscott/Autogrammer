@@ -4,7 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     include: [
-      'tests/integration/**/*.test.ts',
+      'tests/coverage/**/*.test.ts',
     ],
     exclude: [
       'src/**/*.ts',
@@ -14,7 +14,7 @@ export default defineConfig({
     ],
     globals: true,
     typecheck: {
-      // tsconfig: './tests/integration/tsconfig.json',
+      // tsconfig: './tests/coverage/tsconfig.json',
     },
     setupFiles: [
       path.resolve(__dirname, './tests/setup/index.ts'),
