@@ -10,6 +10,9 @@ import { getColumnNames } from './get-column-names.js';
 import { getOtherAggregators } from './get-other-aggregators.js';
 import { getCountAggregator } from './get-column-count-aggregator.js';
 import { getOverStatement } from './get-over-statement.js';
+import { getJoinClause } from './get-join-clause.js';
+import { getJoinCondition } from './get-join-condition.js';
+import { getEquijoinCondition } from './get-join-condition.js';
 
 describe('getSelectQuery', () => {
   const overStatement = getOverStatement({
@@ -69,6 +72,30 @@ describe('getSelectQuery', () => {
     otherAggregatorsRule: 'otherAggregatorsRule',
     countAggregatorRule: 'countAggregatorRule',
   });
+  // const equijoinCondition = getEquijoinCondition({
+  //   tableName: 'validName',
+  //   optionalRecommendedWhitespace: 'optws',
+  //   validColName: 'validName',
+  //   quote: '"\'"',
+  // });
+  // const joinCondition = getJoinCondition({
+  //   optionalRecommendedWhitespace: 'optws',
+  //   optionalNonRecommendedWhitespace: 'optws',
+  //   leftParen: '"("',
+  //   rightParen: '")"',
+  //   equijoinCondition: 'equijoinCondition',
+  //   whitespace: 'ws',
+  //   and: '"AND"',
+  //   or: '"OR"',
+  // })
+  // const joinClause = getJoinClause({
+  //   joinKey: '"JOIN"',
+  //   joinType: "",
+  //   on: '"ON"',
+  //   tableWithOptionalAlias: 'validName',
+  //   whitespace: 'ws',
+  //   joinCondition,
+  // })
   const grammar = getSelectQuery({
     distinct: '"DISTINCT"',
     projection: getProjection({
@@ -104,16 +131,22 @@ describe('getSelectQuery', () => {
     "SELECT SUM(salary) OVER (PARTITION BY department_id)",
     "SELECT employee_id AS total_salary_per_department FROM salaries",
     "SELECT employee_id, department_id, salary, SUM(salary) OVER (PARTITION BY department_id) AS total_salary_per_department FROM salaries",
+    "SELECT foo FROM salaries JOINCLAUSE",
+    // "SELECT foo FROM salaries JOIN hierarchy  ON (\n    wc.id = hwc.parentid\n    and hwc.primarytype = 'workTermGroup'\n    and hwc.pos > 0)",
+    // "SELECT foo FROM salaries JOIN hierarchy hwc ON (\n    wc.id = hwc.parentid\n    and hwc.primarytype = 'workTermGroup'\n    and hwc.pos > 0)",
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const fullGrammar = [
       `root ::= ${grammar}`,
+      // `equijoinCondition ::= ${equijoinCondition}`,
+      // `joinCondition ::= ${joinCondition}`,
+      // `joinClause ::= ${joinClause}`,
       `overstatement ::= ${overStatement}`,
       `otherAggregatorsRule ::= ${otherAggregatorsRule}`,
       `countAggregatorRule ::= ${countAggregatorRule}`,
       `columnNames ::= ${columnNames}`,
       `com ::= ","`,
-      `ws ::= (" ")+`,
-      `optws ::= (" ")*`,
+      `ws ::= (" " | "\\n")+`,
+      `optws ::= (ws)*`,
       `optnws ::= optws`,
       `semi ::= ";"`,
       `validName ::= ([a-zA-Z0-9_.])+`,

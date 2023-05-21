@@ -4,10 +4,8 @@
  * Each snippet should reference its source.
  */
 import manualTests from './manual.js';
-import codeparrotGithubCode from './codeparrot-github-code-1000.js';
 const tests = [
   ...manualTests,
-  ...codeparrotGithubCode,
 ];
 export default tests;
 

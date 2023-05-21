@@ -13,7 +13,7 @@ export default defineConfig({
       'src/**/*.test.ts',
     ],
     exclude: [
-      'integration-tests/**/*.test.ts',
+      'tests/**/*',
     ],
     watchExclude: [
       'tmp/**/*',

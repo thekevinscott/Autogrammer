@@ -44,13 +44,13 @@ describe('getJoinClause', () => {
     ].join('\n')
     // console.log(fullGrammar);
     let parser = GBNF(fullGrammar);
-    parser = parser.add(' ' + initial.split('\\n').join('\n'));
+    parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
   });
 
   test.each([
-    ['INNER JOIN table1 ON (table1.col1 = table2.col2;', 48],
-    ['INNER JOIN table1 ON table1.col1 = table2.col2);', 47],
+    ['INNER JOIN table1 ON (table1.col1 = table2.col2;', 47],
+    ['INNER JOIN table1 ON table1.col1 = table2.col2);', 46],
   ])('it raises on bad input %s', (_initial, errorPos) => {
     const fullGrammar = [
       `root ::= ${grammar}`,
@@ -64,7 +64,7 @@ describe('getJoinClause', () => {
     ].join('\n')
     // console.log(fullGrammar);
     let parser = GBNF(fullGrammar);
-    const initial = ' ' + _initial.split('\\n').join('\n');
+    const initial = _initial.split('\\n').join('\n');
     expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
   });
 

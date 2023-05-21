@@ -8,7 +8,13 @@ const isAlpha = (char: string) => /^[a-zA-Z]$/.test(char);
 export const buildCase = (
   caseKind: CaseKind,
   ...words: string[]
-): string => any(...words.map(buildCasedWord(caseKind)));
+): string => {
+  const casedWords = words.map(buildCasedWord(caseKind));
+  // if (casedWords.length === 1) {
+  //   return join(casedWords);
+  // }
+  return any(...casedWords);
+};
 
 const buildCasedWord = (caseKind: CaseKind) => (word: string): string => rule(join(...word.split('').map(getCasedChar(caseKind))));
 

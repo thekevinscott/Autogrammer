@@ -18,7 +18,7 @@ export const getSelectQuery = ({
   joinClause,
   groupByClause,
   havingClause,
-  whitespace,
+  whitespace: ws,
   validTableName,
   into,
 }: {
@@ -38,26 +38,26 @@ export const getSelectQuery = ({
   into: string;
 }) => join(
   select,
-  opt(whitespace, distinct),
-  whitespace,
+  opt(ws, distinct),
+  ws,
   any(
     rule(
       projection,
-      whitespace,
-      opt(into, whitespace, validTableName, whitespace),
+      ws,
+      opt(into, ws, validTableName, ws),
     ),
     rule(
-      opt(into, whitespace, validTableName, whitespace),
+      opt(into, ws, validTableName, ws),
       projection,
-      whitespace,
+      ws,
     ),
   ),
 
 
   from,
-  whitespace,
+  ws,
   selectTables,
-  star(joinClause),
+  star(ws, joinClause),
   opt(whereClause),
   opt(groupByClause),
   opt(havingClause),

@@ -11,7 +11,7 @@ import {
   SINGLE_QUOTE_KEY,
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
-} from '../../src/constants/grammar-keys.js';
+} from '../../../src/constants/grammar-keys.js';
 import {
   AGGREGATORS,
   AND,
@@ -78,14 +78,14 @@ import {
   NULL,
   ARITHMETIC_OPS,
   COUNT_AGGREGATOR,
-} from '../../src/gbnf-keys.js';
+} from '../../../src/gbnf-keys.js';
 import {
   VALID_COL_NAME_GBNF,
   VALID_TABLE_NAME_GBNF,
-} from '../../src/select/index.js';
+} from '../../../src/select/index.js';
 import {
   ROOT_ID,
-} from '../../src/sql2gbnf.js';
+} from '../../../src/sql2gbnf.js';
 export const NO_SCHEMA_GRAMMAR = [
   `${AGGREGATORS} ::= "min" | "MIN" | "max" | "MAX" | "avg" | "AVG" | "sum" | "SUM"`,
   `${ALL} ::= "all" | "ALL"`,

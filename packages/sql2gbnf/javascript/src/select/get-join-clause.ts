@@ -18,7 +18,6 @@ export const getJoinClause = ({
   on: string;
   joinCondition: string;
 }) => join(
-  ws,
   opt(joinType),
   joinKey,
   ws,

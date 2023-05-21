@@ -4,7 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     include: [
-      'integration-tests/**/*.test.ts',
+      'tests/integration/**/*.test.ts',
     ],
     exclude: [
       'src/**/*.ts',
@@ -14,10 +14,10 @@ export default defineConfig({
     ],
     globals: true,
     typecheck: {
-      tsconfig: './integration-tests/tsconfig.json',
+      tsconfig: './tests/integration/tsconfig.json',
     },
     setupFiles: [
-      path.resolve(__dirname, './integration-tests/setup/index.ts'),
+      path.resolve(__dirname, './tests/setup/index.ts'),
     ],
   },
 });
