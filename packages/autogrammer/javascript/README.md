@@ -7,4 +7,4 @@
 <a href="https://codecov.io/gh/thekevinscott/autogrammer"><img alt="Code Coverage for Autogrammer" src="https://img.shields.io/codecov/c/github/thekevinscott/autogrammer" /></a>
 <a href="https://deepsource.io/gh/thekevinscott/autogrammer/?ref=repository-badge"><img alt="DeepSource issues for Autogrammer" src="https://deepsource.io/gh/thekevinscott/autogrammer.svg/?label=active+issues&show_trend=true" /></a>
 
-Autogrammer is a Python library for generating syntactically valid code from an LLM. It achieves this by leveraging grammars to restrain LLM tokens.
+Autogrammer is a Javascript library for generating syntactically valid code from an LLM. It achieves this by leveraging grammars to restrain LLM tokens.
