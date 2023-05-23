@@ -34,6 +34,7 @@
       "command": "eslint -c .eslintrc.cjs src --ext .ts",
       "dependencies": [
         "../../json2gbnf/javascript:build",
+        "../../sql2gbnf/javascript:build",
         "../../contort:build"
       ]
     },
@@ -41,6 +42,7 @@
       "command": "vitest --config ./vite.config.ts run",
       "dependencies": [
         "../../json2gbnf/javascript:build",
+        "../../sql2gbnf/javascript:build",
         "../../contort:build"
       ]
     },
@@ -84,6 +86,7 @@
       "command": "pnpm clean && pnpm build:umd && pnpm build:esm && pnpm copy",
       "dependencies": [
         "../../json2gbnf/javascript:build",
+        "../../sql2gbnf/javascript:build",
         "../../contort:build"
       ],
       "files": [
@@ -116,6 +119,7 @@
     "@mlc-ai/web-llm": "^0.2.35",
     "@xenova/transformers": "^2.17.1",
     "contort": "workspace:*",
+    "sql2gbnf": "workspace:*",
     "json2gbnf": "workspace:*",
     "mustache": "^4.2.0"
   },

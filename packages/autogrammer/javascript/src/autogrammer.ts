@@ -15,6 +15,7 @@ import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
 import JSON2GBNF, { JSONSchema, } from 'json2gbnf';
+import SQL2GBNF from 'sql2gbnf';
 // import * as webllm from "@mlc-ai/web-llm";
 
 export class Autogrammer {
@@ -40,7 +41,7 @@ export class Autogrammer {
       this.language = language;
     }
     if (model) {
-      this.contortionist = model;
+      this.model = model;
     }
   }
 
@@ -60,13 +61,13 @@ export class Autogrammer {
     this.#language = language;
   }
 
-  set contortionist(model: ModelDefinition<ModelProtocol>) {
+  set model(model: ModelDefinition<ModelProtocol>) {
     this.#contortionist = new Contortionist({
       model,
     });
   }
 
-  get contortionist(): Contortionist<ModelProtocol> {
+  get model(): Contortionist<ModelProtocol> {
     if (!this.#contortionist) {
       throw new Error('No model');
       // const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
@@ -84,18 +85,22 @@ export class Autogrammer {
   public async execute(
     prompt: string,
     {
-      languageOptions,
+      // languageOptions,
       modelOptions = {},
     }: {
       languageOptions?: JSONSchema,
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     },
   ): Promise<string> {
-    const contortionist = this.contortionist;
-    contortionist.grammar = JSON2GBNF(languageOptions, {
-      fixedOrder: false,
-      whitespace: 1,
+    const contortionist = this.model;
+    contortionist.grammar = SQL2GBNF({
+      whitespace: 'succinct',
+      case: 'upper',
     });
+    // contortionist.grammar = JSON2GBNF(languageOptions, {
+    //   fixedOrder: false,
+    //   whitespace: 1,
+    // });
     if (!contortionist.grammar) {
       throw new Error('no grammar');
     }

@@ -1,4 +1,4 @@
-import Autogrammer from "../../../packages/autogrammer/src/index.js";
+import Autogrammer from "../../../src/index.js";
 import '@vanillawc/wc-monaco-editor';
 
 interface MonacoEditor {

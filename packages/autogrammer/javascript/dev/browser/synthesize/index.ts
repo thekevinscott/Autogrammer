@@ -9,7 +9,7 @@ import * as webllm from "@mlc-ai/web-llm";
 
 import Autogrammer, {
   isSupportedLanguage,
-} from 'autogrammer';
+} from '../../../src/index.js';
 import '@vanillawc/wc-monaco-editor';
 import type {
   ModelDefinition,
@@ -34,7 +34,7 @@ const selectModel = document.getElementById('model-selector') as HTMLSelectEleme
 ].forEach((language) => {
   const option = document.createElement('option');
   option.value = language;
-  if (language === 'json') {
+  if (language === 'sql') {
     option.selected = true;
   }
   option.innerText = language;
@@ -80,7 +80,7 @@ Object.keys(models).reverse().forEach((model, i) => {
   const option = document.createElement('option');
   option.value = model;
   option.innerText = model;
-  if (i === 0) {
+  if (i === 7) {
     option.selected = true;
   }
   selectModel.appendChild(option);
@@ -100,12 +100,45 @@ const getModel = async (): Promise<ModelDefinition<ModelProtocol>> => {
 
 const autogrammer = new Autogrammer({});
 
-selectLanguage.onchange = () => {
-  languageOptionsEditor.setAttribute('value', selectLanguage.value);
-  autogrammer?.abort();
-};
+const selectLanguageCallback = () => {
+  // languageOptionsEditor.setAttribute('value', selectLanguage.value);
+  if (selectLanguage.value === 'sql') {
+    languageOptionsEditor.style.display = 'none';
+    input.value = `Write me a SQL query that joins users on products. 
 
-console.log(form);
+Users table has an id, name, and email.
+
+Products has user_id, product_id, and product name.
+
+Give me back product name, user name, and email.`;
+  } else {
+    languageOptionsEditor.style.display = 'block';
+    languageOptionsEditor.value = JSON.stringify({
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        number: { type: 'number', },
+        street_name: { type: 'string', },
+        street_type: { enum: ['Street', 'Avenue', 'Boulevard',], },
+      },
+      required: ['number', 'street_name', 'street_type',],
+    }, null, 2);
+    input.value = `Write me JSON that captures the following address. Ensure you include the zip code in the JSON output.
+
+    Address:
+          
+    \`\`\`
+    1600 Pennsylvania Avenue NW, Washington, DC 20500
+    \`\`\``;
+
+  }
+  // autogrammer?.abort();
+}
+selectLanguage.onchange = () => {
+  selectLanguageCallback();
+};
+selectLanguageCallback();
+
 form.onsubmit = async (e) => {
   e.preventDefault();
   await synthesize(input.value + "\n");
@@ -124,7 +157,8 @@ const synthesize = async (prompt: string) => {
     button.innerText = 'Abort';
     generating = true;
 
-    autogrammer.model = await getModel();
+    const model = await getModel();
+    autogrammer.model = model;
     const language = selectLanguage.value;
     if (isSupportedLanguage(language)) {
       autogrammer.language = language;
@@ -132,9 +166,9 @@ const synthesize = async (prompt: string) => {
 
     try {
 
-      const languageOptions = JSON.parse(languageOptionsEditor.value);
+      // const languageOptions = JSON.parse(languageOptionsEditor.value);
       await autogrammer.execute(prompt, {
-        languageOptions,
+        // languageOptions,
         modelOptions: {
           n,
 
@@ -153,14 +187,3 @@ const synthesize = async (prompt: string) => {
     console.log('done synthesizing!');
   }
 };
-
-languageOptionsEditor.value = JSON.stringify({
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    number: { type: 'number', },
-    street_name: { type: 'string', },
-    street_type: { enum: ['Street', 'Avenue', 'Boulevard',], },
-  },
-  required: ['number', 'street_name', 'street_type',],
-}, null, 2);

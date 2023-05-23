@@ -1,16 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>SQL: Autogrammer</title>
+  <title>SQL: Autogrammer Dev</title>
   <link rel="stylesheet" href="../global.css" />
   <style>
+    html, body, form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    form, textarea, pre  {
+      flex: 1;
+      gap: 1em;
+    }
+    select {
+      max-width: 200px;
+    }
+    textarea {
+      width: 100%;;
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    pre {
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 1em 0;
+      overflow-x: auto;
+    }
+    button[type="submit"] {
+      padding: 5px;
+      height: 40px;
+    }
+    wc-monaco-editor {
+      max-height: 50%;
+    }
   </style>
 </head>
 <body>
   <form id="form">
-    <textarea id="input" name="input">Select me the columns `foo` and `bar` from table `baz` where foo is true. Limit to the top 5 rows, order by bar</textarea>
-    <button id="submit" type="submit">Synthesize</button>
+    <textarea id="input" name="input">Write me JSON that captures the following address. Ensure you include the zip code in the JSON output.
+
+Address:
+      
+```
+1600 Pennsylvania Avenue NW, Washington, DC 20500
+```</textarea>
+    <div>
+    <select id="language-selector">
+      <option value=""> - </option>
+    </select>
+    <select id="model-selector">
+      <option value=""> - </option>
+    </select>
+
+    </div>
+    <wc-monaco-editor id="language-options"></wc-monaco-editor>
+
+    <button id="submit" type="submit">Generate</button>
   </form>
+  <hr />
+  <label>Output</label>
   <pre id="output">
   </pre>
   <script type="module" src="./index.ts"></script>
