@@ -3,16 +3,14 @@ import {
   test,
   expect,
 } from 'vitest';
-import { getProjection, getProjectionWithSpecificColumns } from './get-projection.js';
+import { getProjectionWithSpecificColumns } from './get-projection.js';
 import GBNF from "gbnf";
 import { getSelectQuery } from './get-select-query.js';
 import { getColumnNames } from './get-column-names.js';
 import { getOtherAggregators } from './get-other-aggregators.js';
 import { getCountAggregator } from './get-column-count-aggregator.js';
 import { getOverStatement } from './get-over-statement.js';
-import { getJoinClause } from './get-join-clause.js';
-import { getJoinCondition } from './get-join-condition.js';
-import { getEquijoinCondition } from './get-join-condition.js';
+import { getSelectList } from './get-select-list.js';
 
 describe('getSelectQuery', () => {
   const overStatement = getOverStatement({
@@ -72,34 +70,17 @@ describe('getSelectQuery', () => {
     otherAggregatorsRule: 'otherAggregatorsRule',
     countAggregatorRule: 'countAggregatorRule',
   });
-  // const equijoinCondition = getEquijoinCondition({
-  //   tableName: 'validName',
-  //   optionalRecommendedWhitespace: 'optws',
-  //   validColName: 'validName',
-  //   quote: '"\'"',
-  // });
-  // const joinCondition = getJoinCondition({
-  //   optionalRecommendedWhitespace: 'optws',
-  //   optionalNonRecommendedWhitespace: 'optws',
-  //   leftParen: '"("',
-  //   rightParen: '")"',
-  //   equijoinCondition: 'equijoinCondition',
-  //   whitespace: 'ws',
-  //   and: '"AND"',
-  //   or: '"OR"',
-  // })
-  // const joinClause = getJoinClause({
-  //   joinKey: '"JOIN"',
-  //   joinType: "",
-  //   on: '"ON"',
-  //   tableWithOptionalAlias: 'validName',
-  //   whitespace: 'ws',
-  //   joinCondition,
-  // })
   const grammar = getSelectQuery({
     distinct: '"DISTINCT"',
-    projection: getProjection({
-      projectionWithSpecificColumns: getProjectionWithSpecificColumns({
+    selectlist: getSelectList({
+      from: '"FROM"',
+      into: '"INTO"',
+      whitespace: 'ws',
+      validTableName: 'validName',
+      table: 'validName',
+      comma: '","',
+      optionalRecommendedWhitespace: 'optws',
+      projection: getProjectionWithSpecificColumns({
         overStatement: 'overstatement',
         optionalRecommendedWhitespace: 'optws',
         columnNames: 'columnNames',
@@ -109,12 +90,8 @@ describe('getSelectQuery', () => {
       }),
     }),
     select: '"SELECT"',
-    from: '"FROM"',
-    into: '"INTO"',
     whitespace: 'ws',
-    validTableName: 'validName',
 
-    selectTables: 'validName',
     whereClause: '"WHERECLAUSE"',
     orderByClause: '"ORDERBYCLAUSE"',
     limitClause: '"LIMITCLAUSE"',

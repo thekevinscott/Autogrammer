@@ -9,12 +9,6 @@ import { any, } from "../utils/any.js";
 import { rule, } from "./get-rule.js";
 import { opt, } from "./get-optional.js";
 
-export const getProjection = ({
-  projectionWithSpecificColumns,
-}: {
-  projectionWithSpecificColumns: string;
-}): string => any(projectionWithSpecificColumns, '"*"');
-
 export const getProjectionWithSpecificColumns = ({
   columnNames: possibleColumnNames,
   windowStatement,

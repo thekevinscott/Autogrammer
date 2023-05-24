@@ -5,15 +5,21 @@ import {
 import { parse, } from "./parse.js";
 import { GLOBAL_CONSTANTS, } from "./constants/constants.js";
 import { SchemaOpts, } from "./types.js";
+import { getDBML, } from "./get-dbml.js";
 
 export const ROOT_ID = 'sqltogbnf';
 
 export function SQL2GBNF({
   whitespace = 'default',
   case: caseKind = 'any',
+  schema,
+  schemaFormat,
 }: SchemaOpts = {}): string {
+  const database = getDBML({
+    schema,
+    schemaFormat,
+  });
   const parser = new GrammarBuilder({
-    // whitespace,
   });
 
   parse(
@@ -22,8 +28,8 @@ export function SQL2GBNF({
     {
       whitespace,
       case: caseKind,
-    }
-    // schema,
+    },
+    database,
   );
 
   return joinWith('\n',

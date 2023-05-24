@@ -4,7 +4,7 @@ import {
   expect,
 } from 'vitest';
 import GBNF from "gbnf";
-import { getProjection, getProjectionWithSpecificColumns } from './get-projection.js';
+import { getProjectionWithSpecificColumns } from './get-projection.js';
 import { getColumnNames } from './get-column-names.js';
 import { getOtherAggregators } from './get-other-aggregators.js';
 import { getCountAggregator } from './get-column-count-aggregator.js';
@@ -109,37 +109,6 @@ describe('getProjectionWithSpecificColumns', () => {
       `root ::= ${grammar}`,
       `overstatement ::= ${overStatement}`,
       `windowstatement ::= ${windowStatement}`,
-      `com ::= ","`,
-      `ws ::= (" ")+`,
-      `optws ::= (" ")*`,
-      `optnws ::= optws`,
-      `validName ::= ([a-zA-Z1-9_.])+`,
-    ].join('\n')
-    let parser = GBNF(fullGrammar);
-    parser = parser.add(initial.split('\\n').join('\n').split('\\t').join('\t'));
-    expect(parser.size).toBeGreaterThan(0);
-  });
-});
-
-describe('getProjection', () => {
-  const grammar = getProjection({
-    projectionWithSpecificColumns: getProjectionWithSpecificColumns({
-      overStatement: '"over"',
-      optionalRecommendedWhitespace: 'optws',
-      columnNames: '"col"',
-      windowStatement: '"rank"',
-      whitespace: 'ws',
-      asAlias: '"AS " validName',
-    }),
-  });
-
-  test.each([
-    "*",
-    "rank",
-    "col",
-  ])('it parses schema to grammar with input "%s"', (initial) => {
-    const fullGrammar = [
-      `root ::= ${grammar}`,
       `com ::= ","`,
       `ws ::= (" ")+`,
       `optws ::= (" ")*`,

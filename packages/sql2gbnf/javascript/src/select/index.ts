@@ -104,6 +104,7 @@ import {
   // QUOTE,
   VALID_NAME,
   VALID_FULL_NAME,
+  SELECT_LIST,
 } from "../gbnf-keys.js";
 import { getJoinClause, } from "./get-join-clause.js";
 import { getLimitClause, } from "./get-limit-clause.js";
@@ -127,13 +128,14 @@ import { getHavingClause, } from "./get-having-clause.js";
 import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
 import { getWhitespaceDefs, } from "./get-whitespace-def.js";
-import { CaseKind, WhitespaceKind, } from "../types.js";
+import type { CaseKind, Database, WhitespaceKind, } from "../types.js";
 import { getJoinCondition, } from "./get-join-condition.js";
 import { any, } from "../utils/any.js";
 import { getCountAggregator, } from "./get-column-count-aggregator.js";
 import { getOtherAggregators, } from "./get-other-aggregators.js";
 import { star, } from "./get-star.js";
 import { positiveIntegerDef, validNameDef, } from "../constants/grammar-definitions.js";
+import { getSelectList, } from "./get-select-list.js";
 
 export const select = (
   parser: GrammarBuilder,
@@ -144,7 +146,8 @@ export const select = (
   }: {
     whitespace: WhitespaceKind;
     case: CaseKind,
-  }
+  },
+  database: void | Database,
 ): string => {
   const validName = parser.addRule(validNameDef, VALID_NAME);
   const validFullName = parser.addRule(join(
@@ -220,8 +223,17 @@ export const select = (
   const columnNames = parser.addRule(getColumnNames({
     otherAggregatorsRule,
     countAggregatorRule,
+    // validName: database ? '{{COLUMN_NAME}}' : validFullName,
     validName: validFullName,
+
   }), COLUMN_NAMES);
+  const tableName = parser.addRule(getTableName({
+    validName: validFullName,
+    // validName: database ? '{{TABLE_NAME}}' : validFullName,
+    // validName: '("posts" | "users" | "comments")',
+    asAlias: asTableAlias,
+    whitespace: mandatoryWhitespace,
+  }), TABLE);
   const overStatement = parser.addRule(getOverStatement({
     over: KEYS[OVER],
     partition: KEYS[PARTITION],
@@ -267,7 +279,7 @@ export const select = (
     leftparen: LEFT_PAREN_KEY,
     rightparen: RIGHT_PAREN_KEY,
   }), WINDOW_STATEMENT);
-  const projectionWithSpecificColumns = parser.addRule(getProjectionWithSpecificColumns({
+  const projection = parser.addRule(getProjectionWithSpecificColumns({
     optionalRecommendedWhitespace: optionalRecommendedWhitespace,
     columnNames,
     overStatement,
@@ -275,18 +287,6 @@ export const select = (
     windowStatement,
     whitespace: mandatoryWhitespace,
   }), PROJECTION_WITH_SPECIFIC_COLUMNS);
-  const projection = parser.addRule(getProjection({
-    projectionWithSpecificColumns,
-  }), PROJECTION);
-  const tableName = parser.addRule(getTableName({
-    validName: validFullName,
-    asAlias: asTableAlias,
-    whitespace: mandatoryWhitespace,
-  }), TABLE);
-  const selectTables = parser.addRule(getTables({
-    optionalWhitespace: optionalRecommendedWhitespace,
-    table: tableName,
-  }), SELECT_TABLES);
   const anyValidStringValueInQuotes = parser.addRule('[^\'\\"]+', ANY_VALID_STRING_VALUE_IN_QUOTES);
   const stringWithSingleQuotesKey = parser.addRule(join(
     SINGLE_QUOTE_KEY,
@@ -303,12 +303,6 @@ export const select = (
     stringWithDoubleQuotesKey,
   )})`, STRING_WITH_QUOTES);
   const stringWildcard = stringWithQuotes;
-  // const valueKey = parser.addRule(any(
-  //   NUMBER,
-  //   NULL_KEY,
-  //   BOOLEAN,
-  //   stringWithQuotes,
-  // ), VALUE);
   const equalClause = parser.addRule(join(
     equalOps,
     optionalRecommendedWhitespace,
@@ -375,10 +369,7 @@ export const select = (
     ),
   ), BETWEEN_WHERE_CLAUSE);
   const whereClauseInner = parser.addRule(join(
-    // tableName,
     validFullName,
-    // '[a-zA-Z0-9.]*',
-    // '"T2.id"',
     any(
       rule(optionalRecommendedWhitespace, equalClause),
       rule(optionalRecommendedWhitespace, numericClause),
@@ -433,13 +424,6 @@ export const select = (
     rule(KEYS[RIGHT], mandatoryWhitespace),
     rule(fullOuter),
   ), JOIN_TYPE);
-  // const equijoinCondition = parser.addRule(getEquijoinCondition({
-  //   tableName,
-  //   optionalRecommendedWhitespace,
-  //   whereClauseInner,
-  //   validColName: validFullName,
-  //   quote,
-  // }), EQUIJOIN_CONDITION);
   const joinCondition = parser.addRule(getJoinCondition({
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
@@ -485,6 +469,17 @@ export const select = (
     boolean: BOOLEAN,
     whitespace: mandatoryWhitespace,
   }), HAVING_CLAUSE);
+  const selectlist = parser.addRule(getSelectList({
+    from: KEYS[FROM],
+    into: KEYS[INTO],
+    projection,
+    whitespace: mandatoryWhitespace,
+    validTableName: validFullName,
+    comma: COMMA_KEY,
+    table: tableName,
+    optionalRecommendedWhitespace,
+    database,
+  }), SELECT_LIST);
   const selectQuery = parser.addRule(getSelectQuery({
     distinct: KEYS[DISTINCT],
     joinClause,
@@ -492,14 +487,10 @@ export const select = (
     orderByClause,
     groupByClause,
     whereClause,
-    projection,
     havingClause,
     select: KEYS[SELECT],
-    from: KEYS[FROM],
-    selectTables,
     whitespace: mandatoryWhitespace,
-    validTableName: validFullName,
-    into: KEYS[INTO],
+    selectlist,
   }), SELECT_QUERY);
   parser.addRule(getSelectQueryWithUnion({
     whitespace: mandatoryWhitespace,

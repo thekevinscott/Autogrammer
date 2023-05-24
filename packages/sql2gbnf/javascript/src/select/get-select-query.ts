@@ -8,10 +8,7 @@ import { any, } from "../utils/any.js";
 
 export const getSelectQuery = ({
   distinct,
-  projection,
   select,
-  from,
-  selectTables,
   whereClause,
   orderByClause,
   limitClause,
@@ -19,14 +16,10 @@ export const getSelectQuery = ({
   groupByClause,
   havingClause,
   whitespace: ws,
-  validTableName,
-  into,
+  selectlist,
 }: {
   distinct: string;
-  projection: string;
   select: string;
-  from: string;
-  selectTables: string,
   whereClause: string;
   orderByClause: string;
   limitClause: string;
@@ -34,29 +27,13 @@ export const getSelectQuery = ({
   groupByClause: string;
   havingClause: string;
   whitespace: string;
-  validTableName: string;
-  into: string;
+  selectlist: string;
 }) => join(
   select,
   opt(ws, distinct),
   ws,
-  any(
-    rule(
-      projection,
-      ws,
-      opt(into, ws, validTableName, ws),
-    ),
-    rule(
-      opt(into, ws, validTableName, ws),
-      projection,
-      ws,
-    ),
-  ),
 
-
-  from,
-  ws,
-  selectTables,
+  selectlist,
   star(ws, joinClause),
   opt(whereClause),
   opt(groupByClause),
