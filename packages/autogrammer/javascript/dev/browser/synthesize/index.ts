@@ -162,13 +162,17 @@ const synthesize = async (prompt: string) => {
     const language = selectLanguage.value;
     if (isSupportedLanguage(language)) {
       autogrammer.language = language;
+    } else {
+      throw new Error(`Unsupported language: ${language}`);
     }
+
+    console.log(autogrammer.language)
 
     try {
 
-      // const languageOptions = JSON.parse(languageOptionsEditor.value);
+      const schema = JSON.parse(languageOptionsEditor.value);
       await autogrammer.execute(prompt, {
-        // languageOptions,
+        languageOptions: { schema },
         modelOptions: {
           n,
 

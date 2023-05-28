@@ -1,6 +1,7 @@
 export { JSON2GBNF as default, } from './json2gbnf.js';
 
 export {
+  type SchemaOpts,
   type JSONSchema,
   type JSONSchemaArray,
   type JSONSchemaBoolean,

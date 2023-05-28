@@ -10,10 +10,9 @@ export type CaseKind = 'lower' | 'upper' | 'any';
 export interface BaseSchemaOpts extends Omit<_SchemaOpts, 'whitespace'> {
   whitespace?: WhitespaceKind;
   case?: CaseKind;
-  schema?: string;
-  schemaFormat?: Parameters<typeof importer.import>[1];
+  // schema?: string;
+  // schemaFormat?: Parameters<typeof importer.import>[1];
 }
-
 
 export interface DBMLStringSchema {
   schema: string;
@@ -27,4 +26,4 @@ export interface DBMLDatabaseSchema {
 }
 
 export type DBMLSchemaOpts = DBMLStringSchema | DBMLDatabaseSchema | {};
-export type SchemaOpts = BaseSchemaOpts & DBMLSchemaOpts;
+export type SchemaOpts = BaseSchemaOpts;

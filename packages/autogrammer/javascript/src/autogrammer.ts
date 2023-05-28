@@ -5,6 +5,7 @@ import Contortionist, {
 } from 'contort';
 import type {
   ConstructorOptions,
+  LanguageOptions,
   SupportedLanguage,
 } from './types.js';
 import { buildPrompt, } from './utils.js';
@@ -14,8 +15,11 @@ import {
 import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
-import { JSONSchema, } from 'json2gbnf';
-import SQL2GBNF from 'sql2gbnf';
+import {
+  JSONSchema,
+  SchemaOpts as JSONSchemaOpts,
+} from 'json2gbnf';
+import { getGrammar, } from './get-grammar.js';
 // import * as webllm from "@mlc-ai/web-llm";
 
 export class Autogrammer {
@@ -48,9 +52,6 @@ export class Autogrammer {
   get language(): SupportedLanguage {
     if (this.#language === undefined) {
       throw new Error('Language not set.');
-    }
-    if (!isSupportedLanguage(this.#language)) {
-      throw new Error(`Unsupported language: ${this.#language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
     }
     return this.#language;
   }
@@ -85,25 +86,15 @@ export class Autogrammer {
   public async execute(
     prompt: string,
     {
-      // languageOptions,
+      languageOptions = {},
       modelOptions = {},
     }: {
-      languageOptions?: JSONSchema,
+      languageOptions?: LanguageOptions<SupportedLanguage>;
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     } = {},
   ): Promise<string> {
     const contortionist = this.model;
-    contortionist.grammar = SQL2GBNF({
-      whitespace: 'succinct',
-      case: 'upper',
-    });
-    // contortionist.grammar = JSON2GBNF(languageOptions, {
-    //   fixedOrder: false,
-    //   whitespace: 1,
-    // });
-    if (!contortionist.grammar) {
-      throw new Error('no grammar');
-    }
+    contortionist.grammar = getGrammar(this.language, languageOptions);
     const builtPrompt = buildPrompt(prompt, this.language);
     return await contortionist.execute(builtPrompt, {
       ...modelOptions,
