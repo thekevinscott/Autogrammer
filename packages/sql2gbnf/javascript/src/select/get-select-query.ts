@@ -1,8 +1,8 @@
 import {
   join,
 } from "gbnf";
-import { opt, } from "./get-optional.js";
-import { star, } from "./get-star.js";
+import { opt, } from "../utils/get-optional.js";
+import { star, } from "../utils/get-star.js";
 
 export const getSelectQuery = ({
   distinct,

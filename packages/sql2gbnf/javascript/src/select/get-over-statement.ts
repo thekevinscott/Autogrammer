@@ -1,9 +1,9 @@
 import {
   join,
 } from "gbnf";
-import { rule, } from "./get-rule.js";
-import { star, } from "./get-star.js";
-import { opt, } from "./get-optional.js";
+import { rule, } from "../utils/get-rule.js";
+import { star, } from "../utils/get-star.js";
+import { opt, } from "../utils/get-optional.js";
 import { any, } from "../utils/any.js";
 
 export const getOverStatement = ({

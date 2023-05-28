@@ -4,7 +4,7 @@ import {
 import {
   COMMA_KEY,
 } from "../constants/grammar-keys.js";
-import { star, } from "./get-star.js";
+import { star, } from "../utils/get-star.js";
 
 export const getTables = ({
   table,

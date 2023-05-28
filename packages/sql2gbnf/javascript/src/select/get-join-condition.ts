@@ -1,5 +1,5 @@
-import { rule, } from "./get-rule.js";
-import { star, } from "./get-star.js";
+import { rule, } from "../utils/get-rule.js";
+import { star, } from "../utils/get-star.js";
 import { any, } from "../utils/any.js";
 
 export const getJoinCondition = ({

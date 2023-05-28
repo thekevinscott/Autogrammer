@@ -53,6 +53,10 @@ import {
   LAG,
   OFFSET,
   INTO,
+  INSERT,
+  DELETE,
+  UPDATE,
+  VALUES,
 } from "../gbnf-keys.js";
 import { buildCase, } from "./build-case.js";
 import { CaseKind, } from "../types.js";
@@ -80,6 +84,10 @@ export const addCasedWords = (parser: GrammarBuilder, caseKind: CaseKind): Cased
   [FOLLOWING, ['following',],],
   [RANGE_BETWEEN, ['range between',],],
   [SELECT, ['select',],],
+  [INSERT, ['insert',],],
+  [UPDATE, ['update',],],
+  [DELETE, ['delete',],],
+  [VALUES, ['values',],],
   [FROM, ['from',],],
   [INTO, ['into',],],
   [WHERE, ['where',],],

@@ -1,29 +1,24 @@
 import {
   join,
 } from "gbnf";
-import {
-  COMMA_KEY,
-} from "../constants/grammar-keys.js";
-import { star, } from "./get-star.js";
+import { star, } from "../utils/get-star.js";
 import { any, } from "../utils/any.js";
-import { rule, } from "./get-rule.js";
-import { opt, } from "./get-optional.js";
+import { rule, } from "../utils/get-rule.js";
+import { opt, } from "../utils/get-optional.js";
 
-export const getProjectionWithSpecificColumns = ({
+export const getPossibleColumnsWithAlias = ({
   columnNames: possibleColumnNames,
   windowStatement,
-  optionalRecommendedWhitespace,
   asAlias,
   whitespace,
   overStatement,
 }: {
   asAlias: string;
-  optionalRecommendedWhitespace: string,
   columnNames: string
   windowStatement: string;
   whitespace: string;
   overStatement: string;
-}): string => {
+}) => {
   const possibleColumnsWithOver = any(
     possibleColumnNames,
     windowStatement,
@@ -33,19 +28,28 @@ export const getProjectionWithSpecificColumns = ({
       overStatement,
     ),
   );
-  const possibleColumnsWithAlias = any(
+  return any(
     possibleColumnsWithOver,
     rule(
       possibleColumnsWithOver,
       opt(whitespace, asAlias),
     ),
   );
-  return join(
-    possibleColumnsWithAlias,
-    star(
-      COMMA_KEY,
-      optionalRecommendedWhitespace,
-      possibleColumnsWithAlias,
-    ),
-  );
 };
+
+export const getProjectionWithSpecificColumns = ({
+  optionalRecommendedWhitespace,
+  comma,
+  possibleColsWithAlias,
+}: {
+  possibleColsWithAlias: string;
+  optionalRecommendedWhitespace: string,
+  comma: string;
+}): string => join(
+  possibleColsWithAlias,
+  star(
+    comma,
+    optionalRecommendedWhitespace,
+    possibleColsWithAlias,
+  ),
+);

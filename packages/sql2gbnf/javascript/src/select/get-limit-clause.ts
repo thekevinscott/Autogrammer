@@ -1,7 +1,7 @@
 import {
   join,
 } from "gbnf";
-import { opt, } from "./get-optional.js";
+import { opt, } from "../utils/get-optional.js";
 
 export const getLimitClause = ({
   limit,

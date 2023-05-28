@@ -1,7 +1,7 @@
 import { join, } from "gbnf";
 import { CaseKind, } from "../types.js";
 import { any, } from "./any.js";
-import { rule, } from "../select/get-rule.js";
+import { rule, } from "./get-rule.js";
 
 const isAlpha = (char: string) => /^[a-zA-Z]$/.test(char);
 

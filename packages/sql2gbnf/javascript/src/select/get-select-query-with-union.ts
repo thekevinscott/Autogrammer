@@ -1,6 +1,6 @@
 import { join, } from "gbnf";
-import { star, } from "./get-star.js";
-import { opt, } from "./get-optional.js";
+import { star, } from "../utils/get-star.js";
+import { opt, } from "../utils/get-optional.js";
 
 export const getSelectQueryWithUnion = ({
   union,

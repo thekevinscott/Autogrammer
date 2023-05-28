@@ -2,12 +2,10 @@ import {
   BOOLEAN,
   COMMA_KEY,
   NUMBER,
-  DOUBLE_QUOTE_KEY,
   SINGLE_QUOTE_KEY,
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
   POSITIVE_INTEGER_KEY as POSITIVE_INTEGER,
-  SEMI_KEY,
 } from "../constants/grammar-keys.js";
 import {
   AGGREGATORS,
@@ -43,13 +41,9 @@ import {
   OR_MORE,
   OUTER,
   RIGHT,
-  // PROJECTION,
   SELECT,
   COLUMN_NAMES,
   SELECT_QUERY,
-  STRING_WITH_DOUBLE_QUOTES,
-  STRING_WITH_QUOTES,
-  STRING_WITH_SINGLE_QUOTES,
   STRING_OPS,
   TABLE,
   WHERE,
@@ -58,14 +52,11 @@ import {
   WILDCARD_WHERE_CLAUSE,
   AS_COL_ALIAS,
   AS_TABLE_ALIAS,
-  // SELECT_TABLES,
-  SELECT_QUERY_WITH_UNION,
   UNION,
   ALL,
   ON,
   GROUP,
   GROUP_CLAUSE,
-  ANY_VALID_STRING_VALUE_IN_QUOTES,
   HAVING,
   ARITHMETIC_OPS,
   COUNT_AGGREGATOR,
@@ -101,17 +92,18 @@ import {
   PROJECTION_WITH_SPECIFIC_COLUMNS,
   COUNT_AGGREGATOR_RULE,
   OTHER_AGGREGATORS_RULE,
-  // QUOTE,
-  VALID_NAME,
-  VALID_FULL_NAME,
   SELECT_LIST,
+  POSSIBLE_COLUMNS_WITH_ALIAS,
 } from "../gbnf-keys.js";
 import { getJoinClause, } from "./get-join-clause.js";
 import { getLimitClause, } from "./get-limit-clause.js";
 import { getOrderByClause, } from "./get-order-by-clause.js";
 import { getColumnNames, } from "./get-column-names.js";
 import { getSelectQuery, } from "./get-select-query.js";
-import { getProjectionWithSpecificColumns, } from "./get-projection.js";
+import {
+  getPossibleColumnsWithAlias,
+  getProjectionWithSpecificColumns,
+} from "./get-projection.js";
 import { getTableName, } from "./get-table-name.js";
 import { getWhereClause, } from "./get-where-clause.js";
 import { buildCase, } from "../utils/build-case.js";
@@ -119,49 +111,52 @@ import {
   GrammarBuilder,
   join,
 } from "gbnf";
-// import { getTables, } from "./get-tables.js";
-import { rule, } from "./get-rule.js";
-import { opt, } from "./get-optional.js";
+import { rule, } from "../utils/get-rule.js";
+import { opt, } from "../utils/get-optional.js";
 import { getSelectQueryWithUnion, } from "./get-select-query-with-union.js";
 import { getGroupByClause, } from "./get-group-by-clause.js";
 import { getHavingClause, } from "./get-having-clause.js";
 import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
-import { getWhitespaceDefs, } from "./get-whitespace-def.js";
 import type { CaseKind, Database, WhitespaceKind, } from "../types.js";
 import { getJoinCondition, } from "./get-join-condition.js";
 import { any, } from "../utils/any.js";
 import { getCountAggregator, } from "./get-column-count-aggregator.js";
 import { getOtherAggregators, } from "./get-other-aggregators.js";
-import { star, } from "./get-star.js";
-import { positiveIntegerDef, validNameDef, } from "../constants/grammar-definitions.js";
+import {
+  positiveIntegerDef,
+} from "../constants/grammar-definitions.js";
 import { getSelectList, } from "./get-select-list.js";
+import { star, } from "../utils/get-star.js";
 
 export const select = (
   parser: GrammarBuilder,
   KEYS: Record<string, string>,
   {
-    whitespace: whitespaceKind,
     case: caseKind,
   }: {
     whitespace: WhitespaceKind;
     case: CaseKind,
   },
   database: void | Database,
-): string => {
-  const validName = parser.addRule(validNameDef, VALID_NAME);
-  const validFullName = parser.addRule(join(
-    validName,
-    star(
-      '"."',
-      validName,
-    ),
-  ), VALID_FULL_NAME);
-  const {
+  {
+    stringWithQuotes,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
-    whitespace: mandatoryWhitespace,
-  } = getWhitespaceDefs(parser, whitespaceKind);
+    mandatoryWhitespace,
+    validFullName,
+    withUnion = true,
+    singleColumn = false,
+  }: {
+    stringWithQuotes: string;
+    optionalRecommendedWhitespace: string;
+    optionalNonRecommendedWhitespace: string;
+    mandatoryWhitespace: string;
+    validFullName: string;
+    withUnion?: boolean;
+    singleColumn?: boolean;
+  }
+): string => {
   // const quote = parser.addRule(any(SINGLE_QUOTE_KEY, DOUBLE_QUOTE_KEY), QUOTE);
   const equalOps = parser.addRule(any(
     `"="`,
@@ -279,35 +274,12 @@ export const select = (
     leftparen: LEFT_PAREN_KEY,
     rightparen: RIGHT_PAREN_KEY,
   }), WINDOW_STATEMENT);
-  const projection = parser.addRule(getProjectionWithSpecificColumns({
-    optionalRecommendedWhitespace: optionalRecommendedWhitespace,
-    columnNames,
-    overStatement,
-    asAlias: asColAlias,
-    windowStatement,
-    whitespace: mandatoryWhitespace,
-  }), PROJECTION_WITH_SPECIFIC_COLUMNS);
-  const anyValidStringValueInQuotes = parser.addRule('[^\'\\"]+', ANY_VALID_STRING_VALUE_IN_QUOTES);
-  const stringWithSingleQuotesKey = parser.addRule(join(
-    SINGLE_QUOTE_KEY,
-    anyValidStringValueInQuotes,
-    SINGLE_QUOTE_KEY,
-  ), STRING_WITH_SINGLE_QUOTES);
-  const stringWithDoubleQuotesKey = parser.addRule(join(
-    DOUBLE_QUOTE_KEY,
-    anyValidStringValueInQuotes,
-    DOUBLE_QUOTE_KEY,
-  ), STRING_WITH_DOUBLE_QUOTES);
-  const stringWithQuotes = parser.addRule(`(${any(
-    stringWithSingleQuotesKey,
-    stringWithDoubleQuotesKey,
-  )})`, STRING_WITH_QUOTES);
+
   const stringWildcard = stringWithQuotes;
   const equalClause = parser.addRule(join(
     equalOps,
     optionalRecommendedWhitespace,
     any(validFullName, positiveIntegerDef, stringWithQuotes),
-    // valueKey,
   ),
     ANY_WHERE_CLAUSE
   );
@@ -344,7 +316,11 @@ export const select = (
     LEFT_PAREN_KEY,
     optionalNonRecommendedWhitespace,
     stringWithQuotes,
-    `${rule(COMMA_KEY, optionalRecommendedWhitespace, stringWithQuotes)}*`,
+    star(
+      COMMA_KEY,
+      optionalRecommendedWhitespace,
+      stringWithQuotes,
+    ),
     optionalNonRecommendedWhitespace,
     RIGHT_PAREN_KEY,
   ), IN_WHERE_CLAUSE);
@@ -469,7 +445,23 @@ export const select = (
     boolean: BOOLEAN,
     whitespace: mandatoryWhitespace,
   }), HAVING_CLAUSE);
-  const selectlist = parser.addRule(getSelectList({
+
+  const possibleColsWithAlias = parser.addRule(getPossibleColumnsWithAlias({
+    columnNames,
+    overStatement,
+    asAlias: asColAlias,
+    windowStatement,
+    whitespace: mandatoryWhitespace,
+  }), POSSIBLE_COLUMNS_WITH_ALIAS);
+
+  const projection = singleColumn && false ? possibleColsWithAlias : rule(getProjectionWithSpecificColumns({
+    possibleColsWithAlias,
+    comma: COMMA_KEY,
+    optionalRecommendedWhitespace: optionalRecommendedWhitespace,
+  }));
+
+
+  const selectlist = rule(getSelectList({
     from: KEYS[FROM],
     into: KEYS[INTO],
     projection,
@@ -479,8 +471,9 @@ export const select = (
     table: tableName,
     optionalRecommendedWhitespace,
     database,
-  }), SELECT_LIST);
-  const selectQuery = parser.addRule(getSelectQuery({
+  }));
+
+  const selectQuery = rule(getSelectQuery({
     distinct: KEYS[DISTINCT],
     joinClause,
     limitClause,
@@ -491,15 +484,15 @@ export const select = (
     select: KEYS[SELECT],
     whitespace: mandatoryWhitespace,
     selectlist,
-  }), SELECT_QUERY);
-  parser.addRule(getSelectQueryWithUnion({
-    whitespace: mandatoryWhitespace,
-    selectQuery,
-    union: KEYS[UNION],
-    all: KEYS[ALL],
-  }), SELECT_QUERY_WITH_UNION);
-  return join(SELECT_QUERY_WITH_UNION,
-    opt(opt(mandatoryWhitespace), SEMI_KEY),
-  );
+  }));
+  if (withUnion) {
+    return getSelectQueryWithUnion({
+      whitespace: mandatoryWhitespace,
+      selectQuery,
+      union: KEYS[UNION],
+      all: KEYS[ALL],
+    });
+  }
+  return selectQuery;
 };
 

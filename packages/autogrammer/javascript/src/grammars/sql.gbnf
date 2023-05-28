@@ -2,7 +2,7 @@ root ::= sql
 
 sql ::= query | statement
 
-statement ::= "ddlstatement" | "dmlstatement"
+statement ::= "ddl_statement" | "dml_statement"
 
 query ::= selectquery | insertquery | updatequery | deletequery
 

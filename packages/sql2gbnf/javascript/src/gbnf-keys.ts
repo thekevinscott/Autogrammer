@@ -1,4 +1,7 @@
 export const SELECT = 'select';
+export const INSERT = 'insert';
+export const UPDATE = 'update';
+export const DELETE = 'delete';
 export const FROM = 'from';
 export const WHERE = 'where';
 export const ORDER = 'order';
@@ -100,3 +103,6 @@ export const VALID_NAME = 'validname';
 export const VALID_FULL_NAME = 'validfullname';
 export const AS_COL_ALIAS = 'ascolalias';
 export const AS_TABLE_ALIAS = 'astablealias';
+export const VALUES = 'values';
+export const INSERT_RULE = 'insertrule';
+export const POSSIBLE_COLUMNS_WITH_ALIAS = 'possiblecolswithalias';

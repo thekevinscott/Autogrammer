@@ -1,10 +1,10 @@
 import {
   join,
 } from "gbnf";
-import { opt, } from "./get-optional.js";
-import { rule, } from "./get-rule.js";
+import { opt, } from "../utils/get-optional.js";
+import { rule, } from "../utils/get-rule.js";
 import { any, } from "../utils/any.js";
-import { star, } from "./get-star.js";
+import { star, } from "../utils/get-star.js";
 import type { Database, } from "../types.js";
 
 export const getSelectList = ({
