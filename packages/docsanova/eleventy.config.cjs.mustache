@@ -68,7 +68,7 @@ const codeEditor = {
     if (hasTemplateFormat(options.templateFormats, "md")) {
       eleventyConfig.addTransform("code-editor", function (content, outputPath) {
         return content.replace(new RegExp('<pre class="language-javascript"><code class="language-javascript">(.*?)</code></pre>', 'gs'), (match, contents, code) => {
-          console.log(contents, code)
+          // console.log(contents, code)
           return `<code-editor language="javascript">${contents}</code-editor>`;
         })
         // replace(/<pre class="language-javascript"><code class="language-javascript">(.*?)pre/g, (match, language, code) => {
