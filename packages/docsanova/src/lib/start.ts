@@ -5,9 +5,12 @@ import {
 import chokidar from 'chokidar';
 import pkg from 'fs-extra';
 const {
+  readFileSync,
   existsSync,
   mkdirp,
   unlink,
+  realpath,
+  // symlink,
 } = pkg;
 import os from 'os';
 
@@ -17,16 +20,26 @@ export interface StartOpts extends Opts {
 
 import path from 'path';
 import * as url from 'url';
-import { TSWatcher, } from './utils/rollup.js';
+// import { RollupWatcher, } from './utils/rollup.js';
 import { Opts, } from './types.js';
 import { getCreateFile, } from './utils/get-create-file.js';
 import { getPromise, } from './utils/get-promise.js';
 import { isExcluded, } from './utils/is-excluded.js';
+import { TSCWatcher, } from './utils/tsc.js';
+import { symlink, } from 'fs';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ROOT = path.resolve(__dirname, "../../");
 const CONTENT = path.resolve(ROOT, "content");
 const JS = path.resolve(ROOT, "js");
+
+const getPackageJSON = (inputDir: string) => {
+  const contents = readFileSync(path.resolve(inputDir, 'package.json'), 'utf-8');
+  const packageJSON = JSON.parse(contents) as {
+    dependencies: Record<string, string>;
+  };
+  return packageJSON;
+};
 
 export const start = async ({
   port,
@@ -46,6 +59,8 @@ export const start = async ({
     mkdirp(tmpInput),
     mkdirp(tmpOutput),
   ]);
+
+  const { dependencies, } = getPackageJSON(inputDir);
 
   // For monitoring individual files
   const [ready, readyCallback,] = getPromise();
@@ -83,6 +98,25 @@ export const start = async ({
     });
   });
 
+  // // await unlink(path.resolve(tmpInput, '.node_modules'));
+  // symlink(path.resolve(inputDir, 'node_modules'), path.resolve(tmpInput, '.node_modules'), 'dir', (err) => {
+  //   if (err) {
+  //     console.error(err);
+  //   }
+  // });
+  await Promise.all(Object.keys(dependencies).filter(name => {
+    return !['docsanova',].includes(name);
+  }).map(async (name) => {
+    const src = await realpath(path.resolve(inputDir, 'node_modules', name));
+    const dest = path.resolve(tmpInput, 'node_modules', name);
+    await mkdirp(path.dirname(dest));
+    symlink(src, dest, 'dir', (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  }));
+
   // For monitoring directories
   [
     {
@@ -115,8 +149,22 @@ ${content}
       input: path.resolve(inputDir, '.js'),
       output: path.resolve(tmpInput, '.js'),
     },
-  ].forEach(({ input, output, transform, }) => {
-    chokidar.watch(input).on('all', (event, inputFilepath) => {
+    // ...Object.keys(dependencies).filter(name => {
+    //   return !['docsanova'].includes(name);
+    // }).map((dir) => ({
+    //   input: path.resolve(inputDir, `node_modules/${dir}`),
+    //   output: path.resolve(tmpInput, `.node_modules/${dir}`),
+    // })),
+  ].forEach(({ input, output, transform, }: { input: string; output: string; transform?: (content: string) => string; }) => {
+    chokidar.watch(input, {
+      ignorePermissionErrors: false,
+    }).on('all', (event, inputFilepath) => {
+      // if (
+      //   inputFilepath.includes('packages/autogrammer/docs/node_modules/autogrammer')
+      //   && !inputFilepath.includes('packages/autogrammer/docs/node_modules/autogrammer/node_modules')
+      // ) {
+      //   console.log(inputFilepath.slice(58), !isExcluded(inputFilepath));
+      // }
       if (!isExcluded(inputFilepath)) {
         // console.log('event', event, inputFilepath);
         if (event === 'add' || event === 'change') {
@@ -136,7 +184,7 @@ ${content}
   });
 
 
-  new TSWatcher(inputDir);
+  new TSCWatcher(inputDir);
 
   await ready;
   const elev = new Eleventy(tmpInput, tmpOutput, {

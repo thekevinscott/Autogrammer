@@ -82,7 +82,7 @@ export class Autogrammer {
   public async execute(
     prompt: string,
     {
-      languageOptions = {},
+      languageOptions,
       modelOptions = {},
     }: {
       languageOptions?: LanguageOptions<SupportedLanguage>;

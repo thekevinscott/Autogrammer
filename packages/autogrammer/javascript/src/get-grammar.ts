@@ -24,6 +24,5 @@ export function getGrammar<L extends SupportedLanguage>(
   language: L,
   languageOptions: LanguageOptions<L> = {},
 ): string {
-  console.log(languageOptions);
-  return GRAMMARS[language](languageOptions as unknown as LanguageOptions<L>);
+  return GRAMMARS[language](languageOptions as JSONLanguageOptions & SQLLanguageOptions);
 }

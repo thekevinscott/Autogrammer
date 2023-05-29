@@ -24,26 +24,28 @@
     "lint": "wireit",
     "test:unit": "wireit",
     "test": "wireit",
+    "build:contort": "wireit",
     "build": "wireit",
     "build:check": "wireit",
     "build:esm": "wireit",
     "build:umd": "wireit"
   },
   "wireit": {
+    "build:contort": {
+      "command": "cd ../../contort && pnpm build"
+    },
     "lint": {
-      "command": "eslint -c .eslintrc.cjs src --ext .ts",
+      "command": "pnpm build:contort && eslint -c .eslintrc.cjs src --ext .ts",
       "dependencies": [
         "../../json2gbnf/javascript:build",
-        "../../sql2gbnf/javascript:build",
-        "../../contort:build"
+        "../../sql2gbnf/javascript:build"
       ]
     },
     "test:unit": {
-      "command": "vitest --config ./vite.config.ts run",
+      "command": "pnpm build:contort && vitest --config ./vite.config.ts run",
       "dependencies": [
         "../../json2gbnf/javascript:build",
-        "../../sql2gbnf/javascript:build",
-        "../../contort:build"
+        "../../sql2gbnf/javascript:build"
       ]
     },
     "clean": {
@@ -83,11 +85,10 @@
       "command": "vite build -c vite.config.umd.ts"
     },
     "build": {
-      "command": "pnpm clean && pnpm build:umd && pnpm build:esm && pnpm copy",
+      "command": "pnpm clean && pnpm build:contort && pnpm build:umd && pnpm build:esm && pnpm copy",
       "dependencies": [
         "../../json2gbnf/javascript:build",
-        "../../sql2gbnf/javascript:build",
-        "../../contort:build"
+        "../../sql2gbnf/javascript:build"
       ],
       "files": [
         "./src/**/*.ts",

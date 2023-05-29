@@ -92,6 +92,9 @@
     },
     "build": {
       "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && pnpm copy",
+      "dependencies": [
+        "../../gbnf/javascript:build"
+      ],
       "files": [
         "./src/**/*.ts",
         "!./src/**/*.test.ts",

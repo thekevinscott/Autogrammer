@@ -1,20 +1,27 @@
-import { LitElement, PropertyValueMap, css, html } from 'lit';
-import 'playground-elements/playground-ide.js';
-import 'playground-elements/playground-project.js';
-import 'playground-elements/playground-file-editor.js';
-import 'playground-elements/playground-preview.js';
+import {
+  LitElement,
+  css,
+  html
+} from 'lit';
 import { Ref, createRef, ref } from 'lit/directives/ref.js';
-import { styleMap } from 'lit/directives/style-map.js';
-import { state } from 'lit/decorators.js';
-// import '@vanillawc/wc-codemirror';
+// import { styleMap } from 'lit/directives/style-map.js';
+import {
+  query,
+  state,
+} from 'lit/decorators.js';
+import '@vanillawc/wc-codemirror';
+// import '@vanillawc/wc-codemirror/theme/monokai.css';
+import '@vanillawc/wc-codemirror/mode/javascript/javascript.js';
+
+// import "https://cdn.jsdelivr.net/gh/vanillawc/wc-code@1.0.3/src/wc-code.js";
+// import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
+import { liveExecute } from './live-execute.js';
+// import type { WCCodeMirror } from '@vanillawc/wc-codemirror';
 // import * as webllm from "@mlc-ai/web-llm";
-// import {
-//   pipeline,
-//   env,
-// } from '@xenova/transformers';
+// console.log('pipeline', pipeline)
 // env.allowRemoteModels = true;
 // env.allowLocalModels = false;
-// import Autogrammer from 'autogrammer';
+// console.log('ab', Autogrammer)
 // const model = webllm.CreateEngine("phi-2-q4f32_1-MLC", {
 // const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
 // const model = webllm.CreateEngine("Llama-3-8B-Instruct-q4f32_1", {
@@ -41,14 +48,42 @@ export class CodeEditor extends LitElement {
       display: none;
     }
 
-    playground-file-editor {
-      border: 1px solid rgba(0,0,0,0.1);
-      border-bottom: none;
+    #container {
+      display: block;
+      position: relative;
     }
-    playground-preview {
-      height: 140px;
+
+    wc-codemirror {
       border: 1px solid rgba(0,0,0,0.1);
-      --playground-preview-toolbar-background: #eaeaea;
+      border-radius: 4px 4px 0 0;
+      overflow: hidden;
+      min-height: 100px;
+      max-height: 315px;
+      overflow: scroll;
+    }
+    #output {
+      border: 1px solid rgba(0,0,0,0.1);
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      overflow: hidden;
+      height: 140px;
+      background-color: rgba(0,0,0,0.03);
+      font-family: monospace;
+      position: relative;
+    }
+
+    button#run {
+      position: absolute;
+      right: 0;
+      margin-top: -40px;
+      height: 40px;
+      width: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      border: none;
+      cursor: pointer;
     }
   `;
 
@@ -57,9 +92,10 @@ export class CodeEditor extends LitElement {
     tag: TAG_NAME,
   };
 
-  ref: Ref<HTMLScriptElement> = createRef();
+  ref: Ref<WCCodeMirror> = createRef();
+  output: Ref<HTMLPreElement> = createRef();
 
-  get script(): HTMLScriptElement {
+  get script(): WCCodeMirror {
     const script = this.ref.value;
     if (!script) {
       throw new Error('CodeMirror not found');
@@ -67,11 +103,29 @@ export class CodeEditor extends LitElement {
     return script;
   }
 
+  // worker = new SharedWorker('/.js/components/code-editor/worker.js', {
+  //   type: 'module'
+  // });
+
+  // constructor() {
+  //   super();
+  //   this.worker.port.start();
+  //   this.worker.port.addEventListener('message', e => {
+  //     const data = JSON.parse(e.data);
+  //     if (data.type === 'log') {
+  //       console.log(...data.data);
+  //     } else if (data.type === 'result') {
+  //       console.log(data.data);
+  //     }
+  //   });
+  // }
+
+
   @state()
   lineNumbers = 5;
 
   set script(textContent: string) {
-    this.script.innerHTML = textContent;
+    this.script.value = textContent;
     // TODO: Why is a state update not triggering a re-render?
     this.lineNumbers = textContent.split('\n').length;
     this.requestUpdate();
@@ -83,50 +137,46 @@ export class CodeEditor extends LitElement {
     this.script = childNodes.map((node) => typeof node === 'string' ? node : node.textContent ? node.textContent : '').join('');
   }
 
-  render() {
+  handleSubmit = (e: Event) => {
+    e.preventDefault();
+    this.execute();
+  };
+
+  handleKeydown = (e: KeyboardEvent) => {
+    if (e.code === 'Enter' && e.metaKey) {
+      this.execute();
+
+    }
+  }
+
+  async execute() {
+    const output = this.output.value as HTMLPreElement;
+    const result = await liveExecute(this.script.value);
+    output.innerText = result;
+  }
+
+  protected render() {
     return html`
-      <playground-project id="code-editor">
-        <script type="sample/js" filename="index.js" ${ref(this.ref)}>
-        </script>
-        <script type="sample/js" filename="console.js" hidden>
-          // const origLog = console.log;
-          const output = document.getElementById('output');
-          console.log = (...msgs) => {
-            // origLog(...msgs);
-            for (const msg of msgs) {
-              output.innerText += msg;
-            }
-          };
-        </script>
-        <script type="sample/js" filename="env.js" hidden>
-          import {
-            pipeline,
-            env,
-          } from '@xenova/transformers';
-          env.allowRemoteModels = true;
-          env.allowLocalModels = false;
-        </script>
-        <script type="sample/html" filename="index.html" hidden>
-          <!doctype html>
-          <body>
-          <pre id="output"></pre>
-            <script type="module" src="./console.js">&lt;/script>
-            <script type="module" src="./env.js">&lt;/script>
-            <script type="module" src="./index.js">&lt;/script>
-          </body>
-        </script>
+    <div id="container" @keydown=${this.handleKeydown}>
+    <div id="codemirror-container">
 
-      </playground-project>
+      <wc-codemirror
+      mode="javascript"
+      theme="neo"
+        ${ref(this.ref)}
 
-      <playground-file-editor
-      style="${styleMap({ height: `${20 * this.lineNumbers + 10}px` })}"
-      project="code-editor"
-      filename="index.js"
-      lineNumbers
-      ></playground-file-editor>
+      >
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
 
-      <playground-preview project="code-editor"> </playground-preview>
-
+      </wc-codemirror>
+      </div>
+      <form @submit=${this.handleSubmit}>
+      <button id="run">Go(⌘+⏎)</button>
+      </form>
+      <div id="output"         ${ref(this.output)}>
+      </div>
+      </div>
       <slot @slotchange=${this.handleSlotchange}></slot>
     `;
 

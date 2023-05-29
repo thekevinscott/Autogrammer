@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type { SchemaOpts as _SchemaOpts, } from 'gbnf';
+import type { SchemaOpts as _SchemaOpts, } from 'gbnf/builder';
 
 export interface JSONSchemaObjectValueEnum {
   enum: (string | null)[];

@@ -328,8 +328,6 @@ describe('schema', () => {
   });
 
   test.each([
-    [null,],
-    [undefined,],
     [
       {
         "$schema": "https://json-schema.org/draft/2020-11/schema",

@@ -8,6 +8,9 @@ importers:
 
   packages/autogrammer/docs:
     dependencies:
+      '@lit/reactive-element':
+        specifier: ^2.0.4
+        version: 2.0.4
       '@mlc-ai/web-llm':
         specifier: ^0.2.35
         version: 0.2.35
@@ -20,24 +23,30 @@ importers:
       autogrammer:
         specifier: workspace:*
         version: link:../javascript
+      contort:
+        specifier: workspace:*
+        version: link:../../contort
       docsanova:
         specifier: workspace:*
         version: link:../../docsanova
-      esbuild:
-        specifier: ^0.20.2
-        version: 0.20.2
-      esbuild-wasm:
-        specifier: ^0.20.2
-        version: 0.20.2
+      gbnf:
+        specifier: workspace:*
+        version: link:../../gbnf/javascript
+      json2gbnf:
+        specifier: workspace:*
+        version: link:../../json2gbnf/javascript
       lit:
         specifier: ^3.1.3
         version: 3.1.3
-      playground-elements:
-        specifier: ^0.18.1
-        version: 0.18.1
-      wireit:
-        specifier: ^0.14.4
-        version: 0.14.4
+      lit-element:
+        specifier: ^4.0.5
+        version: 4.0.5
+      lit-html:
+        specifier: ^3.1.3
+        version: 3.1.3
+      sql2gbnf:
+        specifier: workspace:*
+        version: link:../../sql2gbnf/javascript
     devDependencies:
       tslib:
         specifier: ^2.6.2
@@ -45,6 +54,9 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
+      wireit:
+        specifier: ^0.14.4
+        version: 0.14.4
 
   packages/autogrammer/javascript:
     dependencies:
@@ -164,86 +176,6 @@ importers:
         version: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
       wireit:
         specifier: ^0.14.0
-        version: 0.14.4
-
-  packages/code-editor:
-    dependencies:
-      lit:
-        specifier: ^3.1.3
-        version: 3.1.3
-      playground-elements:
-        specifier: ^0.18.1
-        version: 0.18.1
-    devDependencies:
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.3.1
-        version: 7.8.0(@typescript-eslint/parser@7.8.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
-      '@vitest/coverage-istanbul':
-        specifier: ^1.4.0
-        version: 1.5.3(vitest@1.5.3(@types/node@20.12.7)(terser@5.31.0))
-      '@vitest/coverage-v8':
-        specifier: ^1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@20.12.7)(terser@5.31.0))
-      eslint:
-        specifier: ^8.57.0
-        version: 8.57.0
-      eslint-config-prettier:
-        specifier: ^9.1.0
-        version: 9.1.0(eslint@8.57.0)
-      path-exists-cli:
-        specifier: ^2.0.0
-        version: 2.0.0
-      rimraf:
-        specifier: ^5.0.5
-        version: 5.0.5
-      rollup:
-        specifier: ^4.12.1
-        version: 4.17.2
-      rollup-plugin-dts:
-        specifier: ^6.1.0
-        version: 6.1.0(rollup@4.17.2)(typescript@5.4.5)
-      rollup-plugin-esbuild:
-        specifier: ^6.1.1
-        version: 6.1.1(esbuild@0.20.2)(rollup@4.17.2)
-      rollup-plugin-string:
-        specifier: ^3.0.0
-        version: 3.0.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.4.5
-      vite:
-        specifier: ^5.1.5
-        version: 5.2.10(@types/node@20.12.7)(terser@5.31.0)
-      vite-plugin-dts:
-        specifier: ^3.7.3
-        version: 3.9.0(@types/node@20.12.7)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
-      vite-plugin-externalize-deps:
-        specifier: ^0.8.0
-        version: 0.8.0(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
-      vitest:
-        specifier: ^1.5.3
-        version: 1.5.3(@types/node@20.12.7)(terser@5.31.0)
-      wireit:
-        specifier: ^0.14.4
-        version: 0.14.4
-
-  packages/code-editor/dev/browser:
-    dependencies:
-      code-editor:
-        specifier: workspace:*
-        version: link:../..
-      lit:
-        specifier: ^3.1.3
-        version: 3.1.3
-    devDependencies:
-      vite:
-        specifier: ^5.1.4
-        version: 5.2.10(@types/node@20.12.7)(terser@5.31.0)
-      vite-plugin-node-polyfills:
-        specifier: ^0.21.0
-        version: 0.21.0(rollup@4.17.2)(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
-      wireit:
-        specifier: ^0.14.4
         version: 0.14.4
 
   packages/contort:
@@ -398,6 +330,9 @@ importers:
       '@11ty/eleventy-plugin-syntaxhighlight':
         specifier: ^5.0.0
         version: 5.0.0
+      chalk:
+        specifier: ^5.3.0
+        version: 5.3.0
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
@@ -1073,139 +1008,8 @@ packages:
   '@lit-labs/ssr-dom-shim@1.2.0':
     resolution: {integrity: sha512-yWJKmpGE6lUURKAaIltoPIE/wrbY3TEkqQt+X0m+7fQNnAv0keydnYvbiJFP1PnMhizmIWRWOG5KLhYyc/xl+g==}
 
-  '@lit/reactive-element@1.6.3':
-    resolution: {integrity: sha512-QuTgnG52Poic7uM1AN5yJ09QMe0O28e10XzSvWDz02TJiiKee4stsiownEIadWm8nYzyDAyT+gKzUoZmiWQtsQ==}
-
   '@lit/reactive-element@2.0.4':
     resolution: {integrity: sha512-GFn91inaUa2oHLak8awSIigYz0cU0Payr1rcFsrkf5OJ5eSPxElyZfKh0f2p9FsTiZWXQdWGJeXZICEfXXYSXQ==}
-
-  '@material/animation@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-GBuR4VmcTQW1D0lPXEosf5Giho72LLbyGIydWGtaEUtLJoive/D9kFkwTN4Fsyt9Kkl7hbhs35vrNe6QkAH4/Q==}
-
-  '@material/base@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-UJKbXwZtkrA3sfQDmj8Zbw1Q3Tqtl6KdfVFws95Yf7TCUgTFzbZI/FSx1w7dVugQPOEnIBuZnzqZam/MtHkx4w==}
-
-  '@material/density@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-Eh/vZ3vVyqtpylg5Ci33qlgtToS4H1/ppd450Ib3tcdISIoodgijYY0w4XsRvrnZgbI/h/1STFdLxdzS0UNuFw==}
-
-  '@material/dom@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-aR+rfncF6oi2ivdOlKSJI4UXwNzWV5rXM88MLDoSJF1D7lXxhAKhge+tMUBodWGV/q0+FnXLuVAa0WYTrKjo+A==}
-
-  '@material/elevation@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-3h+EkR588RMZ5TSNQ4UeXD1FOBnL3ABQix0DQIGwtNJCqSMoPndT/oJEFvwQbTkZNDbFIKN9p1Q7/KuFPVY8Pw==}
-
-  '@material/feature-targeting@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-fn7Af3PRyARtNeYqtjxXmE3Y/dCpnpQVWWys57MqiGR/nvc6qpgOfJ6rOdcu/MrOysOE/oebTUDmDnTmwpe9Hw==}
-
-  '@material/floating-label@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-gHZUTTVKnP+Zjz4l9IT/G89NPmypn5FlTGLWKKqXbuQphr37rsKFR3Y80SJxULRyMDnAdKSxuZwiXLFKQz9KlA==}
-
-  '@material/focus-ring@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-exPX5VrjQimipBwgcFDGRiEE783sOBgpkFui59A6i6iGvS2UrLHlYY2E65fyyyQnD1f/rv4Po1OOnCesE1kulg==}
-
-  '@material/line-ripple@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-k8f8uuDwnSqZZ98CzbYtQVtxlp1ryUup9nd2uobo3kiqQNlQfXdGkVjuCXcla0OPiKFizNn7dS6Kl/j6L09XUA==}
-
-  '@material/linear-progress@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-QqkDBcqX7TMt3zQn51LgS7K0y13rJ4ppMQL1f2uYBhDOov8nqndlaXw456KYE9RhU39JrLzVQlaAbU3eecVb/Q==}
-
-  '@material/list@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-mkMpltSKAYLBtFnTTCk/mQIDzwxF/VLh1gh59ehOtmRXt7FvTz83RoAa4tqe53hpVrbX4HoLDBu+vILhq/wkjw==}
-
-  '@material/menu-surface@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-IQWb/n15FpLnn+kHp0EqzLE+UoWSPumq3eze2QifiowvGb37bNFR9oSe7CaOzPMrHdkrZ5SBWnDU41wPZN5kOg==}
-
-  '@material/menu@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-MmYKVrMIqOtP3TN4vdrrnQrS8P81+tMaA6bKiT9V79R1U6+mKsBYTzaLtLbzyem5vF8O0q7bSwyPwhWPtJr75Q==}
-
-  '@material/mwc-base@0.27.0':
-    resolution: {integrity: sha512-oCWWtjbyQ52AaUbzINLGBKScIPyqhps2Y7c8t6Gu6fcFeDxhKXMV1Cqvtj/OMhtAt53XjHfD2XruWwYv3cYYUA==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-button@0.27.0':
-    resolution: {integrity: sha512-t5m2zfE93RNKHMjdsU67X6csFzuSG08VJKKvXVQ+BriGE3xBgzY5nZdmZXomFpaWjDENPAlyS4ppCFm6o+DILw==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-checkbox@0.27.0':
-    resolution: {integrity: sha512-EY0iYZLwo8qaqMwR5da4fdn0xI0BZNAvKTcwoubYWpDDHlGxDcqwvjp/40ChGo3Q/zv8/4/A0Qp7cwapI82EkA==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-floating-label@0.27.0':
-    resolution: {integrity: sha512-uLleloTxQ6dDShcZzqgqfC8otQY8DtGMO9HFQbAEncoFAWpAehcEonsuT/IUhMORN+c5un0P5WXwcZsInJb7og==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-icon-button@0.27.0':
-    resolution: {integrity: sha512-wReiPa1UkLaCSPtpkAs1OGKEBtvqPnz9kzuY+RvN5ZQnpo3Uh7n3plHV4y/stsUBfrWtBCcOgYnCdNRaR/r2nQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-icon@0.27.0':
-    resolution: {integrity: sha512-Sul44I37M9Ewynn0A9DjkEBrmll2VtNbth6Pxj7I1A/EAwEfaCrPvryyGqfIu1T2hTsRcaojzQx6QjF+B5QW9A==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-line-ripple@0.27.0':
-    resolution: {integrity: sha512-n9Xpt5g3RJEl9rvk14OP6dUNJUtsJA46beTQiep7ppO7IPVFLC1v/5sPpUzfNPUBsclSPxdBuNlCxsgcIYueUw==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-linear-progress@0.27.0':
-    resolution: {integrity: sha512-kpWVLHPb7RzHU70Dq9bl1lBv05S49rQkyfFoL3PU5tEZHozT8IPQjdBLqAqd7H10cfLVjO7oIB+mVmvnFV+UsQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-list@0.27.0':
-    resolution: {integrity: sha512-oAhNQsBuAOgF3ENOIY8PeWjXsl35HoYaUkl0ixBQk8jJP2HIEf+MdbS5688y/UXxFbSjr0m//LfwR5gauEashg==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-menu@0.27.0':
-    resolution: {integrity: sha512-K+L/t267ZGrlhjK/iSKUVZQKRMkWELArKVglfS5of93ALP4in0RGnj1sOG2u3IFI2F/mEZxRi+wr7HgNxpe0wA==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-notched-outline@0.27.0':
-    resolution: {integrity: sha512-IlqfQVaEd1RAHqhOG0Xk5JhTDgBe/P9og0pnACglK6bPE0vUhYKwibJiHcr4ACTPtGWHO9o92aktR+7AIEAKtQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-radio@0.27.0':
-    resolution: {integrity: sha512-+rSO9a373BgyMgQOM0Z8vVkuieobBylPJ8qpltytM+yGPj8+n+MtwRZyg+ry3WwEjYYDMP6GxZPHwLgWs6lMpQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-ripple@0.27.0':
-    resolution: {integrity: sha512-by0O8d8g3Rd96/sUB8hxy6MrDx1QTstqOsA64vqypWd526hMTBGRik08jTNap5sVIyrN9Vq17jb4NJLWQLnNHQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/mwc-textfield@0.27.0':
-    resolution: {integrity: sha512-4/OEeEVAWWQ1DzpjeMLYLsa9HMlifOPjAvi0681Yj1g/RYJs5ONZS80HZ8HOT+efAOlZDugshgM4gdNS3I0XFQ==}
-    deprecated: MWC beta is longer supported. Please upgrade to @material/web
-
-  '@material/notched-outline@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-3ByiPOC/wWQmFKfgJS98kb5/6v92n7uIfJ6v6sryKJlJCJn39qfpGcCM5RpRIws1RET1s1zBJT2JDwYeu/hM5A==}
-
-  '@material/progress-indicator@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-vW0oZK70QOpAarip95ueCQ/I3kBClcWjxsc0F0QjkqT76DOVXpjnZ4XoRRyq9eMpwLqlKLTecrsSNpmqwwF1Dg==}
-
-  '@material/radio@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-V/AgWEOuHFoh9d4Gq1rqBZnKSGtMLQNh23Bwrv0c1FhPqFvUpwt9jR3SVwhJk5gvQQWGy9p3iiGc9QCJ+0+P8Q==}
-
-  '@material/ripple@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-6g2G62vd8DsMuIUSXlRrzb98qkZ4o8ZREknNwNP2zaLQEOkJ//4j9HaqDt98/3LIjUTY9UIVFTQENiMmlwKHYQ==}
-
-  '@material/rtl@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-f08LT0HSa0WYU+4Jz/tbm1TQ9Fcf2k+H6dPPYv0J1sZmX6hMgCEmNiUdUFLQFvszoXx2XrRi1/hIFjbz2e69Yg==}
-
-  '@material/shape@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-RyjInLCNe+nI/ulKea0ZLHphXQDiDqYazS25SRn18g8Hoa5qGNaY5oOBncDXUYn3jm5oI5kFc9oif//kulkbjg==}
-
-  '@material/textfield@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-Pla9Tr94Is18o97E/mqHKdkR24rPES9atGm3BlXrNzyr5tu6+h++RBbxy7V6IExcfl0MX+v9Gyqz7sPZzFtwMA==}
-
-  '@material/theme@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-S06XAevDCDWMe+GgsEpITMS07imUidzadNaTbJsqssFajBLr53QWVZsG84BpjXKXoYvyEJvb0hX5U0lq6ip9UQ==}
-
-  '@material/tokens@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-myHFB7vac8zErA3qgkqmV+kpE+i9JEwc/6Yf0MOumDSpylJGw28QikpNC6eAVBK2EmPQTaFn20mqUxyud8dGqw==}
-
-  '@material/touch-target@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-d83e5vbqoLyL542yOTTp4TLVltddWiqbI/j1w/D9ipE30YKfe2EDN+CNJc32Zufh5IUfK41DsZdrN8fI9cL99A==}
-
-  '@material/typography@14.0.0-canary.53b3cad2f.0':
-    resolution: {integrity: sha512-9J0k2fq7uyHsRzRqJDJLGmg3YzRpfRPtFDVeUH/xBcYoqpZE7wYw5Mb7s/l8eP626EtR7HhXhSPjvRTLA6NIJg==}
 
   '@microsoft/api-extractor-model@7.28.13':
     resolution: {integrity: sha512-39v/JyldX4MS9uzHcdfmjjfS6cYGAoXV+io8B5a338pkHiSt+gy2eXQ0Q7cGFJ7quSa1VqqlMdlPrB6sLR/cAw==}
@@ -1459,9 +1263,6 @@ packages:
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
-  '@types/codemirror@5.60.15':
-    resolution: {integrity: sha512-dTOvwEQ+ouKJ/rE9LT1Ue2hmP6H1mZv5+CCnNWu2qtiOe2LQa9lCprEY20HxiDmV/Bxh+dXjywmy5aKvoGjULA==}
-
   '@types/commander@2.12.2':
     resolution: {integrity: sha512-0QEFiR8ljcHp9bAbWxecjVRuAMr16ivPiGOw6KFQBVrVd0RQIcM3xKdRisH2EDWgVWujiYtHwhSkSUoAAGzH7Q==}
 
@@ -1566,9 +1367,6 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
-
-  '@types/tern@0.23.9':
-    resolution: {integrity: sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==}
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
@@ -2115,9 +1913,6 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  comlink@4.3.1:
-    resolution: {integrity: sha512-+YbhUdNrpBZggBAHWcgQMLPLH1KDF3wJpeqrCKieWQ8RL7atmgsgTQko1XEBK6PsecfopWNntopJ+ByYG1lRaA==}
-
   commander@10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
@@ -2450,11 +2245,6 @@ packages:
     resolution: {integrity: sha512-MZ4iQ6JwHOBQjahnjwaC1ZtIBH+2ohjamzAO3oaHcXYup7qxjF2fixyH+Q71voWHeOkI2q/TnJao/KfXYIZWbw==}
     engines: {node: '>= 0.4'}
 
-  esbuild-wasm@0.20.2:
-    resolution: {integrity: sha512-7o6nmsEqlcXJXMNqnx5K+M4w4OPx7yTFXQHcJyeP3SkXb8p2T8N9E1ayK4vd/qDBepH6fuPoZwiFvZm8x5qv+w==}
-    engines: {node: '>=12'}
-    hasBin: true
-
   esbuild@0.20.2:
     resolution: {integrity: sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==}
     engines: {node: '>=12'}
@@ -2714,10 +2504,6 @@ packages:
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
-
-  fuse.js@6.6.2:
-    resolution: {integrity: sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==}
-    engines: {node: '>=10'}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -3236,20 +3022,11 @@ packages:
   list-to-array@1.1.0:
     resolution: {integrity: sha512-+dAZZ2mM+/m+vY9ezfoueVvrgnHIGi5FvgSymbIgJOFwiznWyA59mav95L+Mc6xPtL3s9gm5eNTlNtxJLbNM1g==}
 
-  lit-element@3.3.3:
-    resolution: {integrity: sha512-XbeRxmTHubXENkV4h8RIPyr8lXc+Ff28rkcQzw3G6up2xg5E8Zu1IgOWIwBLEQsu3cOVFqdYwiVi0hv0SlpqUA==}
-
   lit-element@4.0.5:
     resolution: {integrity: sha512-iTWskWZEtn9SyEf4aBG6rKT8GABZMrTWop1+jopsEOgEcugcXJGKuX5bEbkq9qfzY+XB4MAgCaSPwnNpdsNQ3Q==}
 
-  lit-html@2.8.0:
-    resolution: {integrity: sha512-o9t+MQM3P4y7M7yNzqAyjp7z+mQGa4NS4CxiyLqFPyFWyc4O+nodLrkrxSaCTrla6M5YOLaT3RpbbqjszB5g3Q==}
-
   lit-html@3.1.3:
     resolution: {integrity: sha512-FwIbqDD8O/8lM4vUZ4KvQZjPPNx7V1VhT7vmRB8RBAO0AU6wuTVdoXiu2CivVjEGdugvcbPNBLtPE1y0ifplHA==}
-
-  lit@2.8.0:
-    resolution: {integrity: sha512-4Sc3OFX9QHOJaHbmTMk28SYgVxLN3ePDjg7hofEft2zWlehFL3LiAuapWc4U/kYwMYJSh2hTCPZ6/LIC7ii0MA==}
 
   lit@3.1.3:
     resolution: {integrity: sha512-l4slfspEsnCcHVRTvaP7YnkTZEZggNFywLEIhQaGhYDczG+tu/vlgm/KaWIEjIp+ZyV20r2JnZctMb8LeLCG7Q==}
@@ -3735,9 +3512,6 @@ packages:
 
   platform@1.3.6:
     resolution: {integrity: sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==}
-
-  playground-elements@0.18.1:
-    resolution: {integrity: sha512-QCAK9oPZwI/+ZK9mWaS+JlyqTLD7npGZnTqYO0MnHPAkcgUUj6lcYtESy6WICxj0Jl6mBx4wLJFOfXAb6QxLNA==}
 
   playwright-core@1.43.1:
     resolution: {integrity: sha512-EI36Mto2Vrx6VF7rm708qSnesVQKbxEWvPrfA1IPY6HgczBplDx7ENtx+K2n4kJ41sLLkuGfmb0ZLSSXlDhqPg==}
@@ -4575,16 +4349,6 @@ packages:
   vm-browserify@1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
 
-  vscode-jsonrpc@8.2.0:
-    resolution: {integrity: sha512-C+r0eKJUIfiDIfwJhria30+TYWPtuHJXHtI7J0YlOmKAo7ogxP20T0zxB7HZQIFhIyvoBPwWskjxrvAtfjyZfA==}
-    engines: {node: '>=14.0.0'}
-
-  vscode-languageserver-protocol@3.17.5:
-    resolution: {integrity: sha512-mb1bvRJN8SVznADSGWM9u/b07H7Ecg0I3OgXDuLdn307rl/J3A9YD6/eYOssqhecL27hK1IPZAsaqh00i/Jljg==}
-
-  vscode-languageserver-types@3.17.5:
-    resolution: {integrity: sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg==}
-
   vue-template-compiler@2.7.16:
     resolution: {integrity: sha512-AYbUWAJHLGGQM7+cNTELw+KsOG9nl2CnSv467WobS5Cv9uk3wFcnr1Etsz2sEIHEZvw1U+o9mRlEO6QbZvUPGQ==}
 
@@ -5147,315 +4911,9 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.2.0': {}
 
-  '@lit/reactive-element@1.6.3':
-    dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.0
-
   '@lit/reactive-element@2.0.4':
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.2.0
-
-  '@material/animation@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      tslib: 2.6.2
-
-  '@material/base@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      tslib: 2.6.2
-
-  '@material/density@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      tslib: 2.6.2
-
-  '@material/dom@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/elevation@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/feature-targeting@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      tslib: 2.6.2
-
-  '@material/floating-label@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      '@material/typography': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/focus-ring@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-
-  '@material/line-ripple@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/linear-progress@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/progress-indicator': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/list@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/density': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/shape': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      '@material/typography': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/menu-surface@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/elevation': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/shape': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/menu@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/elevation': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/list': 14.0.0-canary.53b3cad2f.0
-      '@material/menu-surface': 14.0.0-canary.53b3cad2f.0
-      '@material/ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/mwc-base@0.27.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-button@0.27.0':
-    dependencies:
-      '@material/mwc-icon': 0.27.0
-      '@material/mwc-ripple': 0.27.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-checkbox@0.27.0':
-    dependencies:
-      '@material/mwc-base': 0.27.0
-      '@material/mwc-ripple': 0.27.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-floating-label@0.27.0':
-    dependencies:
-      '@material/floating-label': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-icon-button@0.27.0':
-    dependencies:
-      '@material/mwc-ripple': 0.27.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-icon@0.27.0':
-    dependencies:
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-line-ripple@0.27.0':
-    dependencies:
-      '@material/line-ripple': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-linear-progress@0.27.0':
-    dependencies:
-      '@material/linear-progress': 14.0.0-canary.53b3cad2f.0
-      '@material/mwc-base': 0.27.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-list@0.27.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/list': 14.0.0-canary.53b3cad2f.0
-      '@material/mwc-base': 0.27.0
-      '@material/mwc-checkbox': 0.27.0
-      '@material/mwc-radio': 0.27.0
-      '@material/mwc-ripple': 0.27.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-menu@0.27.0':
-    dependencies:
-      '@material/menu': 14.0.0-canary.53b3cad2f.0
-      '@material/menu-surface': 14.0.0-canary.53b3cad2f.0
-      '@material/mwc-base': 0.27.0
-      '@material/mwc-list': 0.27.0
-      '@material/shape': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-notched-outline@0.27.0':
-    dependencies:
-      '@material/mwc-base': 0.27.0
-      '@material/notched-outline': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-radio@0.27.0':
-    dependencies:
-      '@material/mwc-base': 0.27.0
-      '@material/mwc-ripple': 0.27.0
-      '@material/radio': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-ripple@0.27.0':
-    dependencies:
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/mwc-base': 0.27.0
-      '@material/ripple': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/mwc-textfield@0.27.0':
-    dependencies:
-      '@material/floating-label': 14.0.0-canary.53b3cad2f.0
-      '@material/line-ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/mwc-base': 0.27.0
-      '@material/mwc-floating-label': 0.27.0
-      '@material/mwc-line-ripple': 0.27.0
-      '@material/mwc-notched-outline': 0.27.0
-      '@material/textfield': 14.0.0-canary.53b3cad2f.0
-      lit: 2.8.0
-      tslib: 2.6.2
-
-  '@material/notched-outline@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/floating-label': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/shape': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/progress-indicator@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      tslib: 2.6.2
-
-  '@material/radio@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/density': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/focus-ring': 14.0.0-canary.53b3cad2f.0
-      '@material/ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      '@material/touch-target': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/ripple@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/rtl@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/shape@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/textfield@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/animation': 14.0.0-canary.53b3cad2f.0
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/density': 14.0.0-canary.53b3cad2f.0
-      '@material/dom': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/floating-label': 14.0.0-canary.53b3cad2f.0
-      '@material/line-ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/notched-outline': 14.0.0-canary.53b3cad2f.0
-      '@material/ripple': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      '@material/shape': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      '@material/tokens': 14.0.0-canary.53b3cad2f.0
-      '@material/typography': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/theme@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/tokens@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/elevation': 14.0.0-canary.53b3cad2f.0
-
-  '@material/touch-target@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/base': 14.0.0-canary.53b3cad2f.0
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/rtl': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
-
-  '@material/typography@14.0.0-canary.53b3cad2f.0':
-    dependencies:
-      '@material/feature-targeting': 14.0.0-canary.53b3cad2f.0
-      '@material/theme': 14.0.0-canary.53b3cad2f.0
-      tslib: 2.6.2
 
   '@microsoft/api-extractor-model@7.28.13(@types/node@20.12.7)':
     dependencies:
@@ -5691,10 +5149,6 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 20.12.7
 
-  '@types/codemirror@5.60.15':
-    dependencies:
-      '@types/tern': 0.23.9
-
   '@types/commander@2.12.2':
     dependencies:
       commander: 11.1.0
@@ -5814,10 +5268,6 @@ snapshots:
       source-map: 0.6.1
 
   '@types/stack-utils@2.0.3': {}
-
-  '@types/tern@0.23.9':
-    dependencies:
-      '@types/estree': 1.0.5
 
   '@types/trusted-types@2.0.7': {}
 
@@ -6524,8 +5974,6 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  comlink@4.3.1: {}
-
   commander@10.0.1: {}
 
   commander@11.1.0: {}
@@ -6878,8 +6326,6 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
 
-  esbuild-wasm@0.20.2: {}
-
   esbuild@0.20.2:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.20.2
@@ -7209,8 +6655,6 @@ snapshots:
   function-bind@1.1.2: {}
 
   functions-have-names@1.2.3: {}
-
-  fuse.js@6.6.2: {}
 
   gensync@1.0.0-beta.2: {}
 
@@ -7731,31 +7175,15 @@ snapshots:
 
   list-to-array@1.1.0: {}
 
-  lit-element@3.3.3:
-    dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.0
-      '@lit/reactive-element': 1.6.3
-      lit-html: 2.8.0
-
   lit-element@4.0.5:
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.2.0
       '@lit/reactive-element': 2.0.4
       lit-html: 3.1.3
 
-  lit-html@2.8.0:
-    dependencies:
-      '@types/trusted-types': 2.0.7
-
   lit-html@3.1.3:
     dependencies:
       '@types/trusted-types': 2.0.7
-
-  lit@2.8.0:
-    dependencies:
-      '@lit/reactive-element': 1.6.3
-      lit-element: 3.3.3
-      lit-html: 2.8.0
 
   lit@3.1.3:
     dependencies:
@@ -8254,21 +7682,6 @@ snapshots:
       pathe: 1.1.2
 
   platform@1.3.6: {}
-
-  playground-elements@0.18.1:
-    dependencies:
-      '@material/mwc-button': 0.27.0
-      '@material/mwc-icon-button': 0.27.0
-      '@material/mwc-linear-progress': 0.27.0
-      '@material/mwc-list': 0.27.0
-      '@material/mwc-menu': 0.27.0
-      '@material/mwc-textfield': 0.27.0
-      '@types/codemirror': 5.60.15
-      comlink: 4.3.1
-      fuse.js: 6.6.2
-      lit: 2.8.0
-      tslib: 2.6.2
-      vscode-languageserver-protocol: 3.17.5
 
   playwright-core@1.43.1: {}
 
@@ -9234,15 +8647,6 @@ snapshots:
       - terser
 
   vm-browserify@1.1.2: {}
-
-  vscode-jsonrpc@8.2.0: {}
-
-  vscode-languageserver-protocol@3.17.5:
-    dependencies:
-      vscode-jsonrpc: 8.2.0
-      vscode-languageserver-types: 3.17.5
-
-  vscode-languageserver-types@3.17.5: {}
 
   vue-template-compiler@2.7.16:
     dependencies:

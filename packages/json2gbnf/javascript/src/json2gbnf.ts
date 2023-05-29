@@ -33,18 +33,18 @@ export function JSON2GBNF<T extends JSONSchema>(
   schema?: {} | null | T | boolean,
   opts?: SchemaOpts,
 ): string {
-  if (schema === null || schema === undefined) {
-    throw new Error('Bad schema provided');
-  }
+  // if (schema === null || schema === undefined) {
+  //   throw new Error('Bad schema provided');
+  // }
   if (schema === false) {
     return BLANK_GRAMMAR;
   }
-  if (schema !== true && hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
+  if (schema !== true && schema !== null && schema !== undefined && hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
 
   const parser = new Grammar(opts);
-  if (schema === true || isEmptyObject(schema)) {
+  if (schema === true || schema === undefined || schema === null || isEmptyObject(schema)) {
     parser.addRule(VALUE_KEY, ROOT_ID);
   } else {
     parse(

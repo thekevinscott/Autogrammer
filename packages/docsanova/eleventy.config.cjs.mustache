@@ -99,6 +99,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './.js'));
   eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './_internal_js'));
   eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './styles'));
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './node_modules'));
 
   eleventyConfig.addPlugin(autoCollection, {
     baseDir: "{{{tmpInput}}}",

@@ -2,6 +2,7 @@ import {
   type ModuleFormat,
   watch,
   rollup,
+  RollupOptions,
 } from 'rollup';
 import _typescript from '@rollup/plugin-typescript';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
@@ -13,7 +14,7 @@ const nodePolyfills = _nodePolyfills as unknown as typeof _nodePolyfills.default
 const typescript = _typescript as unknown as typeof _typescript.default;
 const commonjs = _commonjs as unknown as typeof _commonjs.default;
 
-const getOptions = (buildDir: string) => ({
+const getOptions = (buildDir: string): RollupOptions => ({
   input: path.resolve(buildDir, 'src/index.ts'),
   output: [{
     sourcemap: true,
@@ -34,7 +35,7 @@ const getOptions = (buildDir: string) => ({
 
 export const buildRollup = (buildDir: string) => rollup(getOptions(buildDir));
 
-export class TSWatcher {
+export class RollupWatcher {
   // watcher: ReturnType<typeof watch>;
   constructor(watchDir: string) {
     const watcher = watch({
@@ -107,93 +108,3 @@ export class TSWatcher {
 
   }
 }
-
-// export class TSBundler {
-//   pending = false;
-//   bundling = false;
-
-//   bundle = async (rootTSDir: string): Promise<void> => {
-//     console.log('****', rootTSDir);
-//     if (this.bundling) {
-//       this.pending = true;
-//     } else {
-//       this.bundling = true;
-//       // const tsconfig = await writeTSConfig(rootTSDir);
-
-//       const bundle = await rollup({
-//         input: path.resolve(rootTSDir, 'src/index.ts'),
-//         plugins: [
-//           nodeResolve({
-//             browser: true,
-//           }),
-//           commonjs(),
-//           typescript({
-//             tsconfig,
-//           }),
-//         ],
-//       });
-//       const { output, } = await bundle.generate({
-//         sourcemap: true,
-//         dir: path.resolve(rootTSDir, './dist'),
-//         format: 'esm',
-//       });
-//       const isAsset = (output: OutputChunk | OutputAsset): output is OutputAsset => {
-//         return output.type === 'asset';
-//       };
-//       await Promise.all(output.map(async (output) => {
-//         const outputPathName = path.resolve(rootTSDir, 'dist', output.fileName);
-//         console.log('output', outputPathName);
-//         if (isAsset(output)) {
-//           if (typeof output.source !== 'string') {
-//             throw new Error('Expected string');
-//           }
-//           await writeFile(outputPathName, output.source);
-//         } else {
-//           await writeFile(outputPathName, output.code);
-//           // console.log(output);
-//         }
-//       }));
-//       // console.log('all done!', output);
-//       this.bundling = false;
-
-//       if (this.pending) {
-//         this.pending = false;
-//         return this.bundle(rootTSDir);
-//       }
-//     }
-//   };
-
-// }
-
-// // const writeTSConfig = async (root: string): Promise<string> => {
-// //   const tsconfigFilePath = path.resolve(root, 'tsconfig.json');
-// //   await writeFile(tsconfigFilePath, JSON.stringify({
-// //     "compilerOptions": {
-// //       "strict": true,
-// //       "noImplicitAny": true,
-// //       "removeComments": true,
-// //       "preserveConstEnums": true,
-// //       "module": "nodenext",
-// //       "target": "esnext",
-// //       "experimentalDecorators": true,
-// //       "moduleResolution": "NodeNext",
-// //       "sourceMap": true,
-// //       "skipLibCheck": true,
-// //       "declaration": true,
-// //       "rootDir": path.resolve(root, './src'),
-// //       "outDir": path.resolve(root, './dist'),
-// //     },
-// //     "include": [
-// //       path.resolve(root, './src/**/*.ts'),
-// //     ],
-// //     "exclude": [
-// //       "node_modules",
-// //       ".vscode-test",
-// //       "dist",
-// //       ".wireit",
-// //       "env",
-// //       path.resolve(root, './src/**/*.test.ts'),
-// //     ],
-// //   }, null, 2));
-// //   return tsconfigFilePath;
-// // };

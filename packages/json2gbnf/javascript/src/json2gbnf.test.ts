@@ -49,15 +49,6 @@ describe('JSON2GBNF', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });
-
-  test('it throws an error if schema is null', () => {
-    expect(() => JSON2GBNF(null)).toThrow('Bad schema provided');
-  });
-
-  test('it throws an error if schema is undefined', () => {
-    expect(() => JSON2GBNF(undefined)).toThrow('Bad schema provided');
-  });
-
   test('it returns blank grammar if passed false', () => {
     expect(JSON2GBNF(false)).toEqual(BLANK_GRAMMAR);
   });
@@ -70,7 +61,12 @@ describe('JSON2GBNF', () => {
     })).toThrow(`Unsupported schema version: ${schema}`);
   });
 
-  test('it adds root rule if passed true', () => {
+
+  test.each([
+    true,
+    null,
+    undefined,
+  ])('it adds root rule if passed %s', (arg) => {
     const addRule = vi.fn();
     vi.mocked(Grammar).mockImplementation(() => {
       class MockGrammar {
@@ -80,7 +76,7 @@ describe('JSON2GBNF', () => {
       return new MockGrammar() as any as Grammar;
     });
 
-    expect(JSON2GBNF(true)).toEqual([`root ::= ${ROOT_ID}`, 'foo', ...GLOBAL_CONSTANTS].join('\n'));
+    expect(JSON2GBNF(arg)).toEqual([`root ::= ${ROOT_ID}`, 'foo', ...GLOBAL_CONSTANTS].join('\n'));
     expect(addRule).toHaveBeenCalledWith(VALUE_KEY, ROOT_ID);
   });
 
