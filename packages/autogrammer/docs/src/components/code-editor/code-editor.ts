@@ -10,7 +10,6 @@ import {
   state,
 } from 'lit/decorators.js';
 import 'https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror@2.1.0/index.min.js';
-// import '@vanillawc/wc-codemirror/theme/monokai.css';
 import 'https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror@2.1.0/mode/javascript/javascript.js';
 
 // import "https://cdn.jsdelivr.net/gh/vanillawc/wc-code@1.0.3/src/wc-code.js";
