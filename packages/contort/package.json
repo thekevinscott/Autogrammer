@@ -135,5 +135,6 @@
     "vite-plugin-externalize-deps": "^0.8.0",
     "vitest": "^1.5.3",
     "wireit": "^0.14.4"
-  }
+  },
+  "packageManager": "pnpm@9.1.3"
 }
