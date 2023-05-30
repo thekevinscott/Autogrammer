@@ -1,6 +1,6 @@
 import {
   join,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import {
   COMMA_KEY,
 } from "../constants/grammar-keys.js";

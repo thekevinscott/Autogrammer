@@ -6,3 +6,5 @@ export type Value = string | GBNFRule | undefined;
 export interface Frontmatter {
   raw?: boolean;
 }
+
+export type CaseKind = 'lower' | 'upper' | 'any' | 'default';

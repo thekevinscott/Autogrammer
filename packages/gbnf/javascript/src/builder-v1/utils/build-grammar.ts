@@ -1,7 +1,7 @@
 import { GLOBAL_CONSTANTS, } from "../constants/constants.js";
 import { join, } from "./join.js";
 
-export function* buildGrammar(entries: IterableIterator<[string, string]>): IterableIterator<string> {
+export function* buildGrammar(entries: IterableIterator<[string, string]>, includeGlobals = false): IterableIterator<string> {
   for (const [rule, key,] of entries) {
     if (key === '') {
       throw new Error('Key cannot be an empty string');
@@ -16,5 +16,7 @@ export function* buildGrammar(entries: IterableIterator<[string, string]>): Iter
       rule,
     );
   }
-  yield* GLOBAL_CONSTANTS;
+  if (includeGlobals) {
+    yield* GLOBAL_CONSTANTS;
+  }
 };

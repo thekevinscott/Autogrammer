@@ -86,7 +86,6 @@ import {
   LEAD,
   DATE_DEFINITION,
   OFFSET,
-  INTO,
   JOIN_CONDITION,
   COUNT_AGGREGATOR_RULE,
   OTHER_AGGREGATORS_RULE,
@@ -105,9 +104,12 @@ import { getTableName, } from "./get-table-name.js";
 import { getWhereClause, } from "./get-where-clause.js";
 import { buildCase, } from "../utils/build-case.js";
 import {
+  $,
   GrammarBuilder,
+} from "gbnf/builder-v2";
+import {
   join,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import { rule, } from "../utils/get-rule.js";
 import { opt, } from "../utils/get-optional.js";
 import { getSelectQueryWithUnion, } from "./get-select-query-with-union.js";
@@ -125,6 +127,7 @@ import {
 } from "../constants/grammar-definitions.js";
 import { getSelectList, } from "./get-select-list.js";
 import { star, } from "../utils/get-star.js";
+import { addShorthand, } from "../add-shorthand.js";
 
 export const select = (
   parser: GrammarBuilder,
@@ -457,10 +460,12 @@ export const select = (
     optionalRecommendedWhitespace: optionalRecommendedWhitespace,
   }));
 
+  const INTO = 'into';
+  addShorthand($.key(INTO)`INTO `, parser);
 
   const selectlist = rule(getSelectList({
+    into: INTO,
     from: KEYS[FROM],
-    into: KEYS[INTO],
     projection,
     whitespace: mandatoryWhitespace,
     validTableName: validFullName,

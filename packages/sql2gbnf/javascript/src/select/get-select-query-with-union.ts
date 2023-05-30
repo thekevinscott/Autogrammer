@@ -1,4 +1,4 @@
-import { join, } from "gbnf/builder";
+import { join, } from "gbnf/builder-v1";
 import { star, } from "../utils/get-star.js";
 import { opt, } from "../utils/get-optional.js";
 

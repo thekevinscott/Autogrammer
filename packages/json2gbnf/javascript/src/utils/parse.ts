@@ -18,7 +18,7 @@ import { getConstDefinition, } from "./get-const-definition.js";
 import {
   join,
   joinWith,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import { parseType, } from "./parse-type.js";
 
 export const parse = (

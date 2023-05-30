@@ -1,6 +1,6 @@
 import {
   join,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import { rule, } from "../utils/get-rule.js";
 import { star, } from "../utils/get-star.js";
 import { opt, } from "../utils/get-optional.js";

@@ -7,7 +7,7 @@ import {
 import {
   join,
   joinPipe,
-} from 'gbnf/builder';
+} from 'gbnf/builder-v1';
 import { KEYS, } from '../constants/grammar-keys.js';
 import type {
   JSONSchemaArray,

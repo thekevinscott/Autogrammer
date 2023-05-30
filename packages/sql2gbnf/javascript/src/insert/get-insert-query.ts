@@ -1,14 +1,12 @@
 import {
   join,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import { rule, } from "../utils/get-rule.js";
 
 export const getInsertQuery = ({
   insert,
-  into,
   optionalRecommendedWhitespace,
   optionalNonRecommendedWhitespace,
-  mandatoryWhitespace: ws,
   tableName,
   columnList,
   lparen,
@@ -17,10 +15,8 @@ export const getInsertQuery = ({
   valuesList,
 }: {
   insert: string;
-  into: string;
   optionalRecommendedWhitespace: string;
   optionalNonRecommendedWhitespace: string;
-  mandatoryWhitespace: string;
   tableName: string;
   lparen: string;
   rparen: string;
@@ -48,9 +44,6 @@ export const getInsertQuery = ({
   );
   return join(
     insert,
-    ws,
-    into,
-    ws,
     tableName,
     columnInsertList,
     values,

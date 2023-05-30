@@ -1,4 +1,4 @@
-import { join, } from "gbnf/builder";
+import { join, } from "gbnf/builder-v1";
 import { CaseKind, } from "../types.js";
 import { any, } from "./any.js";
 import { rule, } from "./get-rule.js";

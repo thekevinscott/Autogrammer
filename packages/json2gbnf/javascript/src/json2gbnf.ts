@@ -20,7 +20,7 @@ import {
 } from './utils/parse.js';
 import {
   joinWith,
-} from 'gbnf/builder';
+} from 'gbnf/builder-v1';
 
 // https://json-schema.org/understanding-json-schema/basics
 // false will always be invalid

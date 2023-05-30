@@ -1,6 +1,6 @@
 import {
   GrammarBuilder,
-} from "gbnf/builder";
+} from "gbnf/builder-v2";
 import {
   parse,
 } from "./parse.js";
@@ -30,7 +30,7 @@ export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
     },
     database,
   );
+  parser.addRule(gbnf, 'root');
 
-
-  return buildGBNF(parser, gbnf);
+  return buildGBNF(parser);
 };

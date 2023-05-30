@@ -25,7 +25,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { join, joinPipe } from 'gbnf/builder';
+import { join, joinPipe } from 'gbnf/builder-v1';
 import { OBJECT_KEY_DEF } from './get-property-definition.js';
 
 vi.mock('./parse-type.js', async () => {

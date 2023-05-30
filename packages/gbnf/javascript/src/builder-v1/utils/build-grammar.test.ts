@@ -32,7 +32,7 @@ describe('buildGrammar', () => {
       `CONSTANT2`,
     ];
 
-    expect([...buildGrammar(entries)]).toStrictEqual(expected);
+    expect([...buildGrammar(entries, true)]).toStrictEqual(expected);
   });
 
   it('should handle an empty entries iterator', () => {
@@ -43,7 +43,7 @@ describe('buildGrammar', () => {
       `CONSTANT2`,
     ];
 
-    expect([...buildGrammar(entries)]).toStrictEqual(expected);
+    expect([...buildGrammar(entries, true)]).toStrictEqual(expected);
   });
 
   it('should throw an error when a key is an empty string', () => {
@@ -51,7 +51,7 @@ describe('buildGrammar', () => {
       ['rule1', ''],
     ]).entries();
 
-    expect(() => [...buildGrammar(entries)]).toThrowError('Key cannot be an empty string');
+    expect(() => [...buildGrammar(entries, true)]).toThrowError('Key cannot be an empty string');
   });
 
   it('should throw an error when a rule is an empty string', () => {
@@ -59,7 +59,7 @@ describe('buildGrammar', () => {
       ['', 'key1'],
     ]).entries();
 
-    expect(() => [...buildGrammar(entries)]).toThrowError('Rule cannot be an empty string');
+    expect(() => [...buildGrammar(entries, true)]).toThrowError('Rule cannot be an empty string');
   });
 
   it('should handle entries with special characters', () => {
@@ -77,6 +77,6 @@ describe('buildGrammar', () => {
       `CONSTANT2`,
     ];
 
-    expect([...buildGrammar(entries)]).toStrictEqual(expected);
+    expect([...buildGrammar(entries, true)]).toStrictEqual(expected);
   });
 });

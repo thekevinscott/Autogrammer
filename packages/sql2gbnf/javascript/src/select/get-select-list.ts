@@ -1,6 +1,6 @@
 import {
   join,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
 import { opt, } from "../utils/get-optional.js";
 import { rule, } from "../utils/get-rule.js";
 import { any, } from "../utils/any.js";
@@ -35,10 +35,10 @@ export const getSelectList = ({
     rule(
       any(projection, '"*"'),
       ws,
-      opt(into, ws, validTableName, ws),
+      opt(into, validTableName, ws),
     ),
     rule(
-      opt(into, ws, validTableName, ws),
+      opt(into, validTableName, ws),
       any(projection, '"*"'),
       ws,
     ),

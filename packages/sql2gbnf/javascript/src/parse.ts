@@ -1,12 +1,12 @@
 import { addCasedWords, } from "./utils/add-cased-words.js";
 import {
-  GrammarBuilder,
   join,
-  $,
-  $o,
-  $r,
+} from "gbnf/builder-v1";
+import {
+  _,
+  GrammarBuilder,
   GBNFRule,
-} from "gbnf/builder";
+} from "gbnf/builder-v2";
 import {
   select as getSelectRule,
 } from "./select/index.js";
@@ -20,22 +20,17 @@ import {
 } from "./insert/index.js";
 import { any, } from "./utils/any.js";
 import {
-  ANY_VALID_STRING_VALUE_IN_QUOTES,
   INSERT_RULE,
   SELECT_QUERY_WITH_UNION,
-  STRING_WITH_DOUBLE_QUOTES,
   STRING_WITH_QUOTES,
-  STRING_WITH_SINGLE_QUOTES,
   VALID_FULL_NAME,
-  VALID_NAME,
 } from "./gbnf-keys.js";
 import {
-  DOUBLE_QUOTE_KEY,
-  SINGLE_QUOTE_KEY,
+  SEMI_KEY,
 } from "./constants/grammar-keys.js";
 import { getWhitespaceDefs, } from "./utils/get-whitespace-def.js";
-import { star, } from "./utils/get-star.js";
-import { validNameDef, } from "./constants/grammar-definitions.js";
+import { opt, } from "./utils/get-optional.js";
+import { addShorthand, } from "./add-shorthand.js";
 
 export const parse = (
   parser: GrammarBuilder,
@@ -45,41 +40,45 @@ export const parse = (
   },
   database: void | Database,
   // schema?: string,
-): GBNFRule => {
-  const KEYS = addCasedWords(parser, opts.case);
-  const anyValidStringValueInQuotes = parser.addRule('[^\'\\"]+', ANY_VALID_STRING_VALUE_IN_QUOTES);
-  const stringWithSingleQuotesKey = parser.addRule(join(
-    SINGLE_QUOTE_KEY,
-    anyValidStringValueInQuotes,
-    SINGLE_QUOTE_KEY,
-  ), STRING_WITH_SINGLE_QUOTES);
-  const stringWithDoubleQuotesKey = parser.addRule(join(
-    DOUBLE_QUOTE_KEY,
-    anyValidStringValueInQuotes,
-    DOUBLE_QUOTE_KEY,
-  ), STRING_WITH_DOUBLE_QUOTES);
-  const stringWithQuotes = parser.addRule(`(${any(
-    stringWithSingleQuotesKey,
-    stringWithDoubleQuotesKey,
-  )})`, STRING_WITH_QUOTES);
+): string => {
+  // parser.addRule('[^\'\\"]+', ANY_VALID_STRING_VALUE_IN_QUOTES);
+  // parser.addRule(join(
+  //   SINGLE_QUOTE_KEY,
+  //   ANY_VALID_STRING_VALUE_IN_QUOTES,
+  //   SINGLE_QUOTE_KEY,
+  // // ), STRING_WITH_SINGLE_QUOTES);
+  // parser.addRule(join(
+  //   DOUBLE_QUOTE_KEY,
+  //   ANY_VALID_STRING_VALUE_IN_QUOTES,
+  //   DOUBLE_QUOTE_KEY,
+  // ), STRING_WITH_DOUBLE_QUOTES);
+  // parser.addRule(`(${any(
+  //   STRING_WITH_SINGLE_QUOTES,
+  //   STRING_WITH_DOUBLE_QUOTES,
+  // )})`, STRING_WITH_QUOTES);
+  const validString = _`[^\'\\"]+`;
+  addShorthand(_.key(STRING_WITH_QUOTES)`
+  (
+    ${_`"'" ${validString} "'"`} | ${_`"\\"" ${validString} "\\""`}
+  )`, parser);
 
-  const validName = parser.addRule(validNameDef, VALID_NAME);
-  const validFullName = parser.addRule(join(
-    validName,
-    star(
-      '"."',
-      validName,
-    ),
-  ), VALID_FULL_NAME);
+  const validName = _`[a-zA-Z_] [a-zA-Z0-9_]*`;
+
+  addShorthand(_.key(VALID_FULL_NAME)`
+  ${validName}
+  ("." ${validName})*
+  `, parser);
+
   const {
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   } = getWhitespaceDefs(parser, opts.whitespace);
 
+  const KEYS = addCasedWords(parser, opts.case);
   const selectRule = parser.addRule(getSelectRule(parser, KEYS, opts, database, {
-    validFullName,
-    stringWithQuotes,
+    validFullName: VALID_FULL_NAME,
+    stringWithQuotes: STRING_WITH_QUOTES,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     mandatoryWhitespace,
@@ -87,28 +86,19 @@ export const parse = (
   }), SELECT_QUERY_WITH_UNION);
 
   const insertRule = parser.addRule(getInsertRule(parser, KEYS, opts, database, {
-    validFullName,
-    stringWithQuotes,
+    validFullName: VALID_FULL_NAME,
+    stringWithQuotes: STRING_WITH_QUOTES,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     mandatoryWhitespace,
   }), INSERT_RULE);
-  // const _optionalNonRecommendedWhitespace = opts.whitespace === 'verbose' ? $o`${$r`" "`}` : undefined;
-  const _optionalNonRecommendedWhitespace = opts.whitespace === 'verbose' ? $o`
-  ---
-  raw: true
-  ---
-  ws` : undefined;
-  // "\\\\x20" | "\\\\x0A" | "\\\\x09"` : undefined;
-  //   '\r'   // carriage return - \x0D
-  // '\v'   // vertical tab    - \x0B 
-  // '\f'   // form feed       - \x0C
-  // '\u2028' // line separator
-  // '\u2029' // paragraph separator
-  return $`
-    ${$r`${selectRule} | ${insertRule}`}
-    ${$o`${_optionalNonRecommendedWhitespace};`}
-  `;
+  return join(
+    any(
+      selectRule,
+      insertRule,
+    ),
+    opt(optionalNonRecommendedWhitespace, SEMI_KEY),
+  );
 };
 
 // if a raw string, whitespace is thrown away (not treated as special)

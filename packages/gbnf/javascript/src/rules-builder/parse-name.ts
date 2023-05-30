@@ -3,14 +3,9 @@ import { isWordChar, } from "./is-word-char.js";
 
 export const PARSE_NAME_ERROR = 'Failed to find a valid name';
 
-const VALID_NAME_SEPARATORS = [
-  '-',
-  '_',
-];
-
 export const parseName = (grammar: string, pos: number): string => {
   let name = '';
-  while (pos < grammar.length && (isWordChar(grammar[pos]) || VALID_NAME_SEPARATORS.includes(grammar[pos]))) {
+  while (pos < grammar.length && (isWordChar(grammar[pos]) || grammar[pos] === '-')) {
     name += grammar[pos];
     pos++;
   }

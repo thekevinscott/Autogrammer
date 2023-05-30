@@ -1,6 +1,6 @@
 import {
   GrammarBuilder,
-} from "gbnf/builder";
+} from "gbnf/builder-v2";
 
 import {
   AND,
@@ -52,8 +52,6 @@ import {
   LEAD,
   LAG,
   OFFSET,
-  INTO,
-  INSERT,
   DELETE,
   UPDATE,
   VALUES,
@@ -84,12 +82,10 @@ export const addCasedWords = (parser: GrammarBuilder, caseKind: CaseKind): Cased
   [FOLLOWING, ['following',],],
   [RANGE_BETWEEN, ['range between',],],
   [SELECT, ['select',],],
-  [INSERT, ['insert',],],
   [UPDATE, ['update',],],
   [DELETE, ['delete',],],
   [VALUES, ['values',],],
   [FROM, ['from',],],
-  [INTO, ['into',],],
   [WHERE, ['where',],],
   [ORDER, ['order by',],],
   [GROUP, ['group by',],],

@@ -3,7 +3,7 @@ import {
   QUOTE_KEY,
   STRING_KEY,
 } from "../constants/grammar-keys.js";
-import { join, } from "gbnf/builder";
+import { join, } from "gbnf/builder-v1";
 import { JSONSchemaString, } from "../types.js";
 
 export const parseString = (schema: JSONSchemaString): string => {

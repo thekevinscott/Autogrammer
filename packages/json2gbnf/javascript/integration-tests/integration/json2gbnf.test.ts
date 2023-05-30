@@ -12,7 +12,7 @@ import GBNF, {
 } from 'gbnf';
 import {
   GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
-} from 'gbnf/builder';
+} from 'gbnf/builder-v1';
 import type {
   TopLevelJSONSchema
 } from "../../src/types.js";

@@ -8,17 +8,15 @@ import {
   joinWith,
   joinPipe,
 } from './utils/join.js';
-import * as rule from './rule/index.js';
+import * as rule from '../builder-v2/index.js';
 import * as grammarKeys from './constants/grammar-keys.js';
 import { getConstRule, } from './utils/get-const-rule.js';
 import { getConstKey, } from './utils/get-const-key.js';
 import { getID, } from './utils/get-id.js';
 import { buildGrammar, } from './utils/build-grammar.js';
 import { GLOBAL_CONSTANTS, } from './constants/constants.js';
-import { buildGBNF, } from './build-gbnf.js';
 
 module.exports = GrammarBuilder;
-module.exports.buildGBNF = buildGBNF;
 module.exports.rule = rule;
 module.exports.join = join;
 module.exports.joinWith = joinWith;

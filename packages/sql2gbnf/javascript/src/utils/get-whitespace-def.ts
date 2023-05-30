@@ -1,9 +1,15 @@
 import {
-  type GrammarBuilder,
   WHITESPACE_KEY as WS,
-} from "gbnf/builder";
+} from "gbnf/builder-v1";
+import {
+  type GrammarBuilder,
+} from "gbnf/builder-v2";
 import { WhitespaceKind, } from "../types.js";
-import { OPTIONAL_NON_RECOMMENDED_WHITESPACE, OPTIONAL_RECOMMENDED_WHITESPACE, WHITESPACE, } from "../gbnf-keys.js";
+import {
+  OPTIONAL_NON_RECOMMENDED_WHITESPACE,
+  OPTIONAL_RECOMMENDED_WHITESPACE,
+  WHITESPACE,
+} from "../gbnf-keys.js";
 
 const isWhitespaceKind = (whitespace: WhitespaceKind): whitespace is WhitespaceKind => ['default', 'succinct', 'verbose',].includes(whitespace);
 

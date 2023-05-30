@@ -42,6 +42,6 @@ export class GrammarBuilder {
   };
 
   public get grammar() {
-    return buildGrammar(this.#rules.entries());
+    return buildGrammar(this.#rules.entries(), true);
   }
 }

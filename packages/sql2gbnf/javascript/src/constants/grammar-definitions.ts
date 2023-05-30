@@ -6,7 +6,6 @@ import _numberDef from '../grammar-definitions/number.gbnf?raw' assert { type: '
 import _nullDef from '../grammar-definitions/null.gbnf?raw' assert { type: 'text' };
 import _boolDef from '../grammar-definitions/boolean.gbnf?raw' assert { type: 'text' };
 import _charDef from '../grammar-definitions/char.gbnf?raw' assert { type: 'text' };
-import _validName from '../grammar-definitions/valid-name.gbnf?raw' assert { type: 'text' };
 
 export const numberDef = replace(_numberDef);
 export const integerDef = replace(_integerDef);
@@ -15,4 +14,3 @@ export const stringDef = replace(_stringDef);
 export const boolDef = replace(_boolDef);
 export const nullDef = replace(_nullDef);
 export const charDef = replace(_charDef);
-export const validNameDef = replace(_validName);

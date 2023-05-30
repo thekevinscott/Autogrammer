@@ -1,5 +1,11 @@
 {
   "eslint.workingDirectories": [
-    "./packages/gbnfjs",
+    "./packages/autogrammer/javascript",
+    "./packages/gbnf/javascript",
+    "./packages/json2gbnf/javascript",
+    "./packages/sql2gbnf/javascript",
+    "./packages/contort",
+    "./packages/docsanova",
+    "./packages/mock-llm-api",
   ]
 }

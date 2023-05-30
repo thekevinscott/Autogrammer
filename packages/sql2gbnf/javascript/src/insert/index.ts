@@ -1,6 +1,7 @@
 import {
   GrammarBuilder,
-} from "gbnf/builder";
+  $,
+} from "gbnf/builder-v2";
 import type {
   CaseKind,
   Database,
@@ -24,6 +25,7 @@ import { any, } from "../utils/any.js";
 import {
   select as getSelectRule,
 } from '../select/index.js';
+import { addShorthand, } from "../add-shorthand.js";
 
 export const insert = (
   parser: GrammarBuilder,
@@ -90,13 +92,13 @@ export const insert = (
     ),
   );
 
+  const INSERT = 'insert';
+  addShorthand($.key(INSERT)`INSERT INTO `, parser);
 
   return getInsertQuery({
-    insert: KEYS['insert'],
-    into: KEYS['into'],
+    insert: INSERT,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
-    mandatoryWhitespace,
     tableName: validFullName,
     lparen: LEFT_PAREN_KEY,
     rparen: RIGHT_PAREN_KEY,
