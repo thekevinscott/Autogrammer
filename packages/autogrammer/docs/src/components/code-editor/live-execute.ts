@@ -20,7 +20,9 @@ const getModel = async (name: string): Promise<TextGenerationPipeline> => {
 
 // getModel('Xenova/gpt2') // preload
 
-export const liveExecute = async (script: string) => {
+type ErrorCallback = (error: Error) => void;
+type LogCallback = (...data: unknown[]) => void;
+export const liveExecute = async (script: string, callback: LogCallback, errCallback: ErrorCallback) => {
   const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
 
   const hoistedImports = [];
@@ -36,17 +38,27 @@ export const liveExecute = async (script: string) => {
     models[modelName] = getModel(modelName);
     script = script.replace(match[0], `models["${modelName}"]`);
   }
-  console.log('script', script)
   const lines = script.trim().split('\n').filter((line) => line.trim() !== '');
   // lines[lines.length - 1] = `return ${lines[lines.length - 1]}`;
   script = lines.join('\n');
   const fn = esm`${hoistedImports.join('\n')}
-      export default async function fn(models) { 
+      export default async function fn(models, callback, errCallback) { 
+        console.log = callback;
+        try {
         ${script}
+        } catch(err) {
+          errCallback(err);
+
+        }
       }
       `;
-  const namespaceObject = await import(fn)
-  URL.revokeObjectURL(fn);
-  return namespaceObject.default(models);
+  const namespaceObject = await import(fn);
+  try {
+    await namespaceObject.default(models, callback, errCallback);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    URL.revokeObjectURL(fn);
+  }
+  // return result;
 };
-

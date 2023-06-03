@@ -9,7 +9,7 @@ import path from 'path';
 import { symlink, } from 'fs';
 import { getPackageJSON, } from './get-package.js';
 
-export const symlinkNodeModules = async (inputDir: string, tmpInput: string) => {
+export const symlinkNodeModules = async (inputDir: string, tmpInput: string, nodeModulesDir: string) => {
   const dependencies = Object.keys(getPackageJSON(inputDir).dependencies).filter(name => {
     return !['docsanova',].includes(name);
     // && [
@@ -19,7 +19,7 @@ export const symlinkNodeModules = async (inputDir: string, tmpInput: string) => 
   });
   await Promise.all(dependencies.map(async (name) => {
     const src = await realpath(path.resolve(inputDir, 'node_modules', name));
-    const dest = path.resolve(tmpInput, NODE_MODULES_FOLDER, name);
+    const dest = path.resolve(tmpInput, nodeModulesDir, name);
     await mkdirp(path.dirname(dest));
     // console.log('symlinking', src, dest);
     symlink(src, dest, 'dir', (err) => {

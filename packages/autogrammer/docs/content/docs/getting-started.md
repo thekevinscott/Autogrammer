@@ -10,7 +10,7 @@ displayOrder: 2
 You can install `autogrammer` with:
 
 ```bash
-npm install
+npm install autogrammer
 ```
 
 ## Quick Start
@@ -29,9 +29,9 @@ const autogrammer = new Autogrammer({
 
 const prompt = `Return the following address in a JSON object: 
 
-"1600 Pennsylvania Avenue NW, Washington, DC 20500"`;
+"1600 Pennsylvania Avenue NW, Washington, DC 20500"`
 
-return autogrammer.execute(prompt, {
+const result = await autogrammer.execute(prompt, {
   languageOptions: {
     schema: {
       type: 'object',
@@ -45,4 +45,5 @@ return autogrammer.execute(prompt, {
     }
   }
 })
+console.log(result)
 ```

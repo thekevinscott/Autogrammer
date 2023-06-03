@@ -86,12 +86,13 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{STYLES_FOLDER}}}'));
   eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.js'), { 
     expand: true,
-    // filter: (...path) => {
-    //   console.log('FILTER:', ...path);
-    //   return false;
-    //   // return path.split('/').filter(n => n === 'node_modules').length < 2;
-    // },
-    });
+  });
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.cjs'), { 
+    expand: true,
+  });
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.css'), { 
+    expand: true,
+  });
 
   eleventyConfig.addPlugin(autoCollection, {
     baseDir: "{{{tmpInput}}}",

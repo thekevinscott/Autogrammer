@@ -1,11 +1,14 @@
-import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
-console.log(new Autogrammer({
-  language: 'json',
-}))
+// import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
+// console.log(new Autogrammer({
+//   language: 'json',
+// }))
 import {
   pipeline,
   env,
 } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js';
+import type {
+  TextGenerationPipeline,
+} from '@xenova/transformers';
 env.allowRemoteModels = true;
 env.allowLocalModels = false;
 const models = new Map<string, any>();
@@ -33,82 +36,131 @@ self.onconnect = (e) => {
 
   const log = (...msg: any[]) => {
     post('log', msg);
-    origLog(...msg);
+  };
+
+  const error = (...msg: any[]) => {
+    post('error', msg);
   };
 
 
   port.addEventListener("message", async (e: MessageEvent<string>) => {
-    console.log = log;
+    console.log = (...data) => {
+      post('worker-log', data);
+    };
+    console.error = (...data) => {
+      post('worker-error', data);
+    };
+
     // TODO: One day it'd be great to resolve this using import maps
     const MAPPED_NAME: Record<string, string> = {
       'autogrammer': 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js',
       '@xenova/transformers': 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js',
     }
-    function esm(templateStrings: TemplateStringsArray, ...substitutions: string[]) {
-      let js = templateStrings.raw[0];
-      for (let i = 0; i < substitutions.length; i++) {
-        js += substitutions[i] + templateStrings.raw[i + 1];
-      }
-      return URL.createObjectURL(new Blob([js], { type: 'text/javascript' }));
-    }
     try {
       let script = e.data;
+      // const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
+
+      // const hoistedImports = [];
+
+      // for (const match of matches) {
+      //   const importName = match[2].trim().replace(/["';]/g, "");
+      //   console.log(importName);
+      //   if ([
+      //     'autogrammer',
+      //     '@xenova/transformers',
+      //   ].includes(importName)) {
+      //     // console.log(importName, match[0]);
+      //     const mappedName = MAPPED_NAME[importName];
+      //     console.log(match[0], importName, mappedName)
+      //     const replacedMatch = match[0].replace(importName, mappedName);
+      //     hoistedImports.push(replacedMatch);
+      //     script = script.replace(match[0], '');
+      //   }
+      // };
+      // const lines = script.trim().split('\n').filter((line) => line.trim() !== '');
+      // // if (!lines[lines.length - 1].trim().startsWith('return')) {
+      // lines[lines.length - 1] = `return ${lines[lines.length - 1]}`;
+      // // }
+      // script = lines.join('\n')
+      // console.log('hoistedImports', hoistedImports);
+      // console.log(`script: "${script}"`);
+      // // const model = await getModel('Xenova/gpt2');
+      // // console.log('pipeline', await model('Hello, world!'));
+
+
+
+
+      // // const AsyncFunction = async function () { }.constructor;
+
+      // // const result = await AsyncFunction('main', `"use strict"; ${script};`)();
+
+      // // const code = `
+      // // const objectURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+      // // const module = await import(objectURL);
+      // // URL.revokeObjectURL(objectURL);
+      // // const result = await module.default();
+
+      // // const fn = esm`export function fn() { return 'Hello!' }`;
+      // const fn = esm`
+      // export default async function fn(model) { 
+      //   ${script}
+      // }
+      // `;
+
       const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
 
       const hoistedImports = [];
 
       for (const match of matches) {
         const importName = match[2].trim().replace(/["';]/g, "");
-        console.log(importName);
+
         if ([
           'autogrammer',
           '@xenova/transformers',
         ].includes(importName)) {
           // console.log(importName, match[0]);
           const mappedName = MAPPED_NAME[importName];
-          console.log(match[0], importName, mappedName)
           const replacedMatch = match[0].replace(importName, mappedName);
           hoistedImports.push(replacedMatch);
-          script = script.replace(match[0], '');
+        } else {
+          hoistedImports.push(match[0]);
         }
+        script = script.replace(match[0], '');
       };
-      const lines = script.trim().split('\n').filter((line) => line.trim() !== '');
-      // if (!lines[lines.length - 1].trim().startsWith('return')) {
-      lines[lines.length - 1] = `return ${lines[lines.length - 1]}`;
-      // }
-      script = lines.join('\n')
-      console.log('hoistedImports', hoistedImports);
-      console.log(`script: "${script}"`);
-      // const model = await getModel('Xenova/gpt2');
-      // console.log('pipeline', await model('Hello, world!'));
-
-
-
-
-      // const AsyncFunction = async function () { }.constructor;
-
-      // const result = await AsyncFunction('main', `"use strict"; ${script};`)();
-
-      // const code = `
-      // const objectURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
-      // const module = await import(objectURL);
-      // URL.revokeObjectURL(objectURL);
-      // const result = await module.default();
-
-      // const fn = esm`export function fn() { return 'Hello!' }`;
-      const fn = esm`
-      export default async function fn(model) { 
-        ${script}
+      // for (const match of script.matchAll(new RegExp(`pipeline\(["']text-generation["'],(.+?)\)`, 'gs'))) {
+      const models: Record<string, Promise<TextGenerationPipeline>> = {};
+      for (const match of script.matchAll(new RegExp(`pipeline\\(["']text-generation["'],(.+?)\\)`, 'gs'))) {
+        const modelName = match[1].trim().replace(/["']/g, "");
+        models[modelName] = getModel(modelName);
+        script = script.replace(match[0], `models["${modelName}"]`);
       }
-      `;
+      const lines = script.trim().split('\n').filter((line) => line.trim() !== '');
+      // lines[lines.length - 1] = `return ${lines[lines.length - 1]}`;
+      script = lines.join('\n');
+      const fullScript = [
+        ...hoistedImports.map(i => i.trim() + ';'),
+        `export default async function fn(models, callback, errCallback) { 
+        console.log = callback;
+        console.error = errCallback;
+        try {
+        ${script}
+        } catch(err) {
+          errCallback(err);
+
+        }
+      }
+      `].join('\n');
+      // console.log(fullScript);
+      const fn = esm`${fullScript.trim()}`;
       const namespaceObject = await import(fn)
       URL.revokeObjectURL(fn);
 
-      const result = await namespaceObject.default(pipeline);
+      const result = await namespaceObject.default(models, log, (err: Error) => {
+        error(err);
+      });
 
-
-
-      post('result', result);
+      post('complete');
+      // post('result', result);
     } catch (err: unknown) {
       log('error', (err as any).message);
 
@@ -126,4 +178,12 @@ declare global {
       ports: MessagePort[];
     }) => void;
   }
+}
+
+function esm(templateStrings: TemplateStringsArray, ...substitutions: string[]) {
+  let js = templateStrings.raw[0];
+  for (let i = 0; i < substitutions.length; i++) {
+    js += substitutions[i] + templateStrings.raw[i + 1];
+  }
+  return URL.createObjectURL(new Blob([js], { type: 'text/javascript' }));
 }

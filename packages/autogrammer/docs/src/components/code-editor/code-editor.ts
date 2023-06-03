@@ -11,6 +11,8 @@ import {
 } from 'lit/decorators.js';
 import 'https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror@2.1.0/index.min.js';
 import 'https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror@2.1.0/mode/javascript/javascript.js';
+import '@alenaksu/json-viewer';
+
 
 // import "https://cdn.jsdelivr.net/gh/vanillawc/wc-code@1.0.3/src/wc-code.js";
 // import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
@@ -50,10 +52,12 @@ export class CodeEditor extends LitElement {
     #container {
       display: block;
       position: relative;
+      margin-bottom: 20px;
     }
 
     wc-codemirror {
       border: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 3px solid rgba(0,0,0,0.1);
       border-radius: 4px 4px 0 0;
       overflow: hidden;
       min-height: 100px;
@@ -64,25 +68,60 @@ export class CodeEditor extends LitElement {
       border: 1px solid rgba(0,0,0,0.1);
       border-top: none;
       border-radius: 0 0 4px 4px;
-      overflow: hidden;
+      overflow: scroll;
       height: 140px;
       background-color: rgba(0,0,0,0.03);
       font-family: monospace;
       position: relative;
+      padding-left: 10px;
+      padding-top: 5px;
     }
 
-    button#run {
+    json-viewer {
+      /* Background, font and indentation */
+      --background-color: transparent;
+      --color: #f8f8f2;
+      --font-family: monaco, Consolas, 'Lucida Console', monospace;
+      --font-size: 1rem;
+      --indent-size: 1.5em;
+      --indentguide-size: 1px;
+      --indentguide-style: solid;
+      --indentguide-color: #333;
+      --indentguide-color-active: #666;
+      --indentguide: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color);
+      --indentguide-active: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color-active);
+  
+      /* Types colors */
+      --string-color: #CD463A;
+      --number-color: #28545b;
+      --boolean-color: #1f4d54;
+      --null-color: #a2a5a6;
+      --property-color: #CD463A;
+  
+      /* Collapsed node preview */
+      --preview-color: rgba(222, 175, 143, 0.9);
+  
+      /* Search highlight color */
+      --highlight-color: #6fb3d2;
+    }
+
+    sl-button#run {
       position: absolute;
       right: 0;
-      margin-top: -40px;
+      margin-top: -42px;
       height: 40px;
-      width: 80px;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 2;
       border: none;
       cursor: pointer;
+    }
+    sl-button::part(base) {
+      border-radius: 4px 0 0 0;
+    }
+    sl-button span {
+      opacity: 0.6;
     }
   `;
 
@@ -91,8 +130,41 @@ export class CodeEditor extends LitElement {
     tag: TAG_NAME,
   };
 
+  worker = new SharedWorker('/js/components/code-editor/worker.js', {
+    type: 'module'
+  });
+
+  constructor() {
+    super();
+    this.worker.port.start();
+    this.worker.port.addEventListener('message', e => {
+      const { type, data } = JSON.parse(e.data);
+      if (type === 'log') {
+        this.output = [
+          ...this.output,
+          data.length === 1 ? data[0] : data,
+        ];
+        this.requestUpdate();
+      } else if (type === 'error') {
+        this.output = [
+          ...this.output,
+          data.length === 1 ? data[0] : data,
+        ];
+        this.requestUpdate();
+      } else if (type === 'worker-log') {
+        console.log(...data);
+      } else if (type === 'worker-error') {
+        console.error(...data);
+      } else if (type === 'complete') {
+        this.running = false;
+        this.requestUpdate();
+        //   console.log(data.data);
+      }
+      this.requestUpdate();
+    });
+  }
+
   ref: Ref<WCCodeMirror> = createRef();
-  output: Ref<HTMLPreElement> = createRef();
 
   get script(): WCCodeMirror {
     const script = this.ref.value;
@@ -102,32 +174,18 @@ export class CodeEditor extends LitElement {
     return script;
   }
 
-  // worker = new SharedWorker('/.js/components/code-editor/worker.js', {
-  //   type: 'module'
-  // });
-
-  // constructor() {
-  //   super();
-  //   this.worker.port.start();
-  //   this.worker.port.addEventListener('message', e => {
-  //     const data = JSON.parse(e.data);
-  //     if (data.type === 'log') {
-  //       console.log(...data.data);
-  //     } else if (data.type === 'result') {
-  //       console.log(data.data);
-  //     }
-  //   });
-  // }
-
+  // @state()
+  // lineNumbers = 5;
 
   @state()
-  lineNumbers = 5;
+  scriptValue = '';
 
   set script(textContent: string) {
     this.script.value = textContent;
-    // TODO: Why is a state update not triggering a re-render?
-    this.lineNumbers = textContent.split('\n').length;
-    this.requestUpdate();
+    this.scriptValue = textContent;
+    // // TODO: Why is a state update not triggering a re-render?
+    // this.lineNumbers = textContent.split('\n').length;
+    // this.requestUpdate();
   }
 
   handleSlotchange(e: Event) {
@@ -144,14 +202,41 @@ export class CodeEditor extends LitElement {
   handleKeydown = (e: KeyboardEvent) => {
     if (e.code === 'Enter' && e.metaKey) {
       this.execute();
-
     }
   }
 
-  async execute() {
-    const output = this.output.value as HTMLPreElement;
-    const result = await liveExecute(this.script.value);
-    output.innerText = result;
+  @state()
+  protected output: (unknown)[] = [];
+
+  @state()
+  protected running = false;
+
+  execute = async () => {
+    this.running = true;
+    // this.requestUpdate();
+    this.output = [];
+    this.requestUpdate();
+    this.worker.port.postMessage(this.script.value);
+    // const result = await liveExecute(this.script.value, (...data) => {
+    //   this.output = [
+    //     ...this.output,
+    //     data.length === 1 ? data[0] : data,
+    //   ];
+    //   this.requestUpdate();
+    // }, err => {
+    //   this.output = [
+    //     ...this.output,
+    //     ...err.message,
+    //   ];
+    //   this.requestUpdate();
+    // });
+    // this.running = false;
+    // this.requestUpdate();
+    // this.output = [
+    //   ...this.output,
+    //   // result,
+    // ];
+    // this.requestUpdate();
   }
 
   protected render() {
@@ -171,9 +256,18 @@ export class CodeEditor extends LitElement {
       </wc-codemirror>
       </div>
       <form @submit=${this.handleSubmit}>
-      <button id="run">Go(⌘+⏎)</button>
+      <sl-button 
+        type="submit"
+        variant="default" 
+        id="run" 
+        ?loading=${this.running}
+      >Run <span>(⌘+⏎)</span></sl-button>
       </form>
-      <div id="output"         ${ref(this.output)}>
+      <div id="output">
+      ${this.output.map((output) => html`
+        <json-viewer .data=${output}></json-viewer>
+        `)}
+
       </div>
       </div>
       <slot @slotchange=${this.handleSlotchange}></slot>

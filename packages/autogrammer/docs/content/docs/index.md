@@ -4,20 +4,23 @@ layout: 'layouts/page.html'
 displayOrder: 0
 ---
 
-Sometimes LLMs don't do what you want them to do.  For instance, you can ask an LLM to generate a code output:
+LLMs don't always do what you tell them to do.
+
+For instance, you can try to ask an LLM to generate some JSON output:
 
 ```javascript
 import { pipeline, } from '@xenova/transformers'
 
 const model = await pipeline('text-generation', 'Xenova/gpt2')
 
-const result = await model('Write me a list of numbers:\n')
-console.log('result', result)
+const result = await model('Write me a JSON array of 3 numbers:\n')
+console.log(result[0].generated_text)
 ```
+
+_<small>All code snippets are editable.</small>_
 
 Sometimes it'll generate what you want - sometimes it won't. Sometimes it'll wrap it in surrounding text, sometimes it won't. The smaller the model, the harder it will be to control the output.
 
-_A quick note - all the code snippets on this site are editable. Some of them, like the one above, have a simulation running to avoid unnecessary computation, but at any point you can jump in and play with it._
 
 `autogrammer` exists to constrain a model's output to a pre-defined pattern called a _grammar_. The LLM is constrained to only be able to generate specific tokens at specific parts, resulting in syntactically valid output. We can also restrict it further, specifying JSON schemas or SQL with specific tables and columns.
 

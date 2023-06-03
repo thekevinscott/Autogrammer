@@ -82,7 +82,7 @@ export class TSCWatcher {
     }
 
     const watchStatusReporter: WatchStatusReporter = (diagnostic) => {
-      console.log(chalk.red`[TS]`, diagnostic.messageText);
+      console.log(chalk.cyan`[TS]`, diagnostic.messageText);
     };
 
     const host = createWatchCompilerHost(

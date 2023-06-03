@@ -95,7 +95,7 @@ export const start = async ({
     });
   });
 
-  await symlinkNodeModules(inputDir, tmpInput);
+  await symlinkNodeModules(inputDir, tmpInput, nodeModulesDir);
 
   // For monitoring directories
   [

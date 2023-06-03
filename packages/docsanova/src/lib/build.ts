@@ -60,7 +60,7 @@ export const build = async ({
     }
     return createFile(input, output, contents => Mustache.render(contents, {
       tmpInput,
-      NODE_MODULES_FOLDER,
+      NODE_MODULES_FOLDER: nodeModulesDir,
       STYLES_FOLDER: 'styles',
       INTERNAL_JS_FOLDER: '_internal_js',
       JS_FOLDER: 'js',
@@ -69,7 +69,7 @@ export const build = async ({
 
   buildTSC(inputDir);
 
-  await symlinkNodeModules(inputDir, tmpInput);
+  await symlinkNodeModules(inputDir, tmpInput, nodeModulesDir);
 
   // For monitoring directories
   await Promise.all([

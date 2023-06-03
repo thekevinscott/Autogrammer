@@ -10,15 +10,16 @@
     <link rel="stylesheet" href="{{ '/styles/github-markdown.css' | url | bust }}" />
     <link rel="stylesheet" href="{{ '/styles/variables.css' | url | bust }}" />
     <link rel="stylesheet" href="{{ '/styles/style.css' | url | bust }}" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace/dist/themes/light.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace/dist/themes/dark.css" />
     <script type="importmap">
       {
         "imports": {
           "@xenova/transformers": "https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js",
           "@vanillawc/wc-codemirror": "/_nm/@vanillawc/wc-codemirror/index.js",
-          "@vanillawc/wc-codemirror/": "/_nm/@vanillawc/wc-codemirror/",
+          "@vanillawc/": "/_nm/@vanillawc/",
           "@lit/reactive-element": "/_nm/@lit/reactive-element/reactive-element.js",
-          "@lit/reactive-element/": "/_nm/@lit/reactive-element/",
+          "@lit/": "/_nm/@lit/",
           "autogrammer": "/_nm/autogrammer/dist/index.js",
           "contort": "/_nm/contort/dist/index.js",
           "gbnf": "/_nm/gbnf/dist/index.js",
@@ -29,10 +30,13 @@
           "lit-html": "/_nm/lit-html/lit-html.js",
           "lit-html/": "/_nm/lit-html/",
           "lit": "/_nm/lit/index.js",
-          "lit/": "/_nm/lit/"
+          "lit/": "/_nm/lit/",
+          "@shoelace-style/": "https://cdn.jsdelivr.net/npm/@shoelace-style/",
+          "@alenaksu/json-viewer": "/_nm/@alenaksu/json-viewer/dist/json-viewer.js"
         }
       }
       </script>
+
   </head>
   <body>
     {% include "partials/head.html" %}

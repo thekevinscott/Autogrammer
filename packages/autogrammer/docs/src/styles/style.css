@@ -247,3 +247,7 @@ pre.code-editor {
     padding: 0;
   }
 }
+
+small {
+  color: rgba(0, 0, 0, 0.6);
+}
