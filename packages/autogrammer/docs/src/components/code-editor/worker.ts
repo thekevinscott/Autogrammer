@@ -22,42 +22,49 @@ const getModel = async (name: string) => {
 // self.getModel = getModel;
 getModel('Xenova/gpt2') // preload
 
-const origLog = console.log.bind(console);
+// const origLog = console.log.bind(console);
 
 self.onconnect = (e) => {
   const port = e.ports[0];
 
-  const post = (type: string, data: any) => {
+  const post = (type: string, data?: any) => {
     port.postMessage(JSON.stringify({
       type,
       data,
     }));
   };
 
-  const log = (...msg: any[]) => {
-    post('log', msg);
+  const log = (...data: unknown[]) => {
+    post('log', data);
+  };
+  const error = (...data: unknown[]) => {
+    post('error', data);
   };
 
-  const error = (...msg: any[]) => {
-    post('error', msg);
+  const consoleLog = (...data: unknown[]) => {
+    post('worker-log', data);
+  };
+  const consoleError = (...data: unknown[]) => {
+    post('worker-error', data);
   };
 
+  port.addEventListener("message", async ({ data }: MessageEvent<{
+    id: string;
+    script: string;
+  }>) => {
 
-  port.addEventListener("message", async (e: MessageEvent<string>) => {
-    console.log = (...data) => {
-      post('worker-log', data);
-    };
-    console.error = (...data) => {
-      post('worker-error', data);
-    };
+    const id = data.id;
+
+    consoleLog(`[${id}] starting cell execution...`);
 
     // TODO: One day it'd be great to resolve this using import maps
+    // https://github.com/WICG/import-maps/issues/2
     const MAPPED_NAME: Record<string, string> = {
-      'autogrammer': 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js',
+      'autogrammer': 'http://localhost:8080/_nm/bundled-autogrammer/dist/index.js',
       '@xenova/transformers': 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js',
     }
     try {
-      let script = e.data;
+      let script = data.script;
       // const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
 
       // const hoistedImports = [];
@@ -150,20 +157,19 @@ self.onconnect = (e) => {
         }
       }
       `].join('\n');
-      // console.log(fullScript);
+      // log(fullScript);
       const fn = esm`${fullScript.trim()}`;
       const namespaceObject = await import(fn)
       URL.revokeObjectURL(fn);
 
-      const result = await namespaceObject.default(models, log, (err: Error) => {
-        error(err);
-      });
+      await namespaceObject.default(models, log, error);
 
-      post('complete');
       // post('result', result);
     } catch (err: unknown) {
-      log('error', (err as any).message);
-
+      consoleError('error', (err as any).message);
+    } finally {
+      consoleLog(`[${id}] completed cell execution...`);
+      post('complete');
     }
   });
 

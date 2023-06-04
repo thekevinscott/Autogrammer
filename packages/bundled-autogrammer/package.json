@@ -1,0 +1,38 @@
+{
+  "name": "bundled-autogrammer",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "rollup -c rollup.config.js",
+      "dependencies": [
+        "../autogrammer/javascript:build"
+      ],
+      "files": [
+        "./src/**/*.ts",
+        "tsconfig.js",
+        "package.json"
+      ],
+      "output": [
+        "./dist/index.js"
+      ]
+    }
+  },
+  "dependencies": {
+    "autogrammer": "workspace:*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.18.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "typescript": "^5.4.5",
+    "wireit": "^0.14.4"
+  }
+}

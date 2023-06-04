@@ -108,7 +108,7 @@ export class CodeEditor extends LitElement {
     sl-button#run {
       position: absolute;
       right: 0;
-      margin-top: -42px;
+      margin-top: -43px;
       height: 40px;
       display: flex;
       justify-content: center;
@@ -116,12 +116,18 @@ export class CodeEditor extends LitElement {
       z-index: 2;
       border: none;
       cursor: pointer;
+      border-bottom: none;
     }
     sl-button::part(base) {
       border-radius: 4px 0 0 0;
+      border-bottom: none;
     }
     sl-button span {
       opacity: 0.6;
+    }
+    .cm-s-neo .CodeMirror-cursor {
+      border-left: 1px solid red;
+      background: transparent;
     }
   `;
 
@@ -138,7 +144,9 @@ export class CodeEditor extends LitElement {
     super();
     this.worker.port.start();
     this.worker.port.addEventListener('message', e => {
+      // console.log('message', e.data)
       const { type, data } = JSON.parse(e.data);
+      // console.log(...data, typeof data[0])
       if (type === 'log') {
         this.output = [
           ...this.output,
@@ -213,30 +221,12 @@ export class CodeEditor extends LitElement {
 
   execute = async () => {
     this.running = true;
-    // this.requestUpdate();
     this.output = [];
     this.requestUpdate();
-    this.worker.port.postMessage(this.script.value);
-    // const result = await liveExecute(this.script.value, (...data) => {
-    //   this.output = [
-    //     ...this.output,
-    //     data.length === 1 ? data[0] : data,
-    //   ];
-    //   this.requestUpdate();
-    // }, err => {
-    //   this.output = [
-    //     ...this.output,
-    //     ...err.message,
-    //   ];
-    //   this.requestUpdate();
-    // });
-    // this.running = false;
-    // this.requestUpdate();
-    // this.output = [
-    //   ...this.output,
-    //   // result,
-    // ];
-    // this.requestUpdate();
+    this.worker.port.postMessage({
+      id: `${Math.random()}`,
+      script: this.script.value,
+    });
   }
 
   protected render() {
@@ -244,15 +234,9 @@ export class CodeEditor extends LitElement {
     <div id="container" @keydown=${this.handleKeydown}>
     <div id="codemirror-container">
 
-      <wc-codemirror
-      mode="javascript"
-      theme="neo"
-        ${ref(this.ref)}
-
-      >
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
-
+      <wc-codemirror mode="javascript" theme="neo" ${ref(this.ref)} >
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
       </wc-codemirror>
       </div>
       <form @submit=${this.handleSubmit}>
