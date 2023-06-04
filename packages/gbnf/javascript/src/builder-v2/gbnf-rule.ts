@@ -9,6 +9,10 @@ import type {
 import { GrammarBuilder, } from "./grammar-builder.js";
 import { getRawValue, } from "./get-raw-value.js";
 import { getStringValue, } from "./get-string-value.js";
+import { GBNF, } from "../gbnf.js";
+import { Range, RuleType, } from "../grammar-graph/types.js";
+import { isRuleChar, isRuleCharExcluded, isRuleEnd, } from "../grammar-graph/type-guards.js";
+import { ParseState, } from "../grammar-graph/parse-state.js";
 
 interface Opts {
   raw: boolean;
@@ -49,6 +53,59 @@ export class GBNFRule {
       name: this.name,
       wrapped,
     });
+  };
+
+  log = (opts: Parameters<typeof this.compile>[0] = {}) => {
+    let gbnf = this.compile(opts);
+    gbnf = gbnf.replaceAll(/\((.*?)\)\*/g, '($1)? ($1)? ($1)?');
+    gbnf = gbnf.replaceAll(/\((.*?)\)\+/g, '($1) ($1)? ($1)?');
+    class Node {
+      char: string;
+      terminal = false;
+      children: Node[] = [];
+
+      constructor(char: string = '') {
+        this.char = char;
+      }
+    }
+    const parseState = GBNF(gbnf);
+    const rootNode = new Node('');
+
+    function traverseParseState(currentNode: Node, parseState: ParseState) {
+      for (const rule of parseState) {
+        if (isRuleChar(rule)) {
+          for (const value of rule.value) {
+            const char = Array.isArray(value) ? 'x' : String.fromCodePoint(value);
+            const nextNode = new Node(char);
+            currentNode.children.push(nextNode);
+            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0]) : char));
+          }
+        } else if (isRuleCharExcluded(rule)) {
+          for (const value of rule.value) {
+            const char = Array.isArray(value) ? '^' : String.fromCodePoint(value);
+            const nextNode = new Node(char);
+            currentNode.children.push(nextNode);
+            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0] - 1) : char));
+          }
+        } else if (isRuleEnd(rule)) {
+          currentNode.terminal = true;
+        }
+      }
+    }
+
+    traverseParseState(rootNode, parseState);
+
+    const result = new Set<string>();
+    function traverse(node: Node, path: string = '') {
+      if (node.terminal) {
+        result.add(path);
+      }
+      for (const child of node.children) {
+        traverse(child, path + child.char);
+      }
+    }
+    traverse(rootNode);
+    return [...result,].join('\n');
   };
 
   addToParser = (parser: GrammarBuilder, caseKind: CaseKind, leaf = false): string => {

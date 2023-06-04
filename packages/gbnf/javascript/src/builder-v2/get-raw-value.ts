@@ -8,7 +8,6 @@ export const getRawValue = (value: string) => {
   }
   let inQuote = false;
   while (i < value.length) {
-    // console.log(i, value[i])
     if (inQuote === false) {
       let encounteredWhitespace = false;
       while (i < value.length && isWhitespace(value[i])) {

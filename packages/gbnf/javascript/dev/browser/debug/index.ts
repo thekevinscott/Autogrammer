@@ -1,4 +1,4 @@
-import GBNF, { RuleType } from '../../../packages/gbnfjs/src/index.js';
+import GBNF, { RuleType } from '../../../src/index.js';
 
 // (() => {
 //   console.log('throw test')
@@ -32,12 +32,11 @@ import GBNF, { RuleType } from '../../../packages/gbnfjs/src/index.js';
 (() => {
   // [`root ::= [a-z]+`, 'az0',],
   // console.log('range with +, "az"')
-  const GrammarParser = GBNF(`
-    root  ::= (expr "=" term "\n")+
-    expr  ::= term ([-+*/] term)*
-    term  ::= [0-9]+
-  `);
-  const parser = new GrammarParser('');
+  const parseState = GBNF(`
+  root ::= [a-z] | x
+  x ::= "foo"
+  `, 'f');
+  console.log([...parseState])
   // console.log('rules before anything:::::', JSON.stringify(parser.rules));
   // console.log('-------------')
   // parser.add('a')
