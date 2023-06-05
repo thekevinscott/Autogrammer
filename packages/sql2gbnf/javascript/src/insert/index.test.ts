@@ -7,6 +7,7 @@ import {
   insert,
 } from './index.js';
 import {
+  $,
   _,
 } from 'gbnf/builder-v2';
 import GBNF from 'gbnf';
@@ -47,14 +48,26 @@ describe('insert', () => {
     'INSERT INTO table (col1,col2,col3) VALUES ("a", "b", "c")',
     'INSERT INTO table (col1,col2,col3) VALUES ("a","b","c")',
     'INSERT INTO table (col1,col2,col3) VALUES ("a", \\n\\n"b", \\n\\n"c"\\n\\n)',
+    'INSERT INTO table (col1) VALUES (SELECT 1 FROM table)',
+    'INSERT INTO table (col1) VALUES ((SELECT 1 FROM table))',
+    'INSERT INTO table (col1, col2) VALUES ((SELECT 1 FROM table), (SELECT foo FROM table))',
+    'INSERT INTO table (col1, col2) VALUES ( ( SELECT 1 FROM table ), ( SELECT foo FROM table ) )',
+    'INSERT INTO table (col1) VALUES (SELECT (SELECT foo FROM bar) FROM table)',
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const whitespace = _`[ \\n\\r]`;
     const validFullName = _`[a-zA-Z_.0-9]`.wrap('+');
     const grammar = insert({
       validFullName,
-      boolean: _`"TRUE" | "FALSE" | "true" | "false"`,
-      number: _`("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? `,
-      stringWithQuotes: _`${_`"'" ${validFullName} "'"`} | ${_`"\\"" ${validFullName} "\\""`}`,
+      boolean: _`${$`TRUE`} | ${$`FALSE`}`,
+      number: _`
+        ${_`"-"? ([0-9] | [1-9] [0-9]*)`} 
+        ${_`"." [0-9]+`.wrap('?')} 
+        ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
+      `,
+      stringWithQuotes: _`
+        ${_`"'" ${validFullName} "'"`} 
+        | ${_`"\\"" ${validFullName} "\\""`}
+      `,
       mandatoryWhitespace: whitespace.wrap('+'),
       optionalRecommendedWhitespace: whitespace.wrap('*'),
       optionalNonRecommendedWhitespace: whitespace.wrap('*'),

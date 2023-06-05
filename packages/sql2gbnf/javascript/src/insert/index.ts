@@ -37,7 +37,18 @@ export const insert = ({
     singleColumn: true,
   });
 
-  const listOfStrings = (value: GBNFRule | string) => _` "(" ${optNRecWs} ${value} ${_` "," ${optRecWs} ${value} `.wrap('*')} ${optNRecWs} ")" `;
+  const listOfStrings = (value: GBNFRule | string) => _` 
+  "(" 
+    ${optNRecWs} 
+    ${value} 
+    ${_`
+      "," 
+      ${optRecWs} 
+      ${value}
+    `.wrap('*')} 
+    ${optNRecWs} 
+  ")" 
+  `;
   return _`
     ${$`INSERT INTO`}
     ${mandatoryWhitespace}
@@ -47,6 +58,17 @@ export const insert = ({
     ${optRecWs}
     ${$`VALUES`}
     ${optRecWs}
-    ${listOfStrings(_`${stringWithQuotes} | ${number} | ${boolean} | ${$`NULL`} | ${selectRule} | "(" ${selectRule} ")"`.wrap())}
+    ${listOfStrings(_`
+      ${stringWithQuotes} 
+      | ${number} 
+      | ${boolean} 
+      | ${$`NULL`} 
+      | ${selectRule} 
+      | "(" 
+          ${optNRecWs} 
+          ${selectRule} 
+          ${optNRecWs} 
+        ")"
+    `.wrap())}
   `;
 };

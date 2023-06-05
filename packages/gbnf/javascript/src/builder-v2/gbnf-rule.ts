@@ -46,6 +46,11 @@ export class GBNFRule {
     );
   };
 
+  key = (name: string) => {
+    this.name = name;
+    return this;
+  };
+
   wrap = (wrapped = '') => {
     return new GBNFRule(this.strings, this.values, {
       raw: this.raw,

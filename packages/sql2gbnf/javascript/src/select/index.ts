@@ -9,6 +9,8 @@ import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
 import { getJoinCondition, } from "./get-join-condition.js";
 
+const FULL_SELECT_QUERY_KEY = 'full-select-query';
+
 export const select = ({
   boolean,
   stringWithQuotes,
@@ -50,6 +52,7 @@ export const select = ({
   const asAlias = _`${$`AS`} ${ws} ${validFullName}`;
   const columnNames = _`
     ${validFullName}
+    | ${_`"(" ${optNonRecWS} ${FULL_SELECT_QUERY_KEY} ${optNonRecWS} ")"`}
     | ${_`
         ${_`
           ${$`MIN`} 
@@ -298,7 +301,7 @@ export const select = ({
     table: tableName,
     optionalRecommendedWhitespace: optRecWS,
     whitespace: ws,
-  });
+  }).key(FULL_SELECT_QUERY_KEY);
   if (withUnion) {
     return _`
       ${selectQuery}
