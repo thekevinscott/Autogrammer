@@ -19,7 +19,7 @@ export const symlinkNodeModules = async (inputDir: string, tmpInput: string, nod
   });
   await Promise.all(dependencies.map(async (name) => {
     const src = await realpath(path.resolve(inputDir, 'node_modules', name));
-    const dest = path.resolve(tmpInput, nodeModulesDir, name);
+    const dest = path.resolve(tmpInput, nodeModulesDir, getDestName(name));
     await mkdirp(path.dirname(dest));
     // console.log('symlinking', src, dest);
     symlink(src, dest, 'dir', (err) => {
@@ -28,4 +28,11 @@ export const symlinkNodeModules = async (inputDir: string, tmpInput: string, nod
       }
     });
   }));
+};
+
+const getDestName = (name: string) => {
+  // if (name === 'bundled-autogrammer') {
+  //   return 'autogrammer';
+  // }
+  return name;
 };

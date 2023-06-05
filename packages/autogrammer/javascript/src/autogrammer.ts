@@ -3,6 +3,7 @@ import Contortionist, {
   type ModelDefinition,
   type ModelProtocol,
 } from 'contort';
+import type * as transformers from '@xenova/transformers';
 import type {
   ConstructorOptions,
   LanguageOptions,
@@ -64,17 +65,30 @@ export class Autogrammer {
     });
   }
 
-  get model(): Contortionist<ModelProtocol> {
+
+  get pipeline() {
+    return import('https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js')
+      .then((module: typeof transformers) => module.pipeline);
+  }
+
+  get model(): Promise<Contortionist<ModelProtocol>> | Contortionist<ModelProtocol> {
     if (!this.#contortionist) {
-      throw new Error('No model');
-      // const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-      //   initProgressCallback: console.log,
-      // });
-      // // "Llama-3-8B-Instruct-q4f32_1",
-      // // const model = pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0');
-      // this.#contortionist = new Contortionist({
-      //   model,
-      // });
+      return this.pipeline.then(pipeline => {
+        this.#contortionist = new Contortionist({
+          model: pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0'),
+        });
+        return this.#contortionist;
+      });
+      // // import { pipeline, } from '@xenova/transformers'
+      // throw new Error('No model');
+      // // const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
+      // //   initProgressCallback: console.log,
+      // // });
+      // // // "Llama-3-8B-Instruct-q4f32_1",
+      // // // const model = pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0');
+      // // this.#contortionist = new Contortionist({
+      // //   model,
+      // // });
     }
     return this.#contortionist;
   }
@@ -89,7 +103,7 @@ export class Autogrammer {
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     } = {},
   ): Promise<string> {
-    const contortionist = this.model;
+    const contortionist = await this.model;
     contortionist.grammar = getGrammar(this.language, languageOptions);
     const builtPrompt = buildPrompt(prompt, this.language);
     return await contortionist.execute(builtPrompt, {

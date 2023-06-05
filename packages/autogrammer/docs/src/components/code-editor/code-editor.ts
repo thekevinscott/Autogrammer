@@ -158,13 +158,9 @@ export class CodeEditor extends LitElement {
       }
     });
 
-
-
-
-
     const html = document.getElementsByTagName('html')[0];
     this.observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+      mutations.forEach(() => {
         this.mode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
         this.requestUpdate();
       });
@@ -223,6 +219,7 @@ export class CodeEditor extends LitElement {
     this.requestUpdate();
     this.worker.port.postMessage({
       id: `${Math.random()}`,
+      root: window.location.origin,
       script: this.script.value,
     });
   }
@@ -250,9 +247,15 @@ export class CodeEditor extends LitElement {
       >Run <span>(⌘+⏎)</span></sl-button>
       </form>
       <div id="output">
-      ${this.output.map((output) => html`
-        <json-viewer .data=${output}></json-viewer>
-        `)}
+      ${this.output.map((output) => {
+      // <json-viewer .data=${output}></json-viewer>
+      if (typeof output === 'object') {
+        return html`
+          ${JSON.stringify(output)}
+        `;
+      }
+      return output;
+    })}
 
       </div>
       </div>

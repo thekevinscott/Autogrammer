@@ -2,6 +2,7 @@
 // console.log(new Autogrammer({
 //   language: 'json',
 // }))
+import { serializeError, deserializeError } from 'https://cdn.jsdelivr.net/npm/serialize-error/index.js';
 import {
   pipeline,
   env,
@@ -38,7 +39,7 @@ self.onconnect = (e) => {
     post('log', data);
   };
   const error = (...data: unknown[]) => {
-    post('error', data);
+    post('error', data.map(serializeError));
   };
 
   const consoleLog = (...data: unknown[]) => {
@@ -51,16 +52,17 @@ self.onconnect = (e) => {
   port.addEventListener("message", async ({ data }: MessageEvent<{
     id: string;
     script: string;
+    root: string;
   }>) => {
 
-    const id = data.id;
+    const { id, root } = data;
 
     consoleLog(`[${id}] starting cell execution...`);
 
     // TODO: One day it'd be great to resolve this using import maps
     // https://github.com/WICG/import-maps/issues/2
     const MAPPED_NAME: Record<string, string> = {
-      'autogrammer': 'http://localhost:8080/_nm/bundled-autogrammer/dist/index.js',
+      'autogrammer': `${root}/_nm/bundled-autogrammer/dist/index.js`,
       '@xenova/transformers': 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js',
     }
     try {
