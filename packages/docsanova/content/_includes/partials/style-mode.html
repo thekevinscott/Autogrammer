@@ -1,0 +1,36 @@
+<button 
+  id="style-mode"
+  type="button" 
+  title="Switch between dark and light mode (currently dark mode)" 
+  aria-label="Switch between dark and light mode (currently dark mode)" 
+  aria-live="polite"
+>
+  {% include "partials/images/sun.html" %}
+  {% include "partials/images/moon.html" %}
+</button>
+<script type="text/javascript">
+  const styleMode = document.getElementById('style-mode');
+  const sun = document.getElementById('sun');
+  const moon = document.getElementById('moon');
+  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+  const currentTheme = localStorage.getItem('theme');
+  const set = (mode) => {
+    document.documentElement.setAttribute('data-theme', mode);
+    document.body.classList.remove(`sl-theme-light`);
+    document.body.classList.remove(`sl-theme-dark`);
+    document.body.classList.add(`sl-theme-${mode}`);
+    sun.style.display = mode === 'dark' ? 'none' : 'block';
+    moon.style.display = mode === 'dark' ? 'block' : 'none';
+  }
+  set(currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches) ? 'dark' : 'light');
+  styleMode.addEventListener('click', () => {
+    const theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'dark') {
+      localStorage.setItem('theme', 'light');
+      set('light');
+    } else {
+      localStorage.setItem('theme', 'dark');
+      set('dark');
+    }
+  });
+</script>

@@ -1,28 +1,18 @@
 
 <main tabindex="-1" id="home">
+  <div id="left">
   <h1>Autogrammer</h1>
   <h2>Generate syntactically correct code with an LLM.</h2>
+  </div>
   <code-editor>
-const prompt = `Write me JSON that captures the following address. Ensure you include the zip code in the JSON output.
+import { Autogrammer } from 'autogrammer'
 
-Address: 1600 Pennsylvania Avenue NW, Washington, DC 20500`;
+const prompt = `
+Write me JSON that captures the following address. 
+Ensure you include the zip code in the JSON output.
+Address: 1600 Pennsylvania Avenue NW, Washington, DC 20500
+`
 
-console.log('1')
-const result = await grammer.execute(prompt, {
-  languageOptions: {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    number: { type: 'number' },
-    street_name: { type: 'string' },
-    street_type: { enum: ['Street', 'Avenue', 'Boulevard'] },
-  },
-},
-  modelOptions: {
-    callback: console.log,
-  },
-});
-console.log('2')
-console.log('result', result)
+console.log(await grammer.execute(prompt))
 </code-editor>
 </main>

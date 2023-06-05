@@ -56,8 +56,8 @@ export class CodeEditor extends LitElement {
     }
 
     wc-codemirror {
-      border: 1px solid rgba(0,0,0,0.1);
-      border-bottom: 3px solid rgba(0,0,0,0.1);
+      border: 1px solid var(--color-code-editor-border-color);
+      border-bottom: 3px solid var(--color-code-editor-border-color);
       border-radius: 4px 4px 0 0;
       overflow: hidden;
       min-height: 100px;
@@ -65,12 +65,12 @@ export class CodeEditor extends LitElement {
       overflow: scroll;
     }
     #output {
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid var(--color-code-editor-border-color);
       border-top: none;
       border-radius: 0 0 4px 4px;
       overflow: scroll;
       height: 140px;
-      background-color: rgba(0,0,0,0.03);
+      background-color: var(--color-code-editor-output);
       font-family: monospace;
       position: relative;
       padding-left: 10px;
@@ -144,20 +144,9 @@ export class CodeEditor extends LitElement {
     super();
     this.worker.port.start();
     this.worker.port.addEventListener('message', e => {
-      // console.log('message', e.data)
       const { type, data } = JSON.parse(e.data);
-      // console.log(...data, typeof data[0])
-      if (type === 'log') {
-        this.output = [
-          ...this.output,
-          data.length === 1 ? data[0] : data,
-        ];
-        this.requestUpdate();
-      } else if (type === 'error') {
-        this.output = [
-          ...this.output,
-          data.length === 1 ? data[0] : data,
-        ];
+      if (type === 'log' || type === 'error') {
+        this.output.push(data.length === 1 ? data[0] : data);
         this.requestUpdate();
       } else if (type === 'worker-log') {
         console.log(...data);
@@ -166,11 +155,34 @@ export class CodeEditor extends LitElement {
       } else if (type === 'complete') {
         this.running = false;
         this.requestUpdate();
-        //   console.log(data.data);
       }
-      this.requestUpdate();
+    });
+
+
+
+
+
+    const html = document.getElementsByTagName('html')[0];
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        this.mode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        this.requestUpdate();
+      });
+    });
+    this.observer.observe(html, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
     });
   }
+
+  mode: 'light' | 'dark' = 'light';
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.observer.disconnect();
+  }
+
+  observer: MutationObserver;
 
   ref: Ref<WCCodeMirror> = createRef();
 
@@ -182,24 +194,10 @@ export class CodeEditor extends LitElement {
     return script;
   }
 
-  // @state()
-  // lineNumbers = 5;
-
-  @state()
-  scriptValue = '';
-
-  set script(textContent: string) {
-    this.script.value = textContent;
-    this.scriptValue = textContent;
-    // // TODO: Why is a state update not triggering a re-render?
-    // this.lineNumbers = textContent.split('\n').length;
-    // this.requestUpdate();
-  }
-
   handleSlotchange(e: Event) {
     const target = e.target as HTMLSlotElement;
     const childNodes = target.assignedNodes({ flatten: true });
-    this.script = childNodes.map((node) => typeof node === 'string' ? node : node.textContent ? node.textContent : '').join('');
+    this.script.value = childNodes.map((node) => typeof node === 'string' ? node : node.textContent ? node.textContent : '').join('').trim();
   }
 
   handleSubmit = (e: Event) => {
@@ -234,7 +232,11 @@ export class CodeEditor extends LitElement {
     <div id="container" @keydown=${this.handleKeydown}>
     <div id="codemirror-container">
 
-      <wc-codemirror mode="javascript" theme="neo" ${ref(this.ref)} >
+      <wc-codemirror 
+        mode="javascript" 
+        theme="${this.mode === 'dark' ? 'seti' : 'neo'}" 
+        ${ref(this.ref)}
+       >
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
       </wc-codemirror>

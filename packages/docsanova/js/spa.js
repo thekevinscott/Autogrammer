@@ -21,20 +21,21 @@ const loadAndPopulate = async (href, pushState) => {
   }
   try {
     const d = await load(href);
+    console.log('d', d);
     const dDocument = getDocument(d);
+    console.log(dDocument)
     const dTitle = dDocument.title || '';
-    const dContainer = $('#container', dDocument);
-    container.innerHTML = (dContainer && dContainer.innerHTML) || '';
-    // document.write(d);
-    // container.innerText = d;
-    // document.title = dTitle;
+    const container = $('#container', dDocument);
+    console.log(container);
+    container.innerHTML = (container && container.innerHTML) || '';
     if (pushState) {
       history.pushState({}, dTitle, href);
     }
     $('#container').focus();
-    // container.focus();
     window.scrollTo(0, 0);
   } catch (err) {
+    console.log('err!');
+    debugger;
     document.location.href = href;
   }
 };

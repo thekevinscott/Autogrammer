@@ -1,19 +1,33 @@
 {
   "name": "TEST",
-  "nav": [
-    {
-      "text": "Autogrammer",
-      "url": "/"
-    },
-    {
-      "text": "Docs",
-      "url": "/docs/"
-    },
-    {
-      "text": "Demos",
-      "url": "/demos/"
-    }
-  ],
+  "nav": {
+    "left": [
+      {
+        "text": "Autogrammer",
+        "url": "/"
+      },
+      {
+        "text": "Docs",
+        "url": "/docs/"
+      },
+      {
+        "text": "Demos",
+        "url": "/demos/"
+      }
+    ],
+    "right": [
+      {
+        "url": "https://npmjs.com/package/autogrammer",
+        "text": "npm",
+        "label": "Autogrammer NPM package"
+      },
+      {
+        "url": "https://github.com/thekevinscott/Autogrammer",
+        "text": "GitHub",
+        "label": "Autogrammer GitHub repository"
+      }
+    ]
+  },
   "internals": {
     "node_modules": "_nm"
   }
