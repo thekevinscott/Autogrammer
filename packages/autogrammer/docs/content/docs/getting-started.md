@@ -4,7 +4,6 @@ layout: 'layouts/page.html'
 displayOrder: 2
 ---
 
-
 ## Installation
 
 You can install `autogrammer` with:

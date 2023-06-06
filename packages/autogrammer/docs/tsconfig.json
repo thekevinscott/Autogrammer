@@ -8,6 +8,7 @@
     "module": "nodenext",
     "target": "esnext",
     "moduleResolution": "NodeNext",
+    "useDefineForClassFields": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,

@@ -39,16 +39,13 @@ export class ThemeToggle extends LitElement {
   };
 
   @state()
-  theme: string;
-
-  @state()
-  prefersDarkScheme: MediaQueryList;
+  protected theme: string;
 
   constructor() {
     super();
-    this.prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     this.theme = localStorage.getItem('theme') || 'light';
-    this.setTheme(this.theme === 'dark' || (!this.theme && this.prefersDarkScheme.matches) ? 'dark' : 'light');
+    this.setTheme(this.theme === 'dark' || (!this.theme && prefersDarkScheme.matches) ? 'dark' : 'light');
   }
 
   setTheme = (mode: 'light' | 'dark') => {
@@ -58,7 +55,6 @@ export class ThemeToggle extends LitElement {
     document.body.classList.add(`sl-theme-${mode}`);
     localStorage.setItem('theme', mode);
     this.theme = mode;
-    this.requestUpdate();
   }
 
   click = () => {

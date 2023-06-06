@@ -147,31 +147,27 @@ export class CodeEditor extends LitElement {
       const { type, data } = JSON.parse(e.data);
       if (type === 'log' || type === 'error') {
         this.output.push(data.length === 1 ? data[0] : data);
-        this.requestUpdate();
       } else if (type === 'worker-log') {
         console.log(...data);
       } else if (type === 'worker-error') {
         console.error(...data);
       } else if (type === 'complete') {
         this.running = false;
-        this.requestUpdate();
       }
     });
 
     const html = document.getElementsByTagName('html')[0];
-    this.observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        this.mode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-        this.requestUpdate();
-      });
-    });
+    this.observer = new MutationObserver((mutations) => mutations.forEach(() => {
+      this.mode = html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }));
     this.observer.observe(html, {
       attributes: true,
       attributeFilter: ['data-theme'],
     });
   }
 
-  mode: 'light' | 'dark' = 'light';
+  @state()
+  protected mode: 'light' | 'dark' = 'light';
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -216,7 +212,6 @@ export class CodeEditor extends LitElement {
   execute = async () => {
     this.running = true;
     this.output = [];
-    this.requestUpdate();
     this.worker.port.postMessage({
       id: `${Math.random()}`,
       root: window.location.origin,
@@ -225,42 +220,43 @@ export class CodeEditor extends LitElement {
   }
 
   protected render() {
+    console.log('in render, the mode', this.mode);
     return html`
-    <div id="container" @keydown=${this.handleKeydown}>
-    <div id="codemirror-container">
+      <div id="container" @keydown=${this.handleKeydown}>
+      <div id="codemirror-container">
 
-      <wc-codemirror 
-        mode="javascript" 
-        theme="${this.mode === 'dark' ? 'seti' : 'neo'}" 
-        ${ref(this.ref)}
-       >
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
-      </wc-codemirror>
-      </div>
-      <form @submit=${this.handleSubmit}>
-      <sl-button 
-        type="submit"
-        variant="default" 
-        id="run" 
-        ?loading=${this.running}
-      >Run <span>(⌘+⏎)</span></sl-button>
-      </form>
-      <div id="output">
-      ${this.output.map((output) => {
+        <wc-codemirror 
+          mode="javascript" 
+          theme="${this.mode === 'dark' ? 'seti' : 'neo'}" 
+          ${ref(this.ref)}
+        >
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
+        </wc-codemirror>
+        </div>
+        <form @submit=${this.handleSubmit}>
+        <sl-button 
+          type="submit"
+          variant="default" 
+          id="run" 
+          ?loading=${this.running}
+        >Run <span>(⌘+⏎)</span></sl-button>
+        </form>
+        <div id="output">
+        ${this.output.map((output) => {
       // <json-viewer .data=${output}></json-viewer>
       if (typeof output === 'object') {
         return html`
-          ${JSON.stringify(output)}
-        `;
+            ${JSON.stringify(output)}
+          `;
       }
       return output;
     })}
 
-      </div>
-      </div>
-      <slot @slotchange=${this.handleSlotchange}></slot>
-    `;
+        </div>
+        </div>
+        <slot @slotchange=${this.handleSlotchange}></slot>
+      `;
 
   }
 }
