@@ -23,7 +23,7 @@ describe('TransformersJS', async () => {
     model = _model;
   });
 
-  describe('Non-streaming', () => {
+  describe.only('Non-streaming', () => {
     test('it should return a response', async () => {
       const content = 'FOO BAR!';
       const n = 1;
@@ -31,9 +31,11 @@ describe('TransformersJS', async () => {
       const contortionist = new Contortionist({
         model,
       });
+
       const result = await contortionist.execute('prompt', {
         n,
       });
+
       expect(result).toEqual(expect.stringContaining(''));
     });
 

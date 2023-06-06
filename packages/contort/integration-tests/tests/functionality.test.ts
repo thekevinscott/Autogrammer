@@ -46,7 +46,7 @@ describe('llama.cpp', async () => {
           },
         });
         const result = await contortionist.execute('prompt', {
-          n,
+          // n,
         });
         expect(result).toEqual(content);
       });

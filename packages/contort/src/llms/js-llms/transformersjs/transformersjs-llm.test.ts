@@ -1,3 +1,9 @@
+import {
+  describe,
+  test,
+  expect,
+  afterEach,
+} from 'vitest';
 import * as _GrammarParser from './grammar-parser/index.js';
 
 import { TransformersJSLLM } from './transformersjs-llm.js';

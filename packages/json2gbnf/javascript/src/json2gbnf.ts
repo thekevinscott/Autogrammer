@@ -21,10 +21,10 @@ import {
 import {
   joinWith,
 } from 'gbnf/builder-v1';
+import {
+  _,
+} from 'gbnf/builder-v2';
 
-// https://json-schema.org/understanding-json-schema/basics
-// false will always be invalid
-export const BLANK_GRAMMAR = `root ::= ""`;
 
 export const ROOT_ID = 'jsontogbnf';
 
@@ -37,7 +37,9 @@ export function JSON2GBNF<T extends JSONSchema>(
   //   throw new Error('Bad schema provided');
   // }
   if (schema === false) {
-    return BLANK_GRAMMAR;
+    // https://json-schema.org/understanding-json-schema/basics
+    // false will always be invalid
+    return _`""`.compile();
   }
   if (schema !== true && schema !== null && schema !== undefined && hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);

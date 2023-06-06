@@ -7,6 +7,7 @@ export interface LlamaCPPExecuteOptions<S extends boolean> extends InternalExecu
 export type LlamaCPPPrompt = string;
 
 export interface LlamaCPPCallOpts {
+  n_predict?: number;
   prompt: string;
   grammar: string;
   stream: boolean;

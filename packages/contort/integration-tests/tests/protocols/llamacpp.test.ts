@@ -1,5 +1,7 @@
 import Contortionist from "contort";
-import { vi, } from "vitest";
+import {
+  vi,
+} from "vitest";
 import { setLogLevel, } from 'testeroni';
 import {
   makeLlamaCPPResponse,
@@ -29,7 +31,7 @@ describe('llama.cpp', async () => {
   describe('Non-streaming', () => {
     test('it should return a response', async () => {
       const content = 'FOO BAR!';
-      const n = 10;
+      const n_predict = 10;
       const { endpoint, mockLLMAPI } = configureNonStreamingServer(content);
       _mockLLMAPI = mockLLMAPI;
 
@@ -40,7 +42,7 @@ describe('llama.cpp', async () => {
         },
       });
       const result = await contortionist.execute('prompt', {
-        n,
+        n_predict,
       });
       expect(result).toEqual(content);
     });
@@ -74,7 +76,7 @@ describe('llama.cpp', async () => {
         resolveCatchPromise();
       });
       contortionist.execute('prompt', {
-        n: 10,
+        n_predict: 10,
         signal: abortController.signal,
       }).then(resultFn).catch(catchFn);
       await serverCalledPromise;

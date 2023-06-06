@@ -27,6 +27,7 @@ const prompt = `Return the following address in a JSON object:
 "1600 Pennsylvania Avenue NW, Washington, DC 20500"`
 
 const result = await autogrammer.execute(prompt)
+console.log(result)
 console.log(JSON.parse(result))
 ```
 
