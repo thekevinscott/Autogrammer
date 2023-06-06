@@ -1,5 +1,6 @@
 import {
   LitElement,
+  PropertyValueMap,
   css,
   html
 } from 'lit';
@@ -17,6 +18,7 @@ import '@alenaksu/json-viewer';
 // import "https://cdn.jsdelivr.net/gh/vanillawc/wc-code@1.0.3/src/wc-code.js";
 // import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
 import { liveExecute } from './live-execute.js';
+import { CodeEditorCodeMirror } from './code-mirror.js';
 // import type { WCCodeMirror } from '@vanillawc/wc-codemirror';
 // import * as webllm from "@mlc-ai/web-llm";
 // console.log('pipeline', pipeline)
@@ -126,7 +128,7 @@ export class CodeEditor extends LitElement {
       opacity: 0.6;
     }
     .cm-s-neo .CodeMirror-cursor {
-      border-left: 1px solid red;
+      // border-left: 1px solid red;
       background: transparent;
     }
   `;
@@ -142,19 +144,7 @@ export class CodeEditor extends LitElement {
 
   constructor() {
     super();
-    this.worker.port.start();
-    this.worker.port.addEventListener('message', e => {
-      const { type, data } = JSON.parse(e.data);
-      if (type === 'log' || type === 'error') {
-        this.output.push(data.length === 1 ? data[0] : data);
-      } else if (type === 'worker-log') {
-        console.log(...data);
-      } else if (type === 'worker-error') {
-        console.error(...data);
-      } else if (type === 'complete') {
-        this.running = false;
-      }
-    });
+    this.startWorker();
 
     const html = document.getElementsByTagName('html')[0];
     this.observer = new MutationObserver((mutations) => mutations.forEach(() => {
@@ -166,8 +156,29 @@ export class CodeEditor extends LitElement {
     });
   }
 
+  startWorker = () => {
+    this.worker.port.start();
+    this.worker.port.addEventListener('message', e => {
+      const { type, data, threadID } = JSON.parse(e.data);
+      if (type === 'log' || type === 'error') {
+        if (threadID === this.threadID) {
+          this.output.push(data.length === 1 ? data[0] : data);
+          // Because we are mutating output
+          this.requestUpdate();
+        }
+      } else if (type === 'worker-log') {
+        console.log(...data);
+      } else if (type === 'worker-error') {
+        console.error(...data);
+      } else if (type === 'complete' && threadID === this.threadID) {
+        this.running = false;
+      }
+    });
+
+  }
+
   @state()
-  protected mode: 'light' | 'dark' = 'light';
+  protected mode?: 'light' | 'dark';
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -175,22 +186,6 @@ export class CodeEditor extends LitElement {
   }
 
   observer: MutationObserver;
-
-  ref: Ref<WCCodeMirror> = createRef();
-
-  get script(): WCCodeMirror {
-    const script = this.ref.value;
-    if (!script) {
-      throw new Error('CodeMirror not found');
-    }
-    return script;
-  }
-
-  handleSlotchange(e: Event) {
-    const target = e.target as HTMLSlotElement;
-    const childNodes = target.assignedNodes({ flatten: true });
-    this.script.value = childNodes.map((node) => typeof node === 'string' ? node : node.textContent ? node.textContent : '').join('').trim();
-  }
 
   handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -209,38 +204,65 @@ export class CodeEditor extends LitElement {
   @state()
   protected running = false;
 
+  @state()
+  protected threadID = '';
+
   execute = async () => {
-    this.running = true;
-    this.output = [];
-    this.worker.port.postMessage({
-      id: `${Math.random()}`,
-      root: window.location.origin,
-      script: this.script.value,
-    });
+    if (this.running) {
+      this.running = false;
+      this.worker.port.postMessage({
+        threadID: this.threadID,
+        type: 'abort',
+      });
+      this.threadID = '';
+    } else {
+      this.running = true;
+      this.output = [];
+      this.threadID = `${Math.random()}`;
+      this.worker.port.postMessage({
+        threadID: this.threadID,
+        type: 'start',
+        root: window.location.origin,
+        script: this.ref.value?.script,
+      });
+    }
   }
+
+  @state()
+  protected hover = false;
+
+  mouseover = () => {
+    if (this.running) {
+      this.hover = true;
+    }
+  }
+  mouseout = () => {
+    this.hover = false;
+  }
+
+  ref: Ref<CodeEditorCodeMirror> = createRef();
 
   protected render() {
     console.log('in render, the mode', this.mode);
     return html`
       <div id="container" @keydown=${this.handleKeydown}>
       <div id="codemirror-container">
-
-        <wc-codemirror 
-          mode="javascript" 
-          theme="${this.mode === 'dark' ? 'seti' : 'neo'}" 
+        <code-editor-wc-codemirror
+          theme="${this.mode}"
           ${ref(this.ref)}
         >
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/neo.css">
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vanillawc/wc-codemirror/theme/seti.css">
-        </wc-codemirror>
+          <slot></slot>
+        </code-editor-wc-codemirror>
         </div>
         <form @submit=${this.handleSubmit}>
         <sl-button 
           type="submit"
           variant="default" 
           id="run" 
-          ?loading=${this.running}
-        >Run <span>(⌘+⏎)</span></sl-button>
+          ?loading=${this.running && this.hover === false}
+          @mouseover=${this.mouseover}
+          @mouseout=${this.mouseout}
+        >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
         </form>
         <div id="output">
         ${this.output.map((output) => {
@@ -255,7 +277,6 @@ export class CodeEditor extends LitElement {
 
         </div>
         </div>
-        <slot @slotchange=${this.handleSlotchange}></slot>
       `;
 
   }
