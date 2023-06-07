@@ -1,79 +1,85 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, test } from 'vitest';
 import { parseString } from './parse-string.js';
+import GBNF, { InputParseError } from 'gbnf';
 import {
-  CHAR_KEY,
-  QUOTE_KEY,
-  STRING_KEY,
-} from '../constants/grammar-keys.js';
-import { JSONSchemaString } from '../types.js';
+  _
+} from 'gbnf/builder-v2';
 
 describe('parseString', () => {
-  it('should return STRING_KEY when minLength and maxLength are undefined', () => {
-    expect(parseString({} as JSONSchemaString)).toBe(STRING_KEY);
-  });
-
-  it('should throw an error when pattern is defined', () => {
-    const schema = {
-      pattern: '^[a-z]+$',
-    };
-    expect(() => parseString(schema as JSONSchemaString)).toThrowError('pattern is not supported');
-  });
-
-  it('should throw an error when format is defined', () => {
-    const schema = {
-      format: 'email',
-    };
-    expect(() => parseString(schema as JSONSchemaString)).toThrowError('format is not supported');
-  });
-
-  it('should throw an error when minLength is greater than maxLength', () => {
-    const schema = {
-      minLength: 5,
-      maxLength: 3,
-    };
-    expect(() => parseString(schema as JSONSchemaString)).toThrowError('minLength must be less than or equal to maxLength');
-  });
-
-  it('should return the correct string when minLength and maxLength are defined', () => {
-    const schema = {
+  test.each([
+    [{}, 'foo',],
+    [{
+      minLength: 2,
+    }, 'fo',],
+    [{
+      minLength: 2,
+    }, 'fooooo',],
+    [{
+      maxLength: 2,
+    }, 'f',],
+    [{
+      maxLength: 2,
+    }, 'fo',],
+    [{
+      minLength: 0,
+    }, '',],
+    [{
+      maxLength: 0,
+    }, '',],
+    [{
+      minLength: 2,
+      maxLength: 2,
+    }, 'fo',],
+    [{
       minLength: 2,
       maxLength: 5,
-    };
-    const expected = `${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`;
-    expect(parseString(schema as JSONSchemaString)).toBe(expected);
+    }, 'fo',],
+    [{
+      minLength: 2,
+      maxLength: 5,
+    }, 'foo',],
+    [{
+      minLength: 2,
+      maxLength: 5,
+    }, 'foooo',],
+
+  ])(`should process schema '%s' and initial string '%s'`, (schema, initial) => {
+    expect(() => {
+      const grammar = parseString({
+        type: 'string',
+        ...schema,
+      }).compile();
+      return GBNF(
+        grammar,
+        JSON.stringify(initial),
+      );
+    }).not.toThrow();
   });
 
-  it('should return the correct string when only minLength is defined', () => {
-    const schema = {
-      minLength: 3,
-    };
-    const expected = `${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`;
-    expect(parseString(schema as JSONSchemaString)).toBe(expected);
+  test.each([
+    ['pattern is defined', { pattern: '^[a-z]+$', }, 'pattern is not supported',],
+    ['format is defined', { format: 'email' }, 'format is not supported'],
+    ['minLength is greater than maxLength', { minLength: 5, maxLength: 3 }, 'minLength must be less than or equal to maxLength'],
+  ])('should throw an error when %s', (_s, schema, error) => {
+    expect(() => parseString({
+      type: 'string',
+      ...schema,
+    })).toThrowError(error);
   });
 
-  it('should return the correct string when only maxLength is defined', () => {
-    const schema = {
-      maxLength: 4,
-    };
-    const expected = `${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`;
-    expect(parseString(schema as JSONSchemaString)).toBe(expected);
+  test.each([
+    [{ minLength: 2, maxLength: 3 }, `f`, 2],
+    [{ minLength: 2, maxLength: 4 }, `foooo'`, 5],
+  ])('should throw an error when %s', (schema, initial, errorPos) => {
+    const error = new InputParseError(JSON.stringify(initial), errorPos);
+    expect(() => {
+      const grammar = _`${parseString({
+        type: 'string',
+        ...schema,
+      })} `.compile();
+      return GBNF(grammar, JSON.stringify(initial),
+      );
+    }).toThrowError(error);
   });
 
-  it('should return the correct string when minLength is 0', () => {
-    const schema = {
-      minLength: 0,
-      maxLength: 3,
-    };
-    const expected = `${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`;
-    expect(parseString(schema as JSONSchemaString)).toBe(expected);
-  });
-
-  it('should return the correct string when maxLength is 0', () => {
-    const schema = {
-      minLength: 0,
-      maxLength: 0,
-    };
-    const expected = `${QUOTE_KEY} ${QUOTE_KEY}`;
-    expect(parseString(schema as JSONSchemaString)).toBe(expected);
-  });
 });

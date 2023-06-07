@@ -1,9 +1,10 @@
-export const getAllPermutations = (array: string[], required: string[] = []): string[][] => {
-  const result: string[][] = [];
+const DEFAULT_FILTER = () => true;
+export function getAllPermutations<T>(array: T[], filter: (p: T[], key: string) => boolean = DEFAULT_FILTER, required: string[] = []): T[][] {
+  const permutations: T[][] = [];
 
-  function generate(current: string[], remaining: string[]) {
+  function generate(current: T[], remaining: T[]) {
     if (current.length > 0) {
-      result.push([...current,]);
+      permutations.push([...current,]);
     }
     for (let i = 0; i < remaining.length; i++) {
       current.push(remaining[i]);
@@ -14,12 +15,12 @@ export const getAllPermutations = (array: string[], required: string[] = []): st
 
   generate([], array);
   if (required.length === 0) {
-    return result;
+    return permutations;
   }
-  const filteredPermutations = result.filter(permutation => {
+  const filteredPermutations = permutations.filter(permutation => {
     let valid = true;
     for (const key of required) {
-      if (!permutation.includes(key)) {
+      if (!filter(permutation, key)) {
         valid = false;
         break;
       }

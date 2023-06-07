@@ -1,13 +1,24 @@
-import { QUOTE_KEY, } from "../constants/grammar-keys.js";
-import {
-  AddRule,
-  join,
-} from "gbnf/builder-v1";
 import {
   JSONSchemaObjectValueEnum,
 } from "../types.js";
+import {
+  quote,
+} from '../constants.js';
+import {
+  GBNFRule,
+  _,
+} from 'gbnf/builder-v2';
 
 export const parseEnum = (
   schema: JSONSchemaObjectValueEnum,
-  addRule: AddRule,
-) => addRule(schema.enum.map(value => join(QUOTE_KEY, `"${value}"`, QUOTE_KEY)).join(' | '));
+): GBNFRule => {
+  if (schema.enum.length === 0) {
+    throw new Error('Enum must have at least one value');
+  }
+  return _`${schema.enum.map(value => {
+    if (typeof value === 'string') {
+      return _`${quote} ${JSON.stringify(value)} ${quote}`;
+    }
+    return _`"${JSON.stringify(value)}"`;
+  })}`.separate(' | ');
+};

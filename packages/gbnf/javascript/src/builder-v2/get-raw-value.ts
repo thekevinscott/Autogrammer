@@ -1,35 +1,29 @@
 import { isWhitespace, } from "./is-whitespace.js";
 
-export const getRawValue = (value: string) => {
+export const getRawValue = (value: string, inQuote = false): {
+  str: string;
+  inQuote: boolean;
+} => {
   let str = '';
   let i = 0;
-  while (isWhitespace(value[i])) {
-    i += 1;
-  }
-  let inQuote = false;
   while (i < value.length) {
-    if (inQuote === false) {
-      let encounteredWhitespace = false;
-      while (i < value.length && isWhitespace(value[i])) {
-        i += 1;
-        encounteredWhitespace = true;
-      }
-      if (i >= value.length) {
-        break;
-      }
-      if (encounteredWhitespace) {
-        str += " ";
-      }
-    }
     if (value[i] === '"' && (i >= 0 && value[i - 1] !== '\\')) {
       inQuote = !inQuote;
     }
-    if (value[i] === '\n') {
-      str += '\\n';
-    } else {
-      str += value[i];
+    if (inQuote) {
+      if (value[i] === '\n') {
+        str += '\\n';
+      } else {
+        str += value[i];
+      }
+    } else if (!isWhitespace(value[i]) || !isWhitespace(str[str.length - 1])) {
+      if (value[i] === '\n') {
+        str += ' ';
+      } else {
+        str += value[i];
+      }
     }
     i += 1;
   }
-  return str;
+  return { str, inQuote, };
 };

@@ -12,10 +12,12 @@ import type {
   JSONSchemaObjectValueConst,
   JSONSchemaObjectValueEnum,
   JSONSchemaString,
+  PrimitiveType,
 } from "./types.js";
 
 const isObject = (schema: unknown): schema is Record<string, unknown> => typeof schema === 'object' && schema !== null;
 
+export const isPrimitive = (val: string): val is PrimitiveType => ['string', 'number', 'boolean', 'null', 'object', 'array',].includes(val);
 export const isSchemaMultipleBasicTypes = (
   schema: unknown
 ): schema is JSONSchemaMultipleBasicTypes => isObject(schema) && 'type' in schema && Array.isArray(schema['type']);

@@ -1,10 +1,4 @@
 import {
-  GLOBAL_CONSTANTS,
-} from './constants/constants.js';
-import {
-  VALUE_KEY,
-} from './constants/grammar-keys.js';
-import {
   Grammar as Grammar,
 } from './grammar.js';
 import {
@@ -13,52 +7,53 @@ import {
 } from './type-guards.js';
 import {
   type JSONSchema,
-  type SchemaOpts,
+  type JSON2GBNFOpts,
 } from './types.js';
 import {
   parse,
 } from './utils/parse.js';
 import {
-  joinWith,
-} from 'gbnf/builder-v1';
-import {
   _,
 } from 'gbnf/builder-v2';
+import {
+  value,
+} from './constants.js';
 
-
-export const ROOT_ID = 'jsontogbnf';
+const DEFAULT_SCHEMA = {
+  type: 'object',
+};
 
 export function JSON2GBNF<T extends JSONSchema>(
   // eslint-disable-next-line @typescript-eslint/ban-types
-  schema?: {} | null | T | boolean,
-  opts?: SchemaOpts,
+  schema: {} | null | T | boolean = DEFAULT_SCHEMA,
+  {
+    fixedOrder,
+  }: JSON2GBNFOpts = {},
 ): string {
-  // if (schema === null || schema === undefined) {
-  //   throw new Error('Bad schema provided');
-  // }
   if (schema === false) {
     // https://json-schema.org/understanding-json-schema/basics
     // false will always be invalid
     return _`""`.compile();
   }
-  if (schema !== true && schema !== null && schema !== undefined && hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
+  if (hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
 
-  const parser = new Grammar(opts);
-  if (schema === true || schema === undefined || schema === null || isEmptyObject(schema)) {
-    parser.addRule(VALUE_KEY, ROOT_ID);
-  } else {
-    parse(
-      parser,
-      schema,
-      ROOT_ID,
-    );
+  const parser = new Grammar({
+    fixedOrder,
+  });
+
+  if (schema === true || schema === null || isEmptyObject(schema)) {
+    return _`${value}`.compile();
   }
 
-  return joinWith('\n',
-    `root ::= ${ROOT_ID}`,
-    ...parser.grammar,
-    ...GLOBAL_CONSTANTS,
+  const rule = parse(
+    parser,
+    schema,
   );
+  return rule.compile({
+    rules: [
+      value,
+    ],
+  });
 };

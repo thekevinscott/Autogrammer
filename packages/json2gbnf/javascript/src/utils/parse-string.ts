@@ -1,12 +1,15 @@
 import {
-  CHAR_KEY,
-  QUOTE_KEY,
-  STRING_KEY,
-} from "../constants/grammar-keys.js";
-import { join, } from "gbnf/builder-v1";
+  GBNFRule,
+  _,
+} from "gbnf/builder-v2";
 import { JSONSchemaString, } from "../types.js";
+import {
+  char,
+  quote,
+  string,
+} from "../constants.js";
 
-export const parseString = (schema: JSONSchemaString): string => {
+export const parseString = (schema: JSONSchemaString): GBNFRule => {
   const { format, pattern, minLength, maxLength, } = schema;
   if (pattern !== undefined) {
     throw new Error('pattern is not supported');
@@ -15,29 +18,32 @@ export const parseString = (schema: JSONSchemaString): string => {
     throw new Error('format is not supported');
   }
 
-  if (minLength !== undefined && maxLength !== undefined) {
+
+  if (minLength && maxLength) {
     if (minLength > maxLength) {
       throw new Error('minLength must be less than or equal to maxLength');
     }
-    return join(
-      QUOTE_KEY,
-      Array(minLength).fill(CHAR_KEY).join(' '),
-      Array(maxLength - minLength).fill(`(${CHAR_KEY})?`).join(' '),
-      QUOTE_KEY,
-    );
-  } else if (maxLength === undefined && minLength !== undefined) {
-    return join(
-      QUOTE_KEY,
-      Array(minLength - 1).fill(CHAR_KEY).join(' '),
-      `(${CHAR_KEY})+`,
-      QUOTE_KEY,
-    );
-  } else if (minLength === undefined && maxLength !== undefined) {
-    return join(
-      QUOTE_KEY,
-      `${Array(maxLength).fill(`(${CHAR_KEY})?`).join(' ')}`,
-      QUOTE_KEY,
-    );
+    const minChars = Array<GBNFRule>(minLength).fill(char);
+    const maxChars = Array<GBNFRule>(maxLength - minLength).fill(char.wrap('?'));
+    return _`
+      ${quote}
+      ${[...minChars, ...maxChars,]}
+      ${quote}
+    `;
+  } else if (minLength) {
+    return _`
+      ${quote}
+      ${Array(minLength - 1).fill(char)}
+      ${char.wrap('+')}
+      ${quote}
+    `;
+  } else if (maxLength) {
+    const rule = _`
+      ${quote}
+      ${Array(maxLength).fill(char.wrap('?'))}
+      ${quote}
+    `;
+    return rule;
   }
-  return STRING_KEY;
+  return string;
 };

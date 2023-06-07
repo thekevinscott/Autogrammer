@@ -1,53 +1,248 @@
 import {
   describe,
+  test,
   afterEach,
   it,
   expect,
   vi,
+  beforeEach,
 } from 'vitest';
 import {
   parseObject,
 } from './parse-object.js';
-import {
-  COLON_KEY,
-  COMMA_KEY,
-  LEFT_BRACE_KEY,
-  OBJECT_KEY,
-  QUOTE_KEY,
-  RIGHT_BRACE_KEY,
-  STRING_KEY,
-  VALUE_KEY,
-} from '../constants/grammar-keys.js';
 import { getMockGrammar } from './__mocks__/get-mock-grammar.js';
 import { JSONSchemaObject } from '../types.js';
-
 import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { join, joinPipe } from 'gbnf/builder-v1';
-import { OBJECT_KEY_DEF } from './get-property-definition.js';
+import {
+  _,
+} from 'gbnf/builder-v2';
+import GBNF from 'gbnf';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
   return {
     ...actual,
-    parseType: vi.fn(() => 'parsedType'),
+    parseType: vi.fn(),
   };
 });
 
 describe('parseObject', () => {
+  beforeEach(() => {
+    vi.mocked(parseType).mockImplementation((_grammar, key) => {
+      if (key.type === 'string') {
+        return _`"\\"" [a-z]+ "\\"" `;
+      }
+      return _`[0-9]+`;
+    });
+  });
+
   afterEach(() => {
     vi.resetAllMocks();
   });
 
-  it('should return OBJECT_KEY if properties is undefined', () => {
-    const schema = {} as JSONSchemaObject;
-    const mockGrammar = getMockGrammar();
-    expect(parseObject(mockGrammar, schema)).toBe(OBJECT_KEY);
-    expect(mockGrammar.addRule).not.toHaveBeenCalled();
-    expect(mockGrammar.getConst).not.toHaveBeenCalled();
-    expect(parseType).not.toHaveBeenCalled();
+  test(`it should parse an empty schema`, () => {
+    const mockGrammar = getMockGrammar({
+      fixedOrder: false,
+    });
+    const rule = parseObject(mockGrammar, { type: 'object' });
+    if (typeof rule === 'string') {
+      throw new Error('Expected rule to be a GBNFRule');
+    }
+    expect(() => GBNF([
+      rule.compile(),
+      `value ::= ""`,
+    ].join('\n'), '{}')).not.toThrow();
+  });
+
+  test.each([
+    ...[
+      '{',
+      '{}',
+      '{"',
+      '{"foy"',
+      '{"foy":',
+      '{"foy":"',
+      '{"foy":"baz',
+      '{"foy":"baz"',
+      '{"foy":"baz",',
+      '{"foy":"baz","bar"',
+      '{"foy":"baz","bar":',
+      '{"foy":"baz","bar":123',
+      '{"foy":"baz","bar":123}',
+      '{"bar"',
+      '{"bar":',
+      '{"bar":123',
+      '{"bar":123,',
+      '{"bar":123,"foy"',
+      '{"bar":123,"foy":',
+      '{"bar":123,"foy":"baz',
+      '{"bar":123,"foy":"baz"',
+      '{"bar":123,"foy":"baz"}',
+      '{"foy":"baz"}',
+      '{"bar":123}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foy: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        additionalProperties: false,
+      }, val,
+    ])),
+    ...[
+      '{',
+      '{"',
+      '{"foo"',
+      '{"foo":',
+      '{"foo":"',
+      '{"foo":"baz',
+      '{"foo":"baz"',
+      '{"foo":"baz",',
+      '{"foo":"baz","bar"',
+      '{"foo":"baz","bar":',
+      '{"foo":"baz","bar":123',
+      '{"foo":"baz","bar":123}',
+      '{"bar"',
+      '{"bar":',
+      '{"bar":123',
+      '{"bar":123,',
+      '{"bar":123,"foo"',
+      '{"bar":123,"foo":',
+      '{"bar":123,"foo":"baz',
+      '{"bar":123,"foo":"baz"',
+      '{"bar":123,"foo":"baz"}',
+      '{"foo":"baz"}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        additionalProperties: false,
+        requiredProperties: ['foo'],
+      }, val,
+    ])),
+    ...[
+      '{"bax"',
+      '{"fox":"',
+      '{"foo":"por",',
+      '{"foo":"baz","baz":"qux","poo":123,"bar":123}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {},
+        additionalProperties: true,
+      }, val,
+    ])),
+    ...[
+      '{',
+      '{"',
+      '{"bay"',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+        },
+        additionalProperties: true,
+      }, val,
+    ])),
+    ...[
+      '{',
+      '{"',
+      '{"bay"',
+      '{"bay":',
+      '{"bayy":"',
+      '{"bay":"baz',
+      '{"bay":"baz","baz":"qux"',
+      '{"foo":"baz","baz":"qux","pop":123,"bar":123}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        additionalProperties: true,
+      }, val,
+    ])),
+  ] as [JSONSchemaObject, string][])(`it should parse '%s' for '%s'`, (schema, initial) => {
+    const mockGrammar = getMockGrammar({
+      fixedOrder: false,
+    });
+    const rule = parseObject(mockGrammar, schema);
+    if (typeof rule === 'string') {
+      throw new Error('Expected rule to be a GBNFRule');
+    }
+    expect(() => {
+      const grammar = rule.compile();
+      // console.log(grammar);
+      GBNF(grammar, initial);
+    }).not.toThrow();
+  });
+
+
+  test.each([
+    [{ type: 'object' }, '{}'],
+    ...[
+      '{',
+      '{}',
+      '{"foo":"a","qrx":1}',
+      '{"qrx":1}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+          baz: { type: 'number', },
+          qrx: { type: 'number', },
+        },
+        additionalProperties: false,
+      },
+      val,
+    ])),
+    ...[
+      '{',
+      '{}',
+      '{"foo"',
+      '{"foo":',
+      '{"foo":"baz"',
+      '{"foo":"baz",',
+      '{"foo":"baz","bar"',
+      '{"foo":"baz","bar":',
+      '{"foo":"baz","bar":123',
+      '{"foo":"baz","bar":123}',
+    ].map(val => ([
+      {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        additionalProperties: false,
+      },
+      val,
+    ])),
+  ] as [JSONSchemaObject, string][])(`it should parse fixed order for '%s' for '%s'`, (schema, initial) => {
+    const mockGrammar = getMockGrammar({
+      fixedOrder: true,
+    });
+    const rule = parseObject(mockGrammar, schema);
+    if (typeof rule === 'string') {
+      throw new Error('Expected rule to be a GBNFRule');
+    }
+    const grammar = rule.compile();
+    // console.log(grammar);
+    expect(() => GBNF([
+      grammar,
+      `value ::= ""`,
+    ].join('\n'), initial)).not.toThrow();
   });
 
   it('should throw an error if an unsupported key is present', () => {
@@ -58,7 +253,10 @@ describe('parseObject', () => {
     );
   });
 
-  it('should parse object with properties', () => {
+  it.each([
+    [['foo'], '{"bar":123}'],
+    [['bar'], '{"foo":"foo"}'],
+  ])('should throw if a required property is not present', (required, initial) => {
     const schema: JSONSchemaObject = {
       type: 'object',
       properties: {
@@ -66,392 +264,215 @@ describe('parseObject', () => {
         bar: { type: 'number', },
       },
       additionalProperties: false,
+      required,
     };
-    vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockGrammar = getMockGrammar();
-    const expected = join(
-      LEFT_BRACE_KEY,
-      `(${joinPipe(
-        join(
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        ),
-        join(
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-          COMMA_KEY,
-          QUOTE_KEY,
-          `"bar"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        ),
-        join(
-          QUOTE_KEY,
-          `"bar"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        ),
-        join(
-          QUOTE_KEY,
-          `"bar"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-          COMMA_KEY,
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`
-        )
-      )})?`,
-      RIGHT_BRACE_KEY,
-    );
-    expect(parseObject(mockGrammar, schema)).toBe(expected);
-    expect(parseType).toHaveBeenCalledTimes(2);
-  });
-
-  it('should parse object with enum property', () => {
-    const schema: JSONSchemaObject = {
-      type: 'object',
-      properties: {
-        foo: { enum: ['a', 'b'], },
-      },
-      additionalProperties: false,
-    };
-    vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockGrammar = getMockGrammar();
-    const expected = join(
-      LEFT_BRACE_KEY,
-      `(${joinPipe(
-        join(
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          QUOTE_KEY,
-          `"a"`,
-          QUOTE_KEY,
-        ),
-        join(
-          QUOTE_KEY,
-          `"b"`,
-          QUOTE_KEY,
-        ))})?`,
-      RIGHT_BRACE_KEY
-    );
-    expect(parseObject(mockGrammar, schema)).toBe(expected);
-    expect(parseType).not.toHaveBeenCalled();
-  });
-
-  it('should parse object with const property', () => {
-    const schema: JSONSchemaObject = {
-      type: 'object',
-      properties: {
-        foo: {
-          const: 'bar',
-        },
-      },
-      additionalProperties: false,
-    };
-    vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockGrammar = getMockGrammar();
-    const expected = join(
-      LEFT_BRACE_KEY,
-      `(${join(
-        QUOTE_KEY,
-        `"foo"`,
-        QUOTE_KEY,
-        COLON_KEY,
-        QUOTE_KEY,
-        `"bar"`,
-        QUOTE_KEY,
-      )})?`,
-      RIGHT_BRACE_KEY
-    );
-    expect(parseObject(mockGrammar, schema)).toBe(expected);
-    expect(parseType).not.toHaveBeenCalled();
-  });
-
-  it('should parse object with required properties', () => {
-    const schema: JSONSchemaObject = {
-      type: 'object',
-      properties: {
-        foo: { type: 'string', },
-        bar: { type: 'number', },
-      },
-      required: ['foo'],
-      additionalProperties: false,
-    };
-    vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockGrammar = getMockGrammar();
-    const expected = [
-      LEFT_BRACE_KEY,
-      `(${joinPipe(
-        join(
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        ),
-        join(
-          QUOTE_KEY,
-          `"foo"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-          COMMA_KEY,
-          QUOTE_KEY,
-          `"bar"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        ),
-        join(
-          QUOTE_KEY,
-          '"bar"',
-          QUOTE_KEY,
-          COLON_KEY,
-          'parsedType',
-          COMMA_KEY,
-          QUOTE_KEY,
-          '"foo"',
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-        )
-      )})`,
-      RIGHT_BRACE_KEY,
-    ].join(' ');
-    expect(parseObject(mockGrammar, schema)).toBe(expected);
-    expect(parseType).toHaveBeenCalledTimes(2);
-  });
-
-  it('should parse object with fixed order', () => {
-    const schema: JSONSchemaObject = {
-      type: 'object',
-      properties: {
-        foo: { type: 'string', },
-        bar: { type: 'number', },
-      },
-      additionalProperties: false,
-    };
-    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockGrammar = getMockGrammar({
-      fixedOrder: true,
+      fixedOrder: false,
     });
-    const expected = join(
-      LEFT_BRACE_KEY,
-      `(${join(
-        QUOTE_KEY,
-        '"foo"',
-        QUOTE_KEY,
-        COLON_KEY,
-        `parsedType`,
-        COMMA_KEY,
-        QUOTE_KEY,
-        `"bar"`,
-        QUOTE_KEY,
-        COLON_KEY,
-        `parsedType`
-      )})`,
-      RIGHT_BRACE_KEY,
-    );
-    expect(parseObject(mockGrammar, schema)).toBe(expected);
-    expect(parseType).toHaveBeenCalledTimes(2);
+    const rule = parseObject(mockGrammar, schema).compile();
+    expect(() => GBNF(rule, initial)).toThrow();
   });
 
-  describe('additionalProperties', () => {
-    const PROPERTY_KEY = `(${join(
-      COMMA_KEY,
-      QUOTE_KEY,
-      OBJECT_KEY_DEF,
-      QUOTE_KEY,
-      COLON_KEY,
-      VALUE_KEY,
-      `(${join(COMMA_KEY,
-        QUOTE_KEY,
-        OBJECT_KEY_DEF,
-        QUOTE_KEY,
-        COLON_KEY,
-        VALUE_KEY,
-      )})*`,
-    )})?`;
-
-    it('should parse object with properties and allow additional properties', () => {
-      const schema: JSONSchemaObject = {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          foo: { type: 'string', },
-          bar: { type: 'number', },
-        },
-      };
-      vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
-      const mockGrammar = getMockGrammar({
-        addRule: vi.fn().mockImplementation((key: string) => key),
-      });
-      const expected = join(
-        LEFT_BRACE_KEY,
-        `(${joinPipe(
-          join(
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          ),
-          join(
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-            COMMA_KEY,
-
-            QUOTE_KEY,
-            `"bar"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          ),
-          join(
-            QUOTE_KEY,
-            `"bar"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          ),
-          join(
-            QUOTE_KEY,
-            `"bar"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-            COMMA_KEY,
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          )
-        )})?`,
-        RIGHT_BRACE_KEY,
-      );
-      expect(parseObject(mockGrammar, schema)).toBe(expected);
+  it.each([
+    ['{"bar":123,"baz": "foo"}'],
+  ])('should throw if additional properties are not allowed', (initial) => {
+    const schema: JSONSchemaObject = {
+      type: 'object',
+      properties: {
+        foo: { type: 'string', },
+        bar: { type: 'number', },
+      },
+      additionalProperties: false,
+    };
+    const mockGrammar = getMockGrammar({
+      fixedOrder: false,
     });
-
-    it('should parse object with required properties and allow additional properties', () => {
-      const schema: JSONSchemaObject = {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          foo: { type: 'string', },
-          bar: { type: 'number', },
-        },
-        required: ['foo'],
-      };
-      vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
-      const mockGrammar = getMockGrammar({
-        addRule: vi.fn().mockImplementation((key: string) => key),
-      });
-      const expected = join(
-        LEFT_BRACE_KEY,
-        `(${joinPipe(
-          join(
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          ),
-          join(
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-            COMMA_KEY,
-
-            QUOTE_KEY,
-            `"bar"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          ),
-          join(
-            QUOTE_KEY,
-            `"bar"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-            COMMA_KEY,
-            QUOTE_KEY,
-            `"foo"`,
-            QUOTE_KEY,
-            COLON_KEY,
-            `parsedType`,
-            PROPERTY_KEY,
-          )
-        )})`,
-        RIGHT_BRACE_KEY,
-      );
-      expect(parseObject(mockGrammar, schema)).toBe(expected);
-    });
-
-    it('should parse object with fixed order and allow additional properties', () => {
-      const schema: JSONSchemaObject = {
-        type: 'object',
-        properties: {
-          foo: { type: 'string', },
-          bar: { type: 'number', },
-        },
-        additionalProperties: true,
-      };
-      vi.mocked(parseType).mockImplementation(() => 'parsedType');
-      const mockGrammar = getMockGrammar({
-        addRule: vi.fn().mockImplementation((key: string) => key),
-        fixedOrder: true,
-      });
-      const expected = join(
-        LEFT_BRACE_KEY,
-        `(${join(
-          QUOTE_KEY,
-          '"foo"',
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-          COMMA_KEY,
-          QUOTE_KEY,
-          `"bar"`,
-          QUOTE_KEY,
-          COLON_KEY,
-          `parsedType`,
-          PROPERTY_KEY,
-        )})`,
-        RIGHT_BRACE_KEY,
-      );
-      expect(parseObject(mockGrammar, schema)).toBe(expected);
-      expect(parseType).toHaveBeenCalledTimes(2);
-    });
+    const rule = parseObject(mockGrammar, schema).compile();
+    expect(() => GBNF(rule, initial)).toThrow();
   });
+
+  // describe('additionalProperties', () => {
+  //   const PROPERTY_KEY = `(${join(
+  //     COMMA_KEY,
+  //     QUOTE_KEY,
+  //     OBJECT_KEY_DEF,
+  //     QUOTE_KEY,
+  //     COLON_KEY,
+  //     VALUE_KEY,
+  //     `(${join(COMMA_KEY,
+  //       QUOTE_KEY,
+  //       OBJECT_KEY_DEF,
+  //       QUOTE_KEY,
+  //       COLON_KEY,
+  //       VALUE_KEY,
+  //     )})*`,
+  //   )})?`;
+
+  //   it('should parse object with properties and allow additional properties', () => {
+  //     const schema: JSONSchemaObject = {
+  //       type: 'object',
+  //       additionalProperties: true,
+  //       properties: {
+  //         foo: { type: 'string', },
+  //         bar: { type: 'number', },
+  //       },
+  //     };
+  //     vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
+  //     const mockGrammar = getMockGrammar({
+  //       addRule: vi.fn().mockImplementation((key: string) => key),
+  //     });
+  //     const expected = join(
+  //       LEFT_BRACE_KEY,
+  //       `(${joinPipe(
+  //         join(
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         ),
+  //         join(
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //           COMMA_KEY,
+
+  //           QUOTE_KEY,
+  //           `"bar"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         ),
+  //         join(
+  //           QUOTE_KEY,
+  //           `"bar"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         ),
+  //         join(
+  //           QUOTE_KEY,
+  //           `"bar"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //           COMMA_KEY,
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         )
+  //       )})?`,
+  //       RIGHT_BRACE_KEY,
+  //     );
+  //     expect(parseObject(mockGrammar, schema)).toBe(expected);
+  //   });
+
+  //   it('should parse object with required properties and allow additional properties', () => {
+  //     const schema: JSONSchemaObject = {
+  //       type: 'object',
+  //       additionalProperties: true,
+  //       properties: {
+  //         foo: { type: 'string', },
+  //         bar: { type: 'number', },
+  //       },
+  //       required: ['foo'],
+  //     };
+  //     vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
+  //     const mockGrammar = getMockGrammar({
+  //       addRule: vi.fn().mockImplementation((key: string) => key),
+  //     });
+  //     const expected = join(
+  //       LEFT_BRACE_KEY,
+  //       `(${joinPipe(
+  //         join(
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         ),
+  //         join(
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //           COMMA_KEY,
+
+  //           QUOTE_KEY,
+  //           `"bar"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         ),
+  //         join(
+  //           QUOTE_KEY,
+  //           `"bar"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //           COMMA_KEY,
+  //           QUOTE_KEY,
+  //           `"foo"`,
+  //           QUOTE_KEY,
+  //           COLON_KEY,
+  //           `parsedType`,
+  //           PROPERTY_KEY,
+  //         )
+  //       )})`,
+  //       RIGHT_BRACE_KEY,
+  //     );
+  //     expect(parseObject(mockGrammar, schema)).toBe(expected);
+  //   });
+
+  //   it('should parse object with fixed order and allow additional properties', () => {
+  //     const schema: JSONSchemaObject = {
+  //       type: 'object',
+  //       properties: {
+  //         foo: { type: 'string', },
+  //         bar: { type: 'number', },
+  //       },
+  //       additionalProperties: true,
+  //     };
+  //     vi.mocked(parseType).mockImplementation(() => 'parsedType');
+  //     const mockGrammar = getMockGrammar({
+  //       addRule: vi.fn().mockImplementation((key: string) => key),
+  //       fixedOrder: true,
+  //     });
+  //     const expected = join(
+  //       LEFT_BRACE_KEY,
+  //       `(${join(
+  //         QUOTE_KEY,
+  //         '"foo"',
+  //         QUOTE_KEY,
+  //         COLON_KEY,
+  //         `parsedType`,
+  //         COMMA_KEY,
+  //         QUOTE_KEY,
+  //         `"bar"`,
+  //         QUOTE_KEY,
+  //         COLON_KEY,
+  //         `parsedType`,
+  //         PROPERTY_KEY,
+  //       )})`,
+  //       RIGHT_BRACE_KEY,
+  //     );
+  //     expect(parseObject(mockGrammar, schema)).toBe(expected);
+  //     expect(parseType).toHaveBeenCalledTimes(2);
+  //   });
+  // });
 });

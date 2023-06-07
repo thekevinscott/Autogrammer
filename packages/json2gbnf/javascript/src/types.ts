@@ -2,7 +2,7 @@
 import type { SchemaOpts as _SchemaOpts, } from 'gbnf/builder-v1';
 
 export interface JSONSchemaObjectValueEnum {
-  enum: (string | null)[];
+  enum: (string | null | number | boolean)[];
 }
 export interface JSONSchemaObjectValueConst {
   const: string;
@@ -87,6 +87,6 @@ export type TopLevelJSONSchema = {} | JSONSchema & {
 
 export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject;
 
-export interface SchemaOpts extends _SchemaOpts {
+export interface JSON2GBNFOpts extends _SchemaOpts {
   fixedOrder?: boolean;
 }

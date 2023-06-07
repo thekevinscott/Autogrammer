@@ -1,7 +1,6 @@
 import { GBNFRule, } from "./gbnf-rule.js";
 import { Value, } from "./types.js";
 
-
 type TemplateTag = {
   (strings: TemplateStringsArray, ...values: Value[]): GBNFRule;
   key(name: string): (strings: TemplateStringsArray, ...values: Value[]) => GBNFRule;

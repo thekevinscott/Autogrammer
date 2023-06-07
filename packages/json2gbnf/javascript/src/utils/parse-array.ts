@@ -1,25 +1,23 @@
 import {
-  ARRAY_KEY,
-  COMMA_KEY,
-  LEFT_BRACKET_KEY,
-  RIGHT_BRACKET_KEY,
-} from '../constants/grammar-keys.js';
-import {
-  join,
-  joinPipe,
-} from 'gbnf/builder-v1';
-import { KEYS, } from '../constants/grammar-keys.js';
+  GBNFRule,
+  _,
+} from 'gbnf/builder-v2';
 import type {
   JSONSchemaArray,
   PrimitiveType,
 } from '../types.js';
-import type {
-  Grammar,
-} from '../grammar.js';
 import {
   isSchemaArrayWithBooleanItemsType,
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
+import {
+  array,
+  boolean,
+  nll,
+  number,
+  object,
+  string,
+} from '../constants.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
   'prefixItems',
@@ -33,9 +31,8 @@ const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
 ];
 
 export const parseArray = (
-  parser: Grammar,
   schema: JSONSchemaArray,
-): string => {
+): GBNFRule => {
   for (const key of UNSUPPORTED_PROPERTIES) {
     if (schema[key] !== undefined) {
       throw new Error(`${key} is not supported`);
@@ -45,13 +42,28 @@ export const parseArray = (
     throw new Error('boolean items is not supported, because prefixItems is not supported');
   }
   if (isSchemaArrayWithoutItems(schema)) {
-    return ARRAY_KEY;
+    return array;
   }
-  const types = ([] as PrimitiveType[]).concat(schema.items.type).map((type: string) => KEYS[`${type.toUpperCase()}_KEY`] ?? type);
-  const symbolId = types.length > 1 ? parser.addRule(joinPipe(...types)) : types[0];
-  return join(
-    parser.getConst(LEFT_BRACKET_KEY, { left: false, }),
-    `(${symbolId} (${parser.getConst(COMMA_KEY)} ${symbolId})*)?`,
-    parser.getConst(RIGHT_BRACKET_KEY, { right: false, }),
-  );
+  const types = ([] as PrimitiveType[]).concat(schema.items.type);
+  const possibleValue = _`${types.map((type) => {
+    return {
+      string,
+      number,
+      array,
+      boolean,
+      'null': nll,
+      object,
+    }[type];
+  })}`.separate('|');
+  return _`
+  "["
+  ${_`
+      ${possibleValue} 
+      ${_`
+        ","
+        ${possibleValue}
+      `.wrap('*')}
+    `.wrap('?')}
+  "]"
+  `;
 };

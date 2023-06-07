@@ -1,30 +1,29 @@
 import { getAllPermutations, } from './get-all-permutations.js';
 import { parseEnum, } from './parse-enum.js';
 import {
-  COLON_KEY,
-  COMMA_KEY,
-  LEFT_BRACE_KEY,
-  OBJECT_KEY,
-  QUOTE_KEY,
-  RIGHT_BRACE_KEY,
-} from '../constants/grammar-keys.js';
-import {
   JSONSchemaObject,
   JSONSchemaValue,
 } from '../types.js';
 import { parseType, } from './parse-type.js';
 import { Grammar, } from '../grammar.js';
 import {
-  join,
-  joinWith,
-  joinPipe,
-} from 'gbnf/builder-v1';
-import {
   isSchemaConst,
   isSchemaEnum,
 } from '../type-guards.js';
-import { getPropertyDefinition, } from './get-property-definition.js';
-import { getConstDefinition, } from './get-const-definition.js';
+import {
+  getConstDefinition,
+} from './get-const-definition.js';
+import {
+  _,
+  GrammarBuilder,
+  GBNFRule,
+} from 'gbnf/builder-v2';
+import {
+  object,
+  quote,
+  string,
+  value,
+} from '../constants.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'patternProperties',
@@ -35,20 +34,37 @@ const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'maxProperties',
 ];
 
-const getPropertiesValue = (grammar: Grammar, value: JSONSchemaValue): string[] => {
+
+interface ObjectEntry {
+  rule: GBNFRule;
+  key?: string;
+}
+
+const filterObjectEntry = (permutation: ObjectEntry[], key: string): boolean => {
+  let keyIsValid = false;
+  for (const perm of permutation) {
+    if (perm.key === key) {
+      keyIsValid = true;
+      break;
+    }
+  }
+  return keyIsValid;
+};
+
+const getPropertiesValue = (grammar: GrammarBuilder, value: JSONSchemaValue): GBNFRule => {
   if (isSchemaConst(value)) {
     return getConstDefinition(value);
   }
   if (isSchemaEnum(value)) {
-    return [parseEnum(value, grammar.addRule),];
+    return parseEnum(value);
   }
-  return [parseType(grammar, value),];
+  return parseType(grammar, value);
 };
 
 export const parseObject = (
   grammar: Grammar,
   schema: JSONSchemaObject,
-) => {
+): GBNFRule => {
   for (const key of UNSUPPORTED_PROPERTIES) {
     if (key in schema) {
       throw new Error(`${key} is not supported`);
@@ -56,55 +72,43 @@ export const parseObject = (
   }
   const { additionalProperties = true, properties, required = [], } = schema;
   if (properties !== undefined && typeof properties === 'object') {
-    const COLON = grammar.getConst(COLON_KEY);
-    const LB = grammar.getConst(LEFT_BRACE_KEY, { left: false, });
-    const RB = grammar.getConst(RIGHT_BRACE_KEY, { right: false, });
-    const SEPARATOR = grammar.getConst(COMMA_KEY, { left: false, });
-    const PROPERTY_KEY = additionalProperties ? grammar.addRule(getPropertyDefinition(SEPARATOR, COLON)) : undefined;
-
-    const objectProperties: { rule: string; key: string }[] = Object.entries(properties).map(([key, value,]) => ({
-      rule: grammar.addRule(join(
-        QUOTE_KEY,
-        `"${key}"`,
-        QUOTE_KEY,
-        COLON,
-        ...getPropertiesValue(grammar, value),
-      )),
+    const keys: ObjectEntry[] = Object.entries(properties).map(([key, value,]) => ({
       key,
+      rule: _` ${quote} ${`"${key}"`} ${quote} ":"  ${getPropertiesValue(grammar, value)} `,
     }));
-
-    const requiredsToKeys = objectProperties.reduce<Record<string, string>>((acc, { rule, key, }) => ({
-      ...acc,
-      [key]: rule,
-    }), {});
-
-    const rules = objectProperties.map(({ rule, }) => rule);
-
     if (grammar.fixedOrder) {
-      return join(
-        LB,
-        `(${joinWith(
-          ` ${SEPARATOR} `,
-          ...rules.map((rule, i) => (i === rules.length - 1 && additionalProperties) ? join(rule, PROPERTY_KEY) : rule),
-        )})`,
-        RB,
-      );
+      const getPermutation = (entries: ObjectEntry[]) => _`
+        ${[entries[0].rule, ...entries.slice(1).map(({ rule, }) => _`"," ${rule}`.wrap('?')),]}
+      `;
+      const permutations = Array(keys.length).fill(0).map((__, i) => getPermutation(keys.slice(i)));
+      return _`
+        "{"
+          ${_`${permutations}`.separate(' | ').wrap('?')}
+        "}"
+      `;
     }
 
-    const requireds = required.map(key => requiredsToKeys[key]);
+    if (additionalProperties) {
+      const anyObjectEntry = _` ${string} ":" ${value} `;
+      keys.push({
+        rule: _` ${anyObjectEntry} ${_`"," ${anyObjectEntry}`.wrap('*')}`.wrap('?'),
+      });
+    }
 
-    const permutations = getAllPermutations(rules, requireds,)
-      .map(permutation => additionalProperties ? permutation.map(perm => join(perm, PROPERTY_KEY)) : permutation)
-      .map(permutation => permutation.length > 1 ? grammar.addRule(
-        joinWith(` ${SEPARATOR} `, ...permutation),
-      ) : permutation[0]);
+    const permutations = getAllPermutations(
+      keys,
+      filterObjectEntry,
+      required,
+    ).map(r => r.map(({
+      rule,
+    }) => rule.wrap('?'))).map(permutation => permutation.length === 1 ? permutation : _`${permutation}`.separate('","'));
 
-    return join(
-      LB,
-      `(${joinPipe(...permutations)})${required.length > 0 ? '' : '?'}`,
-      RB,
-    );
+    return _`
+      "{"
+        ${permutations.length === 1 ? permutations[0] : _`${permutations}`.separate('|')}
+      "}"
+    `;
   }
 
-  return OBJECT_KEY;
+  return object;
 };
