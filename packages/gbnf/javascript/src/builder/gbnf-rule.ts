@@ -44,13 +44,13 @@ export class GBNFRule {
   }
 
   compile = ({
-    rules = [],
+    include = [],
     caseKind = 'default',
   }: {
     caseKind?: CaseKind;
-    rules?: GBNFRule[];
+    include?: GBNFRule[];
   } = {}, parser = new GrammarBuilder()) => {
-    for (const rule of rules) {
+    for (const rule of include) {
       rule.addToParser(parser, caseKind, true);
     }
     this.addToParser(parser, caseKind);

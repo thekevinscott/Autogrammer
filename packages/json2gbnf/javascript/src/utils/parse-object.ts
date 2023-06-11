@@ -107,5 +107,5 @@ export const parseObject = (
     `;
   }
 
-  return object;
+  return object();
 };

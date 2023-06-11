@@ -88,7 +88,7 @@ describe('schema', () => {
       [['string', 'number', 'boolean'], true],
       [['string', 'number', 'boolean'], false],
       [['string', 'number', 'boolean', 'null'], null],
-      [['string', 'number', 'boolean', 'null', 'array'], [1, 2, 3]],
+      [['string', 'number', 'boolean', 'null', 'array'], [1, 2, 9]],
       [['string', 'number', 'boolean', 'null', 'array', 'object'], {}],
     ].map(([type, val]) => ([{ type }, val,])),
 
@@ -167,7 +167,7 @@ describe('schema', () => {
       },
       ...schema
     }, val,])),
-  ] as [undefined | JSONSchema, unknown][])('it parses schema "%s" for string "%s"', (schema, initial) => {
+  ] as [undefined | JSONSchema, unknown][])('it parses schema "%s" for input "%s"', (schema, initial) => {
     expect(() => {
       const grammar = JSON2GBNF(schema);
       // console.log(grammar);

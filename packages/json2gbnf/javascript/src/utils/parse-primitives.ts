@@ -20,8 +20,8 @@ const PRIMITIVE_TYPES: Record<PrimitiveType, GBNFRule> = {
   number,
   boolean,
   'null': nll,
-  object,
-  array,
+  object: object(),
+  array: array(),
 };
 
 export const parsePrimitives = (schema: JSONSchemaMultiplePrimitiveTypes) => {
