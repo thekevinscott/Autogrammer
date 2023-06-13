@@ -33,7 +33,6 @@ export interface ModelProtocolDefinition<M extends ModelProtocol> {
 
 export type ModelDefinition<M extends ModelProtocol | undefined> =
   TransformersJSModelDefinition
-  | Promise<TransformersJSModelDefinition>
   | WebLLMModelDefinition
   | Promise<WebLLMModelDefinition>
   | ModelProtocolDefinition<M>;
@@ -60,7 +59,7 @@ export type LLMOpts<M extends ModelProtocol> =
   : Record<string, unknown>;
 
 export interface ConstructorOptions<M extends ModelProtocol | undefined = undefined> {
-  grammar?: Grammar | GBNFRule;
+  grammar?: Grammar;
   model?: ModelDefinition<M>;
 }
 

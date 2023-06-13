@@ -30,7 +30,7 @@ describe('TransformersJSLLM', () => {
   test('it initializes', () => {
     const mockPipeline = makeMockTextGenerationPipeline();
     const llm = new TransformersJSLLM(mockPipeline);
-    expect(llm.pipeline).toBe(mockPipeline);
+    expect(llm.modelDefinition).toBe(mockPipeline);
   });
   // max_new_tokens: n,
 });
