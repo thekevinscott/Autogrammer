@@ -14,7 +14,7 @@ export const registerScript = (program: Command) => program.command('start')
   .option('-i, --input <string>', 'Input directory', './')
   .option('-c, --contentDir <string>', 'Content directory', 'content')
   .option('-s, --srcDir <string>', 'src directory', 'src')
-  .option('-b, --buildDir <string>', 'directory to build to', '.docsanova/.build')
+  .option('-o, --output <string>', 'directory to build to', '.docsanova/.build')
   .option('-n, --internalDir <string>', 'directory to store internals', '.docsanova/.staging')
 
   .action(start);

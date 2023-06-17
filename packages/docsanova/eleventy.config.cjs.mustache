@@ -113,7 +113,10 @@ module.exports = function (eleventyConfig) {
     return util.inspect(value);
   });
 
-  eleventyConfig.setServerPassthroughCopyBehavior("passthrough");
+  const devMode = '{{{ DEV_MODE }}}';
+  if (devMode === '1') {
+    eleventyConfig.setServerPassthroughCopyBehavior("passthrough");
+  }
 
   eleventyConfig.addFilter('sortByOrder', sortByOrder);
   eleventyConfig.addPlugin(syntaxHighlight);
