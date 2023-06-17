@@ -37,6 +37,7 @@
     "lint": {
       "command": "pnpm build:contort && eslint -c .eslintrc.cjs src --ext .ts",
       "dependencies": [
+        "../../gbnf/javascript:build",
         "../../json2gbnf/javascript:build",
         "../../sql2gbnf/javascript:build"
       ]
@@ -44,6 +45,7 @@
     "test:unit": {
       "command": "pnpm build:contort && vitest --config ./vite.config.ts run",
       "dependencies": [
+        "../../gbnf/javascript:build",
         "../../json2gbnf/javascript:build",
         "../../sql2gbnf/javascript:build"
       ]
@@ -87,6 +89,7 @@
     "build": {
       "command": "pnpm clean && pnpm build:contort && pnpm build:umd && pnpm build:esm && pnpm copy",
       "dependencies": [
+        "../../gbnf/javascript:build",
         "../../json2gbnf/javascript:build",
         "../../sql2gbnf/javascript:build"
       ],
@@ -119,6 +122,7 @@
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.35",
     "@xenova/transformers": "^2.17.1",
+    "gbnf": "workspace:*",
     "contort": "workspace:*",
     "sql2gbnf": "workspace:*",
     "json2gbnf": "workspace:*",
