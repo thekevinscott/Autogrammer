@@ -18,6 +18,7 @@ import { isModelDefinitionPipeline, isTextGenerationPipeline, } from "./type-gua
 
 // export const DEFAULT_TEMPERATURE = 0.5;
 export const DEFAULT_TEMPERATURE = 0.0;
+export const DEFAULT_MAX_NEW_TOKENS = 15;
 
 export class TransformersJSLLM {
   grammarParser: GrammarParser;
@@ -88,6 +89,7 @@ export class TransformersJSLLM {
     } : undefined;
     const generate_kwargs: TransformersJSOpts = {
       temperature: DEFAULT_TEMPERATURE,
+      max_new_tokens: DEFAULT_MAX_NEW_TOKENS,
       ...llmOpts,
 
       callback_function: callbackFunction,
@@ -96,7 +98,7 @@ export class TransformersJSLLM {
     if (grammar) {
       this.grammarParser.initialize(grammar);
     }
-    const logitsProcessor = grammar ? new GrammarLogitsProcessor(prompt, this.grammarParser, tokenizer) : undefined;
+    const logitsProcessor = grammar ? new GrammarLogitsProcessor(prompt, this.grammarParser, tokenizer, llmOpts.maximumDepth) : undefined;
 
     // The type definitions for Transformers.js functions appear as anys, which get reported as bugs
     const { input_ids, attention_mask, } = (tokenizer as TokenizeFn)(prompt);

@@ -81,54 +81,6 @@ self.onconnect = (e) => {
       }
       try {
         let script = data.script;
-        // const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
-
-        // const hoistedImports = [];
-
-        // for (const match of matches) {
-        //   const importName = match[2].trim().replace(/["';]/g, "");
-        //   console.log(importName);
-        //   if ([
-        //     'autogrammer',
-        //     '@xenova/transformers',
-        //   ].includes(importName)) {
-        //     // console.log(importName, match[0]);
-        //     const mappedName = MAPPED_NAME[importName];
-        //     console.log(match[0], importName, mappedName)
-        //     const replacedMatch = match[0].replace(importName, mappedName);
-        //     hoistedImports.push(replacedMatch);
-        //     script = script.replace(match[0], '');
-        //   }
-        // };
-        // const lines = script.trim().split('\n').filter((line) => line.trim() !== '');
-        // // if (!lines[lines.length - 1].trim().startsWith('return')) {
-        // lines[lines.length - 1] = `return ${lines[lines.length - 1]}`;
-        // // }
-        // script = lines.join('\n')
-        // console.log('hoistedImports', hoistedImports);
-        // console.log(`script: "${script}"`);
-        // // const model = await getModel('Xenova/gpt2');
-        // // console.log('pipeline', await model('Hello, world!'));
-
-
-
-
-        // // const AsyncFunction = async function () { }.constructor;
-
-        // // const result = await AsyncFunction('main', `"use strict"; ${script};`)();
-
-        // // const code = `
-        // // const objectURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
-        // // const module = await import(objectURL);
-        // // URL.revokeObjectURL(objectURL);
-        // // const result = await module.default();
-
-        // // const fn = esm`export function fn() { return 'Hello!' }`;
-        // const fn = esm`
-        // export default async function fn(model) { 
-        //   ${script}
-        // }
-        // `;
 
         const matches = script.matchAll(new RegExp('import(.+?)from(.+?)(\n)', 'gs'))
 

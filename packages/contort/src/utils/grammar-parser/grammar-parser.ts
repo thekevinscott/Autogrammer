@@ -7,7 +7,7 @@ import type {
   GetToken,
 } from "./types.js";
 
-export type GetNextTokenIds = () => Set<number>;
+export type GetNextTokenIds = (maximumDepth?: number) => Set<number>;
 export type AddToken = (token: string) => void;
 
 const DEFAULT_MAXIMUM_DEPTH = 6;

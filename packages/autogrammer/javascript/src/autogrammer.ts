@@ -7,20 +7,21 @@ import type * as transformers from '@xenova/transformers';
 import type {
   ConstructorOptions,
   LanguageOptions,
-  SupportedLanguage,
+  SupportedSyntax,
 } from './types.js';
 import { buildPrompt, } from './utils.js';
 import {
-  isSupportedLanguage,
+  isSupportedSyntax,
 } from './type-guards.js';
 import {
-  SUPPORTED_LANGUAGES,
+  SUPPORTED_SYNTAXES,
 } from './constants.js';
 import { getGrammar, } from './get-grammar.js';
+import { loadTransformersJS, } from './load-library.js';
 // import * as webllm from "@mlc-ai/web-llm";
 
 export class Autogrammer {
-  #language?: SupportedLanguage;
+  #language?: SupportedSyntax;
   #contortionist?: Contortionist<ModelProtocol>;
 
   /**
@@ -37,7 +38,7 @@ export class Autogrammer {
    * 
    * @returns an instance of a Autogrammer class.
    */
-  constructor({ language, model, }: ConstructorOptions<SupportedLanguage>) {
+  constructor({ syntax: language, model, }: ConstructorOptions<SupportedSyntax>) {
     if (language !== undefined) {
       this.language = language;
     }
@@ -46,15 +47,15 @@ export class Autogrammer {
     }
   }
 
-  get language(): SupportedLanguage {
+  get language(): SupportedSyntax {
     if (this.#language === undefined) {
       throw new Error('Language not set.');
     }
     return this.#language;
   }
-  set language(language: SupportedLanguage) {
-    if (!isSupportedLanguage(language)) {
-      throw new Error(`Unsupported language: ${language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
+  set language(language: SupportedSyntax) {
+    if (!isSupportedSyntax(language)) {
+      throw new Error(`Unsupported language: ${language as string}. Only one of ${JSON.stringify(SUPPORTED_SYNTAXES)} are supported.`);
     }
     this.#language = language;
   }
@@ -65,15 +66,9 @@ export class Autogrammer {
     });
   }
 
-
-  get pipeline() {
-    return import('https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js')
-      .then((module: typeof transformers) => module.pipeline);
-  }
-
   get model(): Promise<Contortionist<ModelProtocol>> | Contortionist<ModelProtocol> {
     if (!this.#contortionist) {
-      return this.pipeline.then(pipeline => {
+      return loadTransformersJS().then(pipeline => {
         this.#contortionist = new Contortionist({
           model: pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0'),
         });
@@ -101,7 +96,7 @@ export class Autogrammer {
       languageOptions,
       modelOptions = {},
     }: {
-      languageOptions?: LanguageOptions<SupportedLanguage>;
+      languageOptions?: LanguageOptions<SupportedSyntax>;
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     } = {},
   ): Promise<string> {

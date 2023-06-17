@@ -1,6 +1,8 @@
-import { SUPPORTED_LANGUAGES, } from "./constants.js";
 import {
-  SupportedLanguage,
+  SUPPORTED_SYNTAXES,
+} from "./constants.js";
+import {
+  SupportedSyntax,
 } from "./types.js";
 
-export const isSupportedLanguage = (language: string): language is SupportedLanguage => SUPPORTED_LANGUAGES.includes(language);
+export const isSupportedSyntax = (syntax: string): syntax is SupportedSyntax => SUPPORTED_SYNTAXES.includes(syntax);

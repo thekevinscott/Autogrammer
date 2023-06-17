@@ -2,27 +2,27 @@ import JSON2GBNF from 'json2gbnf';
 import SQL2GBNF from 'sql2gbnf';
 import type {
   LanguageOptions,
-  SupportedLanguage,
-  SQLLanguageOptions,
-  JSONLanguageOptions,
+  SupportedSyntax,
+  SQLSyntaxOptions,
+  JSONSyntaxOptions,
 } from "./types.js";
 
 const GRAMMARS = {
-  json: ({ schema, options, }: JSONLanguageOptions) => JSON2GBNF(schema, {
+  json: ({ schema, options, }: JSONSyntaxOptions) => JSON2GBNF(schema, {
     fixedOrder: false,
     // whitespace: 1,
     ...options,
   }),
-  sql: ({ options, }: SQLLanguageOptions) => SQL2GBNF({
+  sql: ({ options, }: SQLSyntaxOptions) => SQL2GBNF({
     whitespace: 'succinct',
     case: 'upper',
     ...options,
   }),
 };
 
-export function getGrammar<L extends SupportedLanguage>(
+export function getGrammar<L extends SupportedSyntax>(
   language: L,
   languageOptions: LanguageOptions<L> = {},
 ): string {
-  return GRAMMARS[language](languageOptions as JSONLanguageOptions & SQLLanguageOptions);
+  return GRAMMARS[language](languageOptions as JSONSyntaxOptions & SQLSyntaxOptions);
 }

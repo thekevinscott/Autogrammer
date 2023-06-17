@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Basics: Autogrammer Dev</title>
+  <link rel="stylesheet" href="../global.css" />
+  <style>
+    html, body, form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    form, textarea, pre  {
+      flex: 1;
+      gap: 1em;
+    }
+    select {
+      max-width: 200px;
+    }
+    textarea {
+      width: 100%;;
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    pre {
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 1em 0;
+      overflow-x: auto;
+    }
+    button[type="submit"] {
+      padding: 5px;
+      height: 40px;
+    }
+    wc-monaco-editor {
+      max-height: 50%;
+    }
+  </style>
+</head>
+<body>
+  <script type="module" src="./index.ts"></script>
+</body>
+</html>
+
