@@ -1,0 +1,29 @@
+version = 1
+
+test_patterns = [
+  "packages/codesynth/src/**/*.ts",
+  "packages/codesynth/src/**/*.ts",
+]
+
+exclude_patterns = [
+  "packages/codesynth/src/**/*.test.ts", 
+  "packages/codesynth/test/**/*.ts", 
+  "packages/codesynth/src/**/*.test.ts", 
+  "packages/codesynth/test/**/*.ts", 
+  # "examples/**", 
+  # "scripts/**", 
+  # "test/**", 
+  "dev/**",
+]
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  environment = [
+    "browser",
+    "nodejs",
+    "vitest"
+  ]
+  dialect = "typescript"
