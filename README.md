@@ -1,5 +1,12 @@
 # CodeSynth
 
+<a href="https://www.npmjs.com/package/codesynth"><img alt="Latest CodeSynth NPM Version" src="https://badge.fury.io/js/codesynth.svg" /></a>
+<a href="https://github.com/thekevinscott/codesynth/blob/master/LICENSE"><img alt="License for CodeSynth" src="https://img.shields.io/npm/l/codesynth" /></a>
+<a href="https://www.npmjs.com/package/cnotort"><img alt="Downloads per week on NPM for CodeSynth" src="https://img.shields.io/npm/dw/codesynth" /></a>
+<a href="https://github.com/thekevinscott/codesynth/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/codesynth/actions/workflows/tests.yml/badge.svg" alt="Status of tests for CodeSynth repository" /></a>
+<a href="https://codecov.io/gh/thekevinscott/codesynth"><img alt="Code Coverage for CodeSynth" src="https://img.shields.io/codecov/c/github/thekevinscott/codesynth" /></a>
+<a href="https://deepsource.io/gh/thekevinscott/codesynth/?ref=repository-badge"><img alt="DeepSource issues for CodeSynth" src="https://deepsource.io/gh/thekevinscott/codesynth.svg/?label=active+issues&show_trend=true" /></a>
+
 CodeSynth is a JS library for generating syntactically valid code from an LLM. It achieves this by leveraging grammars to restrain LLM tokens.
 
 ## Quickstart
