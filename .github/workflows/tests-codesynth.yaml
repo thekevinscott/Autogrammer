@@ -83,7 +83,7 @@ jobs:
 
       - name: 'Test'
         working-directory: ./packages/codesynth
-        run: 'pnpm test'
+        run: 'pnpm test -- --coverage'
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
