@@ -1,5 +1,5 @@
 import { GLOBAL_CONSTANTS } from "../../src/constants/constants.js";
-import { JSON2GBNF, } from "../../src/json2gbnf.js";
+import JSON2GBNF from "json2gbnf";
 import GBNF, { InputParseError, } from 'gbnf';
 import type { TopLevelJSONSchema } from "../../src/types.js";
 import {

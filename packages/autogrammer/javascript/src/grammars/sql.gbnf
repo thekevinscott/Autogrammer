@@ -1,71 +1,83 @@
 root ::= sql
-sql ::= query
-query ::= "select_stmt" | "insert_stmt" | "update_stmt" | "delete_stmt"
 
-# select_stmt ::= "SELECT" [ "DISTINCT" | "ALL" ] select_list "FROM" table_expr [ where_clause ] [ order_clause ] [ limit_clause ]
+sql ::= query | statement
+
+statement ::= "ddlstatement" | "dmlstatement"
+
+query ::= selectquery | insertquery | updatequery | deletequery
+
+selectquery ::= "SELECT" " " selectlist ("," " " selectlist)* " " "FROM" " " tablename 
+# selectquery ::= "SELECT" " " selectlist ("," " " selectlist)* " " "FROM" " " tablename [" " "WHERE" " " condition]
+# selectquery ::= "SELECT" " " selectlist " " "FROM" " " tablename [" " "WHERE" " " condition] [" " "ORDERBY" " " columnname] [" " "LIMIT" " " integer]
+
+insertquery ::= "INSERT" " " "INTO" " " tablename " " "(" " " columnlist " " ")" " " "VALUES" " " "(" " " valuelist " " ")"
+
+updatequery ::= "UPDATE" " " "tablename" " " "SET" " " setclause [" " "WHERE" " " condition]
+
+deletequery ::= "DELETE" " " "FROM" " " "tablename" [" " "WHERE" " " condition]
+
+
+selectlist ::= string
+# selectlist ::= "foo" | "bar"
+# tablename ::=  string
+tablename ::=  "baz"
+columnlist ::= string
+valuelist ::=  string
+setclause ::=  string
+condition ::=  string
+columnname ::= string
+ 
+
+string ::= [a-zA-Z_]+
+
+
+integer ::= [0-9]+ ws
+
+ws ::= ([ \t\n]+)
+
+
+# ddl_statement ::= CREATE TABLE table_name (column_definitions) | DROP TABLE table_name
 # 
-# insert_stmt ::= "INSERT INTO" table_name "VALUES" "(" value_list ")"
+# dml_statement ::= select_query | insert_query | update_query | delete_query
 # 
-# update_stmt ::= "UPDATE" table_name "SET" set_clause [ where_clause ]
+# select_list ::= column_name [, column_name...]
 # 
-# delete_stmt ::= "DELETE FROM" table_name [ where_clause ]
-# # sql ::= query | statement
+# column_list ::= column_name [, column_name...]
 # 
-# #### Queries
+# value_list ::= value [, value...]
 # 
-# query ::= selectquery 
-# # query ::= selectquery | insertquery | updatequery | deletequery
+# set_clause ::= column_name = value [, column_name = value...]
 # 
-# selectquery ::= "SELECT " selectlist (", " selectlist)* " FROM " tablename [" WHERE " condition] [" ORDERBY " columnname] [" LIMIT " integer]
+# condition ::= expression | expression logical_operator expression | (condition) | NOT condition
 # 
-# ## select_list ::= column_name [ "," column_name ]*
-# ## 
-# ## table_expr ::= table_name [ "AS" alias ] [ join_clause ]
-# ## 
-# ## join_clause ::= [ join_type ] "JOIN" table_name "ON" condition
-# ## 
-# ## join_type ::= "INNER" | "LEFT" | "RIGHT" | "FULL"
+# expression ::= column_name comparison_operator value | column_name IN (value_list) | column_name BETWEEN value AND value
 # 
-# where_clause ::= "WHERE" condition
-# selectlist ::= {{{selectlist}}}
-# tablename ::=  {{{tablename}}}
-# columnlist ::= string
-# valuelist ::=  string
-# setclause ::=  string
-# condition ::=  string
-# columnname ::= string
-#  
+# logical_operator ::= AND | OR
 # 
-# order_clause ::= "ORDER BY" order_list
+# comparison_operator ::= = | <> | < | > | <= | >=
 # 
-# order_list ::= column_name [ ( "ASC" | "DESC" ) ] [ "," column_name [ ( "ASC" | "DESC" ) ] ]*
+# table_name ::= [a-zA-Z_][a-zA-Z0-9_]*
 # 
-# limit_clause ::= "LIMIT" number [ "OFFSET" number ]
+# column_name ::= [a-zA-Z_][a-zA-Z0-9_]*
 # 
-# set_clause ::= column_name "=" value [ "," column_name "=" value ]*
+# value ::= integer | string | date | boolean
 # 
-# condition ::= expression [ "AND" | "OR" ] expression
+# integer ::= [0-9]+
 # 
+# string ::= "'" characters "'"
 # 
-# #### Statements
+# date ::= YYYY-MM-DD
 # 
-# statement ::= "ddlstatement" | "dmlstatement"
+# boolean ::= TRUE | FALSE
 # 
-# expression ::= column_name comparison_operator value
+# characters ::= [^']*
 # 
-# comparison_operator ::= "=" | "!=" | "<" | ">" | "<=" | ">="
+# column_definitions ::= column_definition [, column_definition...]
 # 
-# value ::= literal | column_name
+# column_definition ::= column_name data_type
 # 
-# literal ::= string_literal | number_literal | boolean_literal
+# data_type ::= INT | VARCHAR(length) | DATE | BOOLEAN
 # 
-# table_name ::= identifier
+# length ::= integer
 # 
-# column_name ::= identifier
-# 
-# alias ::= identifier
-# 
-# value_list ::= value [ "," value ]*
-# 
-# identifier ::= [a-zA-Z_] [a-zA-Z0-9_]*
 # 

@@ -1,12 +1,12 @@
 {
-  "name": "json2gbnf",
+  "name": "sql2gbnf",
   "type": "module",
   "description": "A library for turning JSON schemas into GBNF grammars",
   "version": "0.0.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/thekevinscott/autogrammer.git",
-    "directory": "packages/json2gbnf"
+    "directory": "packages/sql2gbnf"
   },
   "files": [
     "dist"
@@ -36,7 +36,7 @@
     "test:integration": {
       "command": "vitest --config ./vitest.config.integration.ts run",
       "dependencies": [
-        "build"
+        "../../gbnf/javascript:build"
       ]
     },
     "test:unit": {

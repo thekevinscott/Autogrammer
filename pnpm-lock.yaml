@@ -545,6 +545,57 @@ importers:
         specifier: ^0.14.4
         version: 0.14.4
 
+  packages/sql2gbnf/javascript:
+    devDependencies:
+      '@types/jest':
+        specifier: ^29.5.12
+        version: 29.5.12
+      '@types/node':
+        specifier: ^20.11.30
+        version: 20.12.7
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.3.1
+        version: 7.8.0(@typescript-eslint/parser@7.8.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
+      cpx2:
+        specifier: ^7.0.1
+        version: 7.0.1
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.0
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.57.0)
+      gbnf:
+        specifier: workspace:*
+        version: link:../../gbnf/javascript
+      path-exists-cli:
+        specifier: ^2.0.0
+        version: 2.0.0
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
+      rimraf:
+        specifier: ^5.0.5
+        version: 5.0.5
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
+      vite:
+        specifier: ^5.1.4
+        version: 5.2.10(@types/node@20.12.7)(terser@5.31.0)
+      vite-plugin-dts:
+        specifier: ^3.7.3
+        version: 3.9.0(@types/node@20.12.7)(rollup@4.17.2)(typescript@5.4.5)(vite@5.2.10(@types/node@20.12.7)(terser@5.31.0))
+      vitest:
+        specifier: ^1.3.1
+        version: 1.5.3(@types/node@20.12.7)(terser@5.31.0)
+      wireit:
+        specifier: ^0.14.4
+        version: 0.14.4
+
 packages:
 
   '@11ty/dependency-tree-esm@1.0.0':
@@ -3675,6 +3726,7 @@ packages:
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
+    hasBin: true
 
   semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
