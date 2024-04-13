@@ -62,8 +62,8 @@ importers:
   packages/codesynth:
     dependencies:
       contort:
-        specifier: ^0.0.9
-        version: 0.0.9
+        specifier: ^0.0.10
+        version: 0.0.10
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -1592,11 +1592,11 @@ packages:
     resolution: {integrity: sha512-xFxOwqIzR/e1k1gLiWEophSCMqXcwVHIH7akf7b/vxcUeGunlj3hvZaaqxwHsTgn+IndtkQJgSztIDWeumWJDQ==}
     dev: true
 
-  /contort@0.0.9:
-    resolution: {integrity: sha512-E/Jbfje/8Zijv0Aggjnx/mM1ZHppShM8xXvcznzBrsWn0ION9UZHaJQCz3LWrygokW5AAm070nDx6etOLHmuyg==}
+  /contort@0.0.10:
+    resolution: {integrity: sha512-M7+MmDFRTXh7ld8S7NBqwI/sE1fECP/h9omMdYN95Afh8E8EoWKKEBAXMhSqY5gilLZQ7o34N6IwgljZa0SfcQ==}
     dependencies:
       '@xenova/transformers': 2.16.1
-      gbnf: 0.0.9
+      gbnf: 0.1.4
     dev: false
 
   /core-util-is@1.0.3:
@@ -2154,8 +2154,8 @@ packages:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
     dev: true
 
-  /gbnf@0.0.9:
-    resolution: {integrity: sha512-lkWAwo7X6tJq29oj2jF3MgDlvvQwpqvxlkkTp7PUDm23Cfo5CksfmibqakP1EjoPUBREYQ/L+jxVn6LAPMwR7Q==}
+  /gbnf@0.1.4:
+    resolution: {integrity: sha512-r1uVQF1UeruASR362s/WsplrPSq2XzNnFTOz+gmCN6Hc1JIMui998GjAiC0NrimYOAoT4MWg/0uLoLaGPA3aqQ==}
     dev: false
 
   /get-func-name@2.0.2:

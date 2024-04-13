@@ -62,7 +62,7 @@
     "grammar"
   ],
   "dependencies": {
-    "contort": "^0.0.9",
+    "contort": "^0.0.10",
     "mustache": "^4.2.0"
   },
   "devDependencies": {
