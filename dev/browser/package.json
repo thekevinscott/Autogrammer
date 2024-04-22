@@ -15,8 +15,8 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@vanillawc/wc-monaco-editor": "^1.10.15",
-    "@xenova/transformers": "^2.16.0"
+    "@xenova/transformers": "^2.16.0",
+    "contort": "^0.0.10"
   },
   "devDependencies": {
     "vite": "^5.1.4",

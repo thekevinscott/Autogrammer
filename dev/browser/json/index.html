@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JSON: CodeSynth</title>
+  <link rel="stylesheet" href="../global.css" />
+  <style>
+    body {
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;;
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    pre {
+      padding: 1em;
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 1em 0;
+      overflow-x: auto;
+      flex: 1;
+    }
+    form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    form div {
+      flex: 1;
+      width: 100%;
+    }
+    form button {
+      width: 200px;
+      padding: 10px;
+      margin: 10px 0 0 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <form id="form">
+    <div>
+    <wc-monaco-editor id="json"></wc-monaco-editor>
+    </div>
+    <button id="submit" type="submit">Generate JSON grammar</button>
+  </form>
+  <pre id="output">
+  </pre>
+  <script type="module" src="https://cdn.jsdelivr.net/gh/vanillawc/wc-monaco-editor@1/index.js"></script>
+  <script type="module" src="./index.ts"></script>
+</body>
+</html>
+

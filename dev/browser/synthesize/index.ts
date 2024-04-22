@@ -1,13 +1,5 @@
-import Codesynth from '../../../packages/codesynth/src/index.js';
+import { synth } from './code.js';
 
-const synth = new Codesynth({
-  // language: 'json',
-  language: 'sql',
-  model: {
-    protocol: 'llama.cpp',
-    endpoint: import.meta.env.VITE_LLAMACPP_ENDPOINT_URL,
-  }
-});
 
 let abortController: AbortController = new AbortController();
 
@@ -21,7 +13,6 @@ form.onsubmit = async (e) => {
   e.preventDefault();
   await synthesize(input.value);
 };
-
 
 const synthesize = async (prompt: string) => {
   button.setAttribute('disabled', '');
@@ -61,4 +52,4 @@ const synthesize = async (prompt: string) => {
   abortController = new AbortController();
 };
 
-synthesize(input.value);
+// synthesize(input.value);
