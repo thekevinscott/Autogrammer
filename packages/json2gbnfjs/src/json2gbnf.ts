@@ -268,6 +268,7 @@ export function JSON2GBNF<T extends JSONSchema>(schema?: {} | null | T | boolean
     throw new Error('Bad schema provided');
   }
   if (isSchemaObject(schema) && '$schema' in schema && schema['$schema'] !== undefined && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
   const parser = new SchemaParser(schema);
