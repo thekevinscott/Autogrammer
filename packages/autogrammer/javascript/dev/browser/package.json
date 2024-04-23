@@ -7,21 +7,18 @@
   },
   "wireit": {
     "dev": {
-      "command": "vite --host --config ./vite.config.ts --port 5194",
-      "dependencies": [
-        "../..:build"
-      ]
+      "command": "vite --host --config ./vite.config.ts --port 5173"
     }
   },
   "keywords": [],
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@mlc-ai/web-llm": "latest",
     "@vanillawc/wc-monaco-editor": "^1.10.15",
     "@xenova/transformers": "^2.16.0",
     "autogrammer": "workspace:*",
-    "contort": "workspace:*"
+    "contort": "workspace:*",
+    "gbnf": "workspace:*"
   },
   "devDependencies": {
     "vite": "^5.1.4",

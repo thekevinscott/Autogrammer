@@ -72,9 +72,6 @@ importers:
 
   packages/autogrammer/javascript/dev/browser:
     dependencies:
-      '@mlc-ai/web-llm':
-        specifier: latest
-        version: 0.2.35
       '@vanillawc/wc-monaco-editor':
         specifier: ^1.10.15
         version: 1.10.15
@@ -87,6 +84,9 @@ importers:
       contort:
         specifier: workspace:*
         version: link:../../../../contort
+      gbnf:
+        specifier: workspace:*
+        version: link:../../../../gbnf/javascript
     devDependencies:
       vite:
         specifier: ^5.1.4
