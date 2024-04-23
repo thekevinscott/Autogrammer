@@ -9,11 +9,6 @@ export class CodeSynth<L extends SupportedLanguage> {
   contortionist: Contortionist<undefined>;
 
   /**
-   * @hidden
-  */
-  _abortController = new AbortController();
-
-  /**
    * Instantiates an instance of CodeSynth.
    * 
    * ```javascript
@@ -40,19 +35,14 @@ export class CodeSynth<L extends SupportedLanguage> {
 
   public async synthesize(
     prompt: string,
-    options: ExternalExecuteOptions<undefined, boolean>
-  ): Promise<string>;
-  public async synthesize(
-    prompt: string,
-    languageOptions: string | Variables<SupportedLanguage>,
-    options: ExternalExecuteOptions<undefined, boolean>
-  ): Promise<string>;
-  public async synthesize(
-    prompt: string,
-    _languageOptions: string | ExternalExecuteOptions<undefined, boolean>,
-    _options?: ExternalExecuteOptions<undefined, boolean>,
+    {
+      languageOptions,
+      modelOptions = {},
+    }: {
+      languageOptions?: Variables<L>,
+      modelOptions?: ExternalExecuteOptions<undefined, boolean>,
+    },
   ): Promise<string> {
-    const { options, languageOptions, } = divideOptions(_languageOptions, _options);
     if (languageOptions !== undefined) {
       if (this.language === 'sql') {
         this.contortionist.grammar = getGrammar<'sql'>(this.language, languageOptions);
@@ -66,37 +56,12 @@ export class CodeSynth<L extends SupportedLanguage> {
       }
     }
     const builtPrompt = buildPrompt(prompt, this.language);
-    // const parsedOptions = parseOptions(options);
-    return await this.contortionist.execute(builtPrompt, options,
-      //   {
-      //   // signal: this._abortController.signal,
-      // }
-    ) as unknown as string;
+    return await this.contortionist.execute(builtPrompt, {
+      ...modelOptions,
+    });
   };
 
   abort = () => {
-    console.log('abort!');
     this.contortionist.abort();
   };
 }
-
-
-const divideOptions = (
-  languageOptions: string | ExternalExecuteOptions<undefined, boolean>,
-  options?: ExternalExecuteOptions<undefined, boolean>,
-): {
-  languageOptions?: Variables<SupportedLanguage>,
-  options: ExternalExecuteOptions<undefined, boolean>,
-} => {
-  if (options !== undefined) {
-    return {
-      languageOptions,
-      options,
-    };
-  }
-
-  return {
-    languageOptions: undefined,
-    options: languageOptions as ExternalExecuteOptions<undefined, boolean>,
-  };
-};
