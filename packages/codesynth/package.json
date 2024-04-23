@@ -63,6 +63,7 @@
   ],
   "dependencies": {
     "contort": "^0.0.10",
+    "json2gbnf": "workspace:*",
     "mustache": "^4.2.0"
   },
   "devDependencies": {
