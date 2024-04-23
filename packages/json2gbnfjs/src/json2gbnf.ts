@@ -9,8 +9,21 @@ import {
   charDef,
   integerDef,
 } from './grammar/index.js';
-
-// type ValidGenericType = JSONSchemaType<object | string | number | JSONSchemaType<unknown>[]>;
+import {
+  type JSONSchema,
+  type JSONSchemaArray,
+  type JSONSchemaBoolean,
+  type JSONSchemaNull,
+  type JSONSchemaNumber,
+  type JSONSchemaObject,
+  type JSONSchemaObjectValueEnum,
+  type JSONSchemaString,
+  type TopLevelJSONSchema,
+  isEmptyObject,
+  isSchemaConst,
+  isSchemaEnum,
+  isSchemaObject,
+} from './types.js';
 
 export const JSON_ALL_VALID_VALUES = `object | array | string | number | boolean | null`;
 export const JSON_VALUE_DEFS = [
@@ -25,80 +38,7 @@ export const JSON_VALUE_DEFS = [
   `null ::= ${nullDef}`,
 ];
 
-// type JSONSchemaType = 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null' | 'integer';
-
-interface JSONSchemaObjectValueEnum {
-  enum: string[];
-}
-interface JSONSchemaObjectValueConst {
-  const: string;
-}
-interface JSONSchemaString {
-  type: 'string';
-  format?: string;
-  pattern?: string;
-  minLength?: number;
-  maxLength?: number;
-}
-interface JSONSchemaNumber {
-  type: 'number' | 'integer';
-  exclusiveMinimum?: boolean;
-  exclusiveMaximum?: boolean;
-  multipleOf?: unknown;
-  minimum?: number;
-  maximum?: number;
-}
-interface JSONSchemaBoolean {
-  type: 'boolean';
-}
-interface JSONSchemaNull {
-  type: 'null';
-}
-
-interface JSONSchemaArray {
-  type: 'array';
-  items?: {
-    type: 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
-  } | false;
-  prefixItems?: unknown;
-  unevaluatedItems?: unknown;
-  contains?: unknown;
-  minContains?: number;
-  maxContains?: number;
-  minItems?: number;
-  maxItems?: number;
-  uniqueItems?: boolean;
-}
-type JSONSchemaValue = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject | JSONSchemaObjectValueEnum;
-interface JSONSchemaObject {
-  type: 'object';
-  properties?: Record<string, JSONSchemaValue>;
-  patternProperties?: unknown;
-  additionalProperties?: boolean | { type: JSONSchemaValue };
-  allOf?: unknown;
-  unevaluatedProperties?: unknown;
-  required?: string[];
-  propertyNames?: unknown;
-  minProperties?: number;
-  maxProperties?: number;
-}
-interface JSONSchemaTypeArray {
-  type: ('string' | 'number' | 'boolean' | 'null' | 'object' | 'array')[]
-}
-export type JSONSchema = JSONSchemaValue | JSONSchemaTypeArray;
-export type TopLevelJSONSchema = {} | JSONSchema & {
-  $schema?: string;
-} | boolean;
-
 // export const JSON_ALL_VALID_VALUES = `object | array | string | number | boolean | null`;
-
-const isSchemaEnum = (schema: unknown): schema is JSONSchemaObjectValueEnum => typeof schema === 'object' && schema !== null && 'enum' in schema;
-const isSchemaConst = (schema: unknown): schema is JSONSchemaObjectValueConst => typeof schema === 'object' && schema !== null && 'const' in schema;
-// const isSchemaString = (schema: unknown): schema is JSONSchemaString => typeof schema === 'object' && schema !== null && 'type' in schema && schema['type'] === 'string';
-const isSchemaObject = (schema: unknown): schema is JSONSchemaObject => typeof schema === 'object' && schema !== null && 'type' in schema && schema['type'] === 'object';
-const isEmptyObject = (schema: JSONSchema | {}): schema is {} => typeof schema === 'object' && Object.keys(schema).filter(key => {
-  return key !== '$schema';
-}).length === 0;
 
 const idOf = (i: number) => (
   (i >= 26 ? idOf(((i / 26) >> 0) - 1) : "") +
