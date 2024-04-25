@@ -1,0 +1,7 @@
+{
+  "name": "autogrammar",
+  "author": "Kevin Scott",
+  "dependencies": {
+    "autogrammer": "latest"
+  }
+}
