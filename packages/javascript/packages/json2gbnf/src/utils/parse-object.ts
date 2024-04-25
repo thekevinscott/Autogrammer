@@ -22,10 +22,11 @@ import {
   isSchemaConst,
   isSchemaEnum,
 } from '../type-guards.js';
+import { getPropertyDefinition, } from './get-property-definition.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'patternProperties',
-  'additionalProperties',
+  // 'additionalProperties',
   'allOf',
   'unevaluatedProperties',
   'propertyNames',
@@ -33,7 +34,7 @@ const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'maxProperties',
 ];
 
-const getPropertiesValue = (parser: Grammar, value: JSONSchemaValue): string[] => {
+const getPropertiesValue = (grammar: Grammar, value: JSONSchemaValue): string[] => {
   if (isSchemaConst(value)) {
     return [
       QUOTE_KEY,
@@ -42,13 +43,13 @@ const getPropertiesValue = (parser: Grammar, value: JSONSchemaValue): string[] =
     ];
   }
   if (isSchemaEnum(value)) {
-    return [parseEnum(value, parser.addRule),];
+    return [parseEnum(value, grammar.addRule),];
   }
-  return [parseType(parser, value),];
+  return [parseType(grammar, value),];
 };
 
 export const parseObject = (
-  parser: Grammar,
+  grammar: Grammar,
   schema: JSONSchemaObject,
 ) => {
   for (const key of UNSUPPORTED_PROPERTIES) {
@@ -56,20 +57,21 @@ export const parseObject = (
       throw new Error(`${key} is not supported`);
     }
   }
-  const { properties, required = [], } = schema;
+  const { additionalProperties = true, properties, required = [], } = schema;
   if (properties !== undefined && typeof properties === 'object') {
-    const COLON = parser.getConst(COLON_KEY);
-    const LB = parser.getConst(LEFT_BRACE_KEY, { left: false, });
-    const RB = parser.getConst(RIGHT_BRACE_KEY, { right: false, });
-    const COMMA = parser.getConst(COMMA_KEY, { left: false, });
+    const COLON = grammar.getConst(COLON_KEY);
+    const LB = grammar.getConst(LEFT_BRACE_KEY, { left: false, });
+    const RB = grammar.getConst(RIGHT_BRACE_KEY, { right: false, });
+    const SEPARATOR = grammar.getConst(COMMA_KEY, { left: false, });
+    const PROPERTY_KEY = additionalProperties ? grammar.addRule(getPropertyDefinition(SEPARATOR)) : undefined;
 
     const objectProperties: { rule: string; key: string }[] = Object.entries(properties).map(([key, value,]) => ({
-      rule: parser.addRule(join(
+      rule: grammar.addRule(join(
         QUOTE_KEY,
         `"${key}"`,
         QUOTE_KEY,
         COLON,
-        ...getPropertiesValue(parser, value),
+        ...getPropertiesValue(grammar, value),
       )),
       key,
     }));
@@ -81,22 +83,24 @@ export const parseObject = (
 
     const rules = objectProperties.map(({ rule, }) => rule);
 
-    if (parser.fixedOrder) {
+    if (grammar.fixedOrder) {
       return join(
         LB,
-        `(${joinWith(` ${COMMA} `, ...rules)})`,
+        `(${joinWith(
+          ` ${SEPARATOR} `,
+          ...rules.map((rule, i) => (i === rules.length - 1 && additionalProperties) ? join(rule, PROPERTY_KEY) : rule),
+        )})`,
         RB,
       );
     }
 
     const requireds = required.map(key => requiredsToKeys[key]);
 
-    const permutations = getAllPermutations(
-      rules,
-      requireds,
-    ).map(permutation => permutation.length <= 1 ? permutation[0] : parser.addRule(
-      joinWith(` ${COMMA} `, ...permutation),
-    ));
+    const permutations = getAllPermutations(rules, requireds,)
+      .map(permutation => additionalProperties ? permutation.map(perm => join(perm, PROPERTY_KEY)) : permutation)
+      .map(permutation => permutation.length > 1 ? grammar.addRule(
+        joinWith(` ${SEPARATOR} `, ...permutation),
+      ) : permutation[0]);
 
     return join(
       LB,

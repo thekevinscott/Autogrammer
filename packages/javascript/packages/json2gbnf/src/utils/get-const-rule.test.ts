@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 vi.mock('./get-whitespace.js');
 
 describe('getConstRule', () => {
-  const mockParser: Grammar = {} as Grammar;
+  const mockGrammar: Grammar = {} as Grammar;
 
   afterEach(() => {
     vi.resetAllMocks();
@@ -19,7 +19,7 @@ describe('getConstRule', () => {
     const left = true;
     const right = true;
 
-    const result = getConstRule(mockParser, key, left, right);
+    const result = getConstRule(mockGrammar, key, left, right);
     expect(result).toBe('ws CONST_KEY ws');
   });
 
@@ -30,7 +30,7 @@ describe('getConstRule', () => {
     const left = true;
     const right = false;
 
-    const result = getConstRule(mockParser, key, left, right);
+    const result = getConstRule(mockGrammar, key, left, right);
     expect(result).toBe('ws CONST_KEY');
   });
 
@@ -41,7 +41,7 @@ describe('getConstRule', () => {
     const left = false;
     const right = true;
 
-    const result = getConstRule(mockParser, key, left, right);
+    const result = getConstRule(mockGrammar, key, left, right);
     expect(result).toBe('CONST_KEY ws');
   });
 
@@ -52,7 +52,7 @@ describe('getConstRule', () => {
     const left = false;
     const right = false;
 
-    const result = getConstRule(mockParser, key, left, right);
+    const result = getConstRule(mockGrammar, key, left, right);
     expect(result).toBe('CONST_KEY');
   });
 });

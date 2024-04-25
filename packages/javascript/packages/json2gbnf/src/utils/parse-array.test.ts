@@ -23,7 +23,7 @@ vi.mock('./parse-type.js', async () => {
   };
 });
 
-const getMockParser = () => {
+const getmockGrammar = () => {
   class MockGrammar {
     rules = 'foo';
     addRule = vi.fn().mockImplementation((key: string) => key);
@@ -41,25 +41,25 @@ describe('parseArray', () => {
 
   it('should return ARRAY_KEY if items is undefined', () => {
     const schema = {};
-    const mockParser = getMockParser();
-    expect(parseArray(mockParser, schema as JSONSchemaArray)).toBe(ARRAY_KEY);
-    expect(mockParser.addRule).not.toHaveBeenCalled();
-    expect(mockParser.getConst).not.toHaveBeenCalled();
+    const mockGrammar = getmockGrammar();
+    expect(parseArray(mockGrammar, schema as JSONSchemaArray)).toBe(ARRAY_KEY);
+    expect(mockGrammar.addRule).not.toHaveBeenCalled();
+    expect(mockGrammar.getConst).not.toHaveBeenCalled();
     expect(parseType).not.toHaveBeenCalled();
   });
 
   it.each([true, false])('should throw an error if items is a boolean', (items) => {
     const schema = { type: 'array', items, } as unknown as JSONSchemaArray;
-    const mockParser = getMockParser();
-    expect(() => parseArray(mockParser, schema)).toThrowError(
+    const mockGrammar = getmockGrammar();
+    expect(() => parseArray(mockGrammar, schema)).toThrowError(
       'boolean items is not supported, because prefixItems is not supported',
     );
   });
 
   it('should throw an error if an unsupported key is present', () => {
     const schema: JSONSchemaArray = { type: 'array', prefixItems: [], };
-    const mockParser = getMockParser();
-    expect(() => parseArray(mockParser, schema)).toThrowError(
+    const mockGrammar = getmockGrammar();
+    expect(() => parseArray(mockGrammar, schema)).toThrowError(
       'prefixItems is not supported',
     );
   });
@@ -68,19 +68,19 @@ describe('parseArray', () => {
     const schema: JSONSchemaArray = { type: 'array', items: { type: 'string', }, };
     const expected = `${LEFT_BRACKET_KEY} (${STRING_KEY} (${COMMA_KEY} ${STRING_KEY})*)? ${RIGHT_BRACKET_KEY}`;
     // vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser();
-    expect(parseArray(mockParser, schema)).toBe(expected);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(3);
+    const mockGrammar = getmockGrammar();
+    expect(parseArray(mockGrammar, schema)).toBe(expected);
+    expect(mockGrammar.getConst).toHaveBeenCalledTimes(3);
   });
 
   it('should parse array with items of multiple types', () => {
     const schema: JSONSchemaArray = { type: 'array', items: { type: ['string', 'number'], }, };
     const expected = `${LEFT_BRACKET_KEY} (${STRING_KEY} | ${NUMBER_KEY} (${COMMA_KEY} ${STRING_KEY} | ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`;
-    const mockParser = getMockParser();
+    const mockGrammar = getmockGrammar();
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    expect(parseArray(mockParser, schema as JSONSchemaArray)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledWith(`${STRING_KEY} | ${NUMBER_KEY}`);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(3);
+    expect(parseArray(mockGrammar, schema as JSONSchemaArray)).toBe(expected);
+    expect(mockGrammar.addRule).toHaveBeenCalledWith(`${STRING_KEY} | ${NUMBER_KEY}`);
+    expect(mockGrammar.getConst).toHaveBeenCalledTimes(3);
     expect(parseType).not.toHaveBeenCalled();
   });
 });

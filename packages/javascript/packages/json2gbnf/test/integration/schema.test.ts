@@ -24,11 +24,11 @@ import {
 const OBJECT_GRAMMAR = [`root ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {
   type: 'object',
+  additionalProperties: false,
   properties: {
     number: { type: 'number' },
     street_name: { type: 'string' },
     street_type: { enum: ['Street', 'Avenue', 'Boulevard'] },
-
   },
 };
 const STREET_GRAMMAR = [
@@ -172,6 +172,59 @@ describe('schema', () => {
           `xk ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
           `xl ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
           `root ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
+        ],
+      ],
+      // additionalProperties being true
+      [
+        {
+          ...STREET_SCHEMA,
+          additionalProperties: true,
+        },
+        JSON.stringify({ "number": 1600, "street_name": "Foo", "street_type": "Boulevard" }),
+        [
+          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
+          `xb ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xc ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
+          `xd ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
+          `xe ::= ${QUOTE_KEY} "street_type" ${QUOTE_KEY} ${COLON_KEY} xd`,
+          `xf ::= xb xa ${COMMA_KEY} xc xa`,
+          `xg ::= xb xa ${COMMA_KEY} xc xa ${COMMA_KEY} xe xa`,
+          `xh ::= xb xa ${COMMA_KEY} xe xa`,
+          `xi ::= xb xa ${COMMA_KEY} xe xa ${COMMA_KEY} xc xa`,
+          `xj ::= xc xa ${COMMA_KEY} xb xa`,
+          `xk ::= xc xa ${COMMA_KEY} xb xa ${COMMA_KEY} xe xa`,
+          `xl ::= xc xa ${COMMA_KEY} xe xa`,
+          `xm ::= xc xa ${COMMA_KEY} xe xa ${COMMA_KEY} xb xa`,
+          `xn ::= xe xa ${COMMA_KEY} xb xa`,
+          `xo ::= xe xa ${COMMA_KEY} xb xa ${COMMA_KEY} xc xa`,
+          `xp ::= xe xa ${COMMA_KEY} xc xa`,
+          `xq ::= xe xa ${COMMA_KEY} xc xa ${COMMA_KEY} xb xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xb xa | xf | xg | xh | xi | xc xa | xj | xk | xl | xm | xe xa | xn | xo | xp | xq)? ${RIGHT_BRACE_KEY}`,
+        ],
+      ],
+      // additionalProperties being true and requirements being true
+      [
+        {
+          ...STREET_SCHEMA,
+          additionalProperties: true,
+          required: ['number', 'street_type'],
+        },
+        JSON.stringify({ "number": 1600, "street_name": "Foo", "street_type": "Boulevard" }),
+        [
+          `xa ::= (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY} (${COMMA_KEY} ${QUOTE_KEY} ${STRING_KEY} ${QUOTE_KEY} ${COLON_KEY} ${VALUE_KEY})*)?`,
+          `xb ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xc ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
+          `xd ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
+          `xe ::= ${QUOTE_KEY} "street_type" ${QUOTE_KEY} ${COLON_KEY} xd`,
+          `xf ::= xb xa ${COMMA_KEY} xc xa ${COMMA_KEY} xe xa`,
+          `xg ::= xb xa ${COMMA_KEY} xe xa`,
+          `xh ::= xb xa ${COMMA_KEY} xe xa ${COMMA_KEY} xc xa`,
+          `xi ::= xc xa ${COMMA_KEY} xb xa ${COMMA_KEY} xe xa`,
+          `xj ::= xc xa ${COMMA_KEY} xe xa ${COMMA_KEY} xb xa`,
+          `xk ::= xe xa ${COMMA_KEY} xb xa`,
+          `xl ::= xe xa ${COMMA_KEY} xb xa ${COMMA_KEY} xc xa`,
+          `xm ::= xe xa ${COMMA_KEY} xc xa ${COMMA_KEY} xb xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xf | xg | xh | xi | xj | xk | xl | xm) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [

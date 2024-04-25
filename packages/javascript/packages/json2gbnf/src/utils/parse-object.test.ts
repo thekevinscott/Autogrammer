@@ -1,5 +1,7 @@
-import { describe, it, expect, vi, } from 'vitest';
-import { parseObject, } from './parse-object.js';
+import { vi, } from 'vitest';
+import {
+  parseObject,
+} from './parse-object.js';
 import {
   COLON_KEY,
   COMMA_KEY,
@@ -7,14 +9,17 @@ import {
   OBJECT_KEY,
   QUOTE_KEY,
   RIGHT_BRACE_KEY,
+  STRING_KEY,
+  VALUE_KEY,
 } from '../constants/grammar-keys.js';
+import { getMockGrammar } from './__mocks__/get-mock-grammar.js';
 import { JSONSchemaObject } from '../types.js';
 
 import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { Grammar } from '../grammar.js';
+import { join, joinWith } from './join.js';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
@@ -24,17 +29,6 @@ vi.mock('./parse-type.js', async () => {
   };
 });
 
-const getMockParser = (fixedOrder = false) => {
-  class MockGrammar {
-    rules = 'foo';
-    addRule = vi.fn().mockImplementation((key: string) => key);
-    getConst = vi.fn().mockImplementation((key: string) => key);
-    fixedOrder = fixedOrder;
-  }
-
-  return new MockGrammar() as any as Grammar;
-};
-
 describe('parseObject', () => {
   afterEach(() => {
     vi.resetAllMocks();
@@ -42,17 +36,17 @@ describe('parseObject', () => {
 
   it('should return OBJECT_KEY if properties is undefined', () => {
     const schema = {} as JSONSchemaObject;
-    const mockParser = getMockParser();
-    expect(parseObject(mockParser, schema)).toBe(OBJECT_KEY);
-    expect(mockParser.addRule).not.toHaveBeenCalled();
-    expect(mockParser.getConst).not.toHaveBeenCalled();
+    const mockGrammar = getMockGrammar();
+    expect(parseObject(mockGrammar, schema)).toBe(OBJECT_KEY);
+    expect(mockGrammar.addRule).not.toHaveBeenCalled();
+    expect(mockGrammar.getConst).not.toHaveBeenCalled();
     expect(parseType).not.toHaveBeenCalled();
   });
 
   it('should throw an error if an unsupported key is present', () => {
     const schema = { patternProperties: {}, } as JSONSchemaObject;
-    const mockParser = getMockParser();
-    expect(() => parseObject(mockParser, schema)).toThrowError(
+    const mockGrammar = getMockGrammar();
+    expect(() => parseObject(mockGrammar, schema)).toThrowError(
       'patternProperties is not supported',
     );
   });
@@ -64,17 +58,58 @@ describe('parseObject', () => {
         foo: { type: 'string', },
         bar: { type: 'number', },
       },
+      additionalProperties: false,
     };
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser();
-    const expected = [
+    const mockGrammar = getMockGrammar();
+    const expected = join(
       LEFT_BRACE_KEY,
-      `(${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType)?`,
+      `(${joinWith(
+        ' | ',
+        join(
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        ),
+        join(
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+          COMMA_KEY,
+          QUOTE_KEY,
+          `"bar"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        ),
+        join(
+          QUOTE_KEY,
+          `"bar"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        ),
+        join(
+          QUOTE_KEY,
+          `"bar"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+          COMMA_KEY,
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`
+        )
+      )})?`,
       RIGHT_BRACE_KEY,
-    ].join(' ')
-    expect(parseObject(mockParser, schema)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledTimes(4);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(4);
+    );
+    expect(parseObject(mockGrammar, schema)).toBe(expected);
     expect(parseType).toHaveBeenCalledTimes(2);
   });
 
@@ -84,13 +119,30 @@ describe('parseObject', () => {
       properties: {
         foo: { enum: ['a', 'b'], },
       },
+      additionalProperties: false,
     };
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser();
-    const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "a" ${QUOTE_KEY} | ${QUOTE_KEY} "b" ${QUOTE_KEY})? ${RIGHT_BRACE_KEY}`;
-    expect(parseObject(mockParser, schema)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledTimes(2);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(4);
+    const mockGrammar = getMockGrammar();
+    const expected = join(
+      LEFT_BRACE_KEY,
+      `(${joinWith(' | ',
+        join(
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          QUOTE_KEY,
+          `"a"`,
+          QUOTE_KEY,
+        ),
+        join(
+          QUOTE_KEY,
+          `"b"`,
+          QUOTE_KEY,
+        ))})?`,
+      RIGHT_BRACE_KEY
+    );
+    expect(parseObject(mockGrammar, schema)).toBe(expected);
     expect(parseType).not.toHaveBeenCalled();
   });
 
@@ -98,15 +150,28 @@ describe('parseObject', () => {
     const schema: JSONSchemaObject = {
       type: 'object',
       properties: {
-        foo: { const: 'bar', },
+        foo: {
+          const: 'bar',
+        },
       },
+      additionalProperties: false,
     };
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser();
-    const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY})? ${RIGHT_BRACE_KEY}`;
-    expect(parseObject(mockParser, schema)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledTimes(1);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(4);
+    const mockGrammar = getMockGrammar();
+    const expected = join(
+      LEFT_BRACE_KEY,
+      `(${join(
+        QUOTE_KEY,
+        `"foo"`,
+        QUOTE_KEY,
+        COLON_KEY,
+        QUOTE_KEY,
+        `"bar"`,
+        QUOTE_KEY,
+      )})?`,
+      RIGHT_BRACE_KEY
+    );
+    expect(parseObject(mockGrammar, schema)).toBe(expected);
     expect(parseType).not.toHaveBeenCalled();
   });
 
@@ -118,17 +183,50 @@ describe('parseObject', () => {
         bar: { type: 'number', },
       },
       required: ['foo'],
+      additionalProperties: false,
     };
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser();
+    const mockGrammar = getMockGrammar();
     const expected = [
       LEFT_BRACE_KEY,
-      `(${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType)`,
+      `(${joinWith(' | ',
+        join(
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        ),
+        join(
+          QUOTE_KEY,
+          `"foo"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+          COMMA_KEY,
+          QUOTE_KEY,
+          `"bar"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        ),
+        join(
+          QUOTE_KEY,
+          '"bar"',
+          QUOTE_KEY,
+          COLON_KEY,
+          'parsedType',
+          COMMA_KEY,
+          QUOTE_KEY,
+          '"foo"',
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+        )
+      )})`,
       RIGHT_BRACE_KEY,
     ].join(' ');
-    expect(parseObject(mockParser, schema)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledTimes(4);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(4);
+    expect(parseObject(mockGrammar, schema)).toBe(expected);
     expect(parseType).toHaveBeenCalledTimes(2);
   });
 
@@ -139,13 +237,232 @@ describe('parseObject', () => {
         foo: { type: 'string', },
         bar: { type: 'number', },
       },
+      additionalProperties: false,
     };
     vi.mocked(parseType).mockImplementation(() => 'parsedType');
-    const mockParser = getMockParser(true);
-    const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType) ${RIGHT_BRACE_KEY}`;
-    expect(parseObject(mockParser, schema)).toBe(expected);
-    expect(mockParser.addRule).toHaveBeenCalledTimes(2);
-    expect(mockParser.getConst).toHaveBeenCalledTimes(4);
+    const mockGrammar = getMockGrammar({
+      fixedOrder: true,
+    });
+    const expected = join(
+      LEFT_BRACE_KEY,
+      `(${join(
+        QUOTE_KEY,
+        '"foo"',
+        QUOTE_KEY,
+        COLON_KEY,
+        `parsedType`,
+        COMMA_KEY,
+        QUOTE_KEY,
+        `"bar"`,
+        QUOTE_KEY,
+        COLON_KEY,
+        `parsedType`
+      )})`,
+      RIGHT_BRACE_KEY,
+    );
+    expect(parseObject(mockGrammar, schema)).toBe(expected);
     expect(parseType).toHaveBeenCalledTimes(2);
+  });
+
+  describe('additionalProperties', () => {
+    const PROPERTY_KEY = `(${join(
+      COMMA_KEY,
+      QUOTE_KEY,
+      STRING_KEY,
+      QUOTE_KEY,
+      COLON_KEY,
+      VALUE_KEY,
+      `(${join(COMMA_KEY,
+        QUOTE_KEY,
+        STRING_KEY,
+        QUOTE_KEY,
+        COLON_KEY,
+        VALUE_KEY,
+      )})*`,
+    )})?`;
+
+    it('should parse object with properties and allow additional properties', () => {
+      const schema: JSONSchemaObject = {
+        type: 'object',
+        additionalProperties: true,
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+      };
+      vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
+      const mockGrammar = getMockGrammar({
+        addRule: vi.fn().mockImplementation((key: string) => key),
+      });
+      const PROPERTY_KEY = `(${join(
+        COMMA_KEY,
+        QUOTE_KEY,
+        STRING_KEY,
+        QUOTE_KEY,
+        COLON_KEY,
+        VALUE_KEY,
+        `(${join(COMMA_KEY,
+          QUOTE_KEY,
+          STRING_KEY,
+          QUOTE_KEY,
+          COLON_KEY,
+          VALUE_KEY,
+        )})*`,
+      )})?`;
+      const expected = join(
+        LEFT_BRACE_KEY,
+        `(${joinWith(
+          ' | ',
+          join(
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          ),
+          join(
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+            COMMA_KEY,
+
+            QUOTE_KEY,
+            `"bar"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          ),
+          join(
+            QUOTE_KEY,
+            `"bar"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          ),
+          join(
+            QUOTE_KEY,
+            `"bar"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+            COMMA_KEY,
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          )
+        )})?`,
+        RIGHT_BRACE_KEY,
+      );
+      expect(parseObject(mockGrammar, schema)).toBe(expected);
+    });
+
+    it('should parse object with required properties and allow additional properties', () => {
+      const schema: JSONSchemaObject = {
+        type: 'object',
+        additionalProperties: true,
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        required: ['foo'],
+      };
+      vi.mocked(parseType).mockImplementation((rule) => 'parsedType');
+      const mockGrammar = getMockGrammar({
+        addRule: vi.fn().mockImplementation((key: string) => key),
+      });
+      const expected = join(
+        LEFT_BRACE_KEY,
+        `(${joinWith(
+          ' | ',
+          join(
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          ),
+          join(
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+            COMMA_KEY,
+
+            QUOTE_KEY,
+            `"bar"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          ),
+          join(
+            QUOTE_KEY,
+            `"bar"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+            COMMA_KEY,
+            QUOTE_KEY,
+            `"foo"`,
+            QUOTE_KEY,
+            COLON_KEY,
+            `parsedType`,
+            PROPERTY_KEY,
+          )
+        )})`,
+        RIGHT_BRACE_KEY,
+      );
+      expect(parseObject(mockGrammar, schema)).toBe(expected);
+    });
+
+    it('should parse object with fixed order and allow additional properties', () => {
+      const schema: JSONSchemaObject = {
+        type: 'object',
+        properties: {
+          foo: { type: 'string', },
+          bar: { type: 'number', },
+        },
+        additionalProperties: true,
+      };
+      vi.mocked(parseType).mockImplementation(() => 'parsedType');
+      const mockGrammar = getMockGrammar({
+        addRule: vi.fn().mockImplementation((key: string) => key),
+        fixedOrder: true,
+      });
+      const expected = join(
+        LEFT_BRACE_KEY,
+        `(${join(
+          QUOTE_KEY,
+          '"foo"',
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+          COMMA_KEY,
+          QUOTE_KEY,
+          `"bar"`,
+          QUOTE_KEY,
+          COLON_KEY,
+          `parsedType`,
+          PROPERTY_KEY,
+        )})`,
+        RIGHT_BRACE_KEY,
+      );
+      expect(parseObject(mockGrammar, schema)).toBe(expected);
+      expect(parseType).toHaveBeenCalledTimes(2);
+    });
   });
 });

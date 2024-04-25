@@ -62,12 +62,13 @@ export type JSONSchemaArray =
   JSONSchemaArrayMultipleItemType |
   JSONSchemaArraySingularItemType |
   JSONSchemaArrayBooleanItem;
-export type JSONSchemaValue = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject | JSONSchemaObjectValueEnum;
+export type JSONSchemaValue = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject | JSONSchemaObjectValueEnum | JSONSchemaObjectValueConst;
+export type AdditionalProperties = boolean | { type: JSONSchemaValue };
 export interface JSONSchemaObject {
   type: 'object';
   properties?: Record<string, JSONSchemaValue>;
   patternProperties?: unknown;
-  additionalProperties?: boolean | { type: JSONSchemaValue };
+  additionalProperties?: AdditionalProperties;
   allOf?: unknown;
   unevaluatedProperties?: unknown;
   required?: string[];

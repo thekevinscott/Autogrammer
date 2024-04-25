@@ -93,9 +93,9 @@ describe('JSON2GBNF', () => {
       opts = {};
     }
 
-    const mockParser = new MockGrammar() as any as Grammar;
+    const mockGrammar = new MockGrammar() as any as Grammar;
     vi.mocked(Grammar).mockImplementation(() => {
-      return mockParser;
+      return mockGrammar;
     });
 
     const schema = {
@@ -104,7 +104,7 @@ describe('JSON2GBNF', () => {
 
     expect(JSON2GBNF(schema)).toEqual('foo');
 
-    expect(parse).toHaveBeenCalledWith(mockParser, schema, 'root');
+    expect(parse).toHaveBeenCalledWith(mockGrammar, schema, 'root');
   });
 
 });
