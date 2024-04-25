@@ -135,8 +135,8 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.0)
       gbnf:
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: ^0.1.6
+        version: 0.1.6
       path-exists-cli:
         specifier: ^2.0.0
         version: 2.0.0
@@ -1302,6 +1302,9 @@ packages:
 
   gbnf@0.1.5:
     resolution: {integrity: sha512-lzAle3Yi84ROjuLL2qkPLxBEC0HFv3rFo8Hi8DBODZIMF3zzYut3TxPp4XUhMWNwphknlU9g2EJgKIcxw98CDA==}
+
+  gbnf@0.1.6:
+    resolution: {integrity: sha512-li3wTZ8dGcGzV8hreFOYYZCL6qsws1f1ZBuEa+enT44oj2hFw2ybPu5u0zrzZQf5spZEvq2GTuZVqxVnw7kScA==}
 
   get-func-name@2.0.2:
     resolution: {integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==}
@@ -3798,6 +3801,8 @@ snapshots:
   function-bind@1.1.2: {}
 
   gbnf@0.1.5: {}
+
+  gbnf@0.1.6: {}
 
   get-func-name@2.0.2: {}
 

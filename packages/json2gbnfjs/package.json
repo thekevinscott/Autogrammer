@@ -65,7 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "gbnf": "^0.1.5",
+    "gbnf": "^0.1.6",
     "path-exists-cli": "^2.0.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
