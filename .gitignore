@@ -6,3 +6,6 @@ env
 .parcel-cache
 .mypy-cache
 vite.config.ts.timestamp-*
+.env
+.ipynb_checkpoints
+*.egg-info

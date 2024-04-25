@@ -1,5 +1,6 @@
 {
   "name": "autogrammer",
+  "description": "A library for generating syntactically valid code from an LLM.",
   "type": "module",
   "version": "0.0.1",
   "repository": {
@@ -23,7 +24,7 @@
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
     "build:check": {
-      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./README.md && path-exists ./LICENSE"
+      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./LICENSE"
     },
     "build:esm": {
       "command": "tsc"
@@ -32,19 +33,15 @@
       "command": "vite build"
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../README.md ./README.md && cp ../../LICENSE ./LICENSE",
+      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../LICENSE ./LICENSE",
       "files": [
-        "../../README.md",
-        "../../LICENSE",
         "./src/**/*.ts",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
       ],
       "output": [
-        "./dist/**",
-        "./LICENSE",
-        "./README.md"
+        "./dist/**"
       ]
     }
   },

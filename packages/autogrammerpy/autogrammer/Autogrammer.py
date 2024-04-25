@@ -1,0 +1,2 @@
+class Autogrammer:
+    pass

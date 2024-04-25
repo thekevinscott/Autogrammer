@@ -1,0 +1,97 @@
+[project]
+name = "autogrammer"
+version = "0.0.1"
+# Notes
+authors = [{ name = "Kevin Scott", email = "kevin@autogrammer.dev" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+description = "A library for generating syntactically valid code from an LLM."
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/thekevinscott/autogrammer"
+"Bug Tracker" = "https://github.com/thekevinscott/autogrammer/issues"
+
+
+# [tool.setuptools]
+# packages = ["autogrammer"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["autogrammer*"]
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+# pyproject.toml
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["autogrammer/**/*_test.py"]
+
+
+[tool.ruff]
+line-length = 120
+preview = true
+# https://beta.ruff.rs/docs/rules/
+extend-select = [
+  "A",
+  "ARG",
+  "B",
+  "BLE",
+  "COM",
+  "E",
+  "F",
+  "FA",
+  "FIX",
+  "FLY",
+  "FURB",
+  "G",
+  "I",
+  "ICN",
+  "ISC",
+  "INP",
+  "PERF",
+  "PGH",
+  "PIE",
+  "PT",
+  "PTH",
+  "RET",
+  "RSE",
+  "RUF",
+  "SLOT",
+  "T20",
+  "TD",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = ["TD002", "TD003", "TID252", "FIX002", "BLE001", "FLY002"]
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"**/*_test.py" = ["T201", "RUF012", "PERF203", "FLY002", "ARG001", "B008", "ARG002", "A002", "A001"]
+
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
