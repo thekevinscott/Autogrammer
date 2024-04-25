@@ -1,1 +1,1 @@
-"{" (string ":" value ("," string ":" value)*)? "}" 
+"{" ({{STRING_KEY}} ":" {{VALUE_KEY}} ("," {{STRING_KEY}} ":" {{VALUE_KEY}})*)? "}" 

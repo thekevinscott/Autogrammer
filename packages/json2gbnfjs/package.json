@@ -19,6 +19,8 @@
     }
   },
   "scripts": {
+    "copy:gbnf": "wireit",
+    "copy:assets": "wireit",
     "lint": "wireit",
     "test": "vitest",
     "build": "wireit",
@@ -27,6 +29,12 @@
     "build:umd": "wireit"
   },
   "wireit": {
+    "copy:gbnf": {
+      "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
+    },
+    "copy:assets": {
+      "command": "cp ../../LICENSE ./LICENSE "
+    },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
@@ -40,9 +48,10 @@
       "command": "vite build"
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../LICENSE ./LICENSE",
+      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && pnpm copy:assets && pnpm copy:gbnf",
       "files": [
         "./src/**/*.ts",
+        "./src/**/*.gbnf",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
@@ -67,6 +76,7 @@
     "eslint-config-prettier": "^9.1.0",
     "gbnf": "^0.1.6",
     "path-exists-cli": "^2.0.0",
+    "cpx2": "^7.0.1",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tslib": "^2.6.2",

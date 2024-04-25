@@ -1,13 +1,27 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import {
-  objectDef,
-  arrayDef,
-  stringDef,
-  numberDef,
-  boolDef,
-  nullDef,
-  charDef,
-  integerDef,
+  GLOBAL_CONSTANTS,
+} from './constants.js';
+import {
+  ARRAY_KEY,
+  BOOLEAN_KEY,
+  CHAR_KEY,
+  INTEGER_KEY,
+  NULL_KEY,
+  NUMBER_KEY,
+  STRING_KEY,
+  VALUE_KEY,
+  COMMA_KEY,
+  COLON_KEY,
+  QUOTE_KEY,
+  LEFT_BRACE_KEY,
+  RIGHT_BRACE_KEY,
+  OBJECT_KEY,
+  LEFT_BRACKET_KEY,
+  RIGHT_BRACKET_KEY,
+  WHITESPACE_KEY,
+  WHITESPACE_REPEATING_KEY,
+  KEYS,
 } from './grammar/index.js';
 import {
   type JSONSchema,
@@ -25,18 +39,6 @@ import {
   isSchemaObject,
 } from './types.js';
 
-export const JSON_ALL_VALID_VALUES = `object | array | string | number | boolean | null`;
-export const JSON_VALUE_DEFS = [
-  `value ::= ${JSON_ALL_VALID_VALUES}`,
-  `object ::= ${objectDef}`,
-  `array ::= ${arrayDef}`,
-  `string ::= ${stringDef}`,
-  `char ::= ${charDef}`,
-  `number ::= ${numberDef}`,
-  `integer ::= ${integerDef}`,
-  `boolean ::= ${boolDef}`,
-  `null ::= ${nullDef}`,
-];
 
 // export const JSON_ALL_VALID_VALUES = `object | array | string | number | boolean | null`;
 
@@ -45,23 +47,50 @@ const idOf = (i: number) => (
   "abcdefghijklmnopqrstuvwxyz"[i % 26 >> 0]
 );
 
+export interface SchemaOpts {
+  includeWS?: boolean,
+  fixedOrder?: boolean;
+  maxWhiteSpace?: number;
+}
+
 class SchemaParser {
   #rules = new Map<string, string>();
+  #opts: SchemaOpts;
 
-  addRule(rule: string, _key?: string) {
-    const key = _key ? _key : this.#rules.get(rule) ?? `r${idOf(this.#rules.size)}`;
-    this.#rules.set(rule, key);
-    return key;
-  }
-
-  constructor(schema: TopLevelJSONSchema) {
+  constructor(schema: TopLevelJSONSchema, opts: SchemaOpts = {}) {
+    this.#opts = opts;
     if (schema === true || isEmptyObject(schema)) {
-      this.addRule('value', 'root');
+      this.addRule(VALUE_KEY, 'root');
     } else if (schema === false) {
       throw new Error('Not implemented yet');
     } else {
       this.parse(schema, 'root');
     }
+  }
+
+  getWhitespace = () => {
+    if (this.#opts.maxWhiteSpace !== undefined) {
+      return this.addRule(Array(this.#opts.maxWhiteSpace).fill(`(${WHITESPACE_KEY})?`).join(' '));
+    }
+    return WHITESPACE_REPEATING_KEY;
+  };
+
+  getConst = (key: string, { left = true, right = true, }: { left?: boolean; right?: boolean } = {}): string => {
+    if (this.#opts.includeWS) {
+      const KEY = `${left ? 'ws' : ''}${key}${right ? 'ws' : ''}`;
+      return this.addRule([
+        left ? this.getWhitespace() : undefined,
+        key,
+        right ? this.getWhitespace() : undefined,
+      ].filter(Boolean).join(' '), KEY);
+    }
+    return key;
+  };
+
+  addRule(rule: string, _key?: string) {
+    const key = _key ? _key : this.#rules.get(rule) ?? `x${idOf(this.#rules.size)}`;
+    this.#rules.set(rule, key);
+    return key;
   }
 
   parseString(schema: JSONSchemaString) {
@@ -78,20 +107,20 @@ class SchemaParser {
     }
 
     if (minLength === undefined && maxLength === undefined) {
-      return 'string';
+      return STRING_KEY;
     } else {
       if (minLength !== undefined && maxLength !== undefined) {
-        return `"\\"" ${Array(minLength).fill('char').join(' ')} ${Array(maxLength - minLength).fill(`(char)?`).join(' ')} "\\"" `;
+        return `${QUOTE_KEY} ${Array(minLength).fill(CHAR_KEY).join(' ')} ${Array(maxLength - minLength).fill(`(${CHAR_KEY})?`).join(' ')} ${QUOTE_KEY} `;
       } else if (maxLength === undefined && minLength !== undefined) {
-        return `"\\"" ${Array(minLength - 1).fill('char').join(' ')} (char)+ "\\"" `;
+        return `${QUOTE_KEY} ${Array(minLength - 1).fill(CHAR_KEY).join(' ')} (${CHAR_KEY})+ ${QUOTE_KEY} `;
       } else if (minLength === undefined && maxLength !== undefined) {
-        return `"\\"" ${Array(maxLength).fill(`(char)?`).join(' ')} "\\"" `;
+        return `${QUOTE_KEY} ${Array(maxLength).fill(`(${CHAR_KEY})?`).join(' ')} ${QUOTE_KEY} `;
       }
     }
   }
 
   parseEnum(schema: JSONSchemaObjectValueEnum) {
-    const rule = schema.enum.map(value => `"\\"${value}\\""`).join(' | ');
+    const rule = schema.enum.map(value => `${QUOTE_KEY} "${value}" ${QUOTE_KEY}`).join(' | ');
     return this.addRule(rule);
   }
 
@@ -105,29 +134,44 @@ class SchemaParser {
     if (properties !== undefined && typeof properties === 'object') {
       const objectProperties: [string, string][] = Object.entries(properties).map(([key, value,]) => {
         if (isSchemaEnum(value)) {
-          return [this.addRule(`"\\"${key}\\":" ${this.parseEnum(value)}`), key,];
+          return [this.addRule(`${QUOTE_KEY} "${key}" ${QUOTE_KEY} ${this.getConst(COLON_KEY)} ${this.parseEnum(value)}`), key,];
         }
         if (isSchemaConst(value)) {
-          return [this.addRule(`"\\"${key}\\":\\"${value.const}\\""`), key,];
+          return [this.addRule(`${QUOTE_KEY} "${key}" ${QUOTE_KEY} ${this.getConst(COLON_KEY)} ${QUOTE_KEY} "${value.const}" ${QUOTE_KEY}`), key,];
         }
-        return [this.addRule(`"\\"${key}\\":" ${this.parseType(value)}`), key,];
+        return [this.addRule(`${QUOTE_KEY} "${key}" ${QUOTE_KEY} ${this.getConst(COLON_KEY)} ${this.parseType(value)}`), key,];
       });
       const requiredsToKeys = objectProperties.reduce<Record<string, string>>((acc, [rule, key,]) => ({
         ...acc,
         [key]: rule,
       }), {});
 
+      const LB = this.getConst(LEFT_BRACE_KEY, { left: false, });
+      const RB = this.getConst(RIGHT_BRACE_KEY, { right: false, });
+
+      if (this.#opts.fixedOrder) {
+        return [
+          LB,
+          `(${objectProperties.map(([rule,]) => rule).join(` ${this.getConst(COMMA_KEY)} `)})`,
+          RB,
+        ].join(' ');
+      }
 
       const permutations = getAllPermutations(objectProperties.map(([prop,]) => prop), required.map(key => requiredsToKeys[key])).map(permutation => {
         if (permutation.length > 1) {
-          return this.addRule(permutation.join(' "," '));
+          return this.addRule(permutation.join(` ${this.getConst(COMMA_KEY, { left: false, })} `));
         }
         return permutation[0];
       });
 
-      return `"{" (${permutations.filter(Boolean).join(" | ")})${required.length > 0 ? '' : '?'} "}"`;
+
+      return [
+        LB,
+        `(${permutations.filter(Boolean).join(" | ")})${required.length > 0 ? '' : '?'}`,
+        RB,
+      ].join(' ');
     }
-    return 'object';
+    return OBJECT_KEY;
   }
 
   parseArray(schema: JSONSchemaArray): string {
@@ -142,12 +186,18 @@ class SchemaParser {
     const { items, } = schema;
     if (items !== undefined) {
       if (Array.isArray(items.type)) {
-        const symbolId = this.addRule(items.type.join(' | '));
-        return `"[" (${symbolId} ("," ${symbolId})*)? "]"`;
+        const symbolId = this.addRule(items.type.map((type: string) => {
+          const key = `${type.toUpperCase()}_KEY`;
+          if (key in KEYS) {
+            return KEYS[key];
+          }
+          return type;
+        }).join(' | '));
+        return `${this.getConst(LEFT_BRACKET_KEY, { left: false, })} (${symbolId} (${this.getConst(COMMA_KEY)} ${symbolId})*)? ${this.getConst(RIGHT_BRACKET_KEY, { right: false, })}`;
       }
-      return `"[" (${this.parseType(items)} ("," ${this.parseType(items)})*)? "]"`;
+      return `${this.getConst(LEFT_BRACKET_KEY, { left: false, })} (${this.parseType(items)} (${this.getConst(COMMA_KEY)} ${this.parseType(items)})*)? ${this.getConst(RIGHT_BRACKET_KEY, { right: false, })}`;
     }
-    return 'array';
+    return ARRAY_KEY;
   }
 
   parseType(schema: JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject) {
@@ -161,14 +211,14 @@ class SchemaParser {
         }
       }
       if (type === 'number') {
-        return 'number';
+        return NUMBER_KEY;
       } else {
-        return 'integer';
+        return INTEGER_KEY;
       }
     } else if (type === 'boolean') {
-      return 'boolean';
+      return BOOLEAN_KEY;
     } else if (type === 'null') {
-      return 'null';
+      return NULL_KEY;
     } else if (type === 'array') {
       return this.parseArray(schema);
     } else if (type === 'object') {
@@ -178,12 +228,24 @@ class SchemaParser {
 
   parse(schema: JSONSchema, symbolName: string) {
     if (isSchemaEnum(schema)) {
-      this.addRule(`${schema.enum.map(e => JSON.stringify(JSON.stringify(e))).join(" | ")}`, symbolName);
+      this.addRule(`${schema.enum.map(e => {
+        const type = JSON.stringify(e);
+        if (type === 'null') {
+          return NULL_KEY;
+        }
+        return JSON.stringify(type);
+      }).join(" | ")}`, symbolName);
     } else {
       const { type, } = schema;
       if (Array.isArray(type)) {
         // if type is an array, then it must not be a structured data type
-        this.addRule(`${type.join(' | ')}`, symbolName);
+        this.addRule(`${type.map(_type => {
+          const key = `${_type.toUpperCase()}_KEY`;
+          if (!(key in KEYS)) {
+            throw new Error(`Unknown type ${_type} for schema ${JSON.stringify(schema)}`);
+          }
+          return KEYS[key];
+        }).join(' | ')}`, symbolName);
       } else {
         const ruleDef = this.parseType(schema);
         this.addRule(`${ruleDef}`, symbolName);
@@ -198,12 +260,12 @@ class SchemaParser {
     }
     return [
       ...rules,
-      ...JSON_VALUE_DEFS,
+      ...GLOBAL_CONSTANTS,
     ].join('\n');
   }
 }
 
-export function JSON2GBNF<T extends JSONSchema>(schema?: {} | null | T | boolean): string {
+export function JSON2GBNF<T extends JSONSchema>(schema?: {} | null | T | boolean, opts?: SchemaOpts): string {
   if (schema === null || schema === undefined) {
     throw new Error('Bad schema provided');
   }
@@ -211,7 +273,7 @@ export function JSON2GBNF<T extends JSONSchema>(schema?: {} | null | T | boolean
     // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
-  const parser = new SchemaParser(schema);
+  const parser = new SchemaParser(schema, opts);
   return parser.rules;
 };
 

@@ -1,7 +1,10 @@
-import { JSON2GBNF, JSONSchema, JSON_VALUE_DEFS, TopLevelJSONSchema, } from "../../src/json2gbnf.js";
+import { GLOBAL_CONSTANTS } from "../../src/constants.js";
+import { JSON2GBNF, } from "../../src/json2gbnf.js";
 import GBNF, { InputParseError, } from 'gbnf';
+import type { TopLevelJSONSchema } from "../../src/types.js";
+import { ARRAY_KEY, BOOLEAN_KEY, CHAR_KEY, COLON_KEY, COMMA_KEY, INTEGER_KEY, LEFT_BRACE_KEY, LEFT_BRACKET_KEY, NULL_KEY, NUMBER_KEY, OBJECT_KEY, QUOTE_KEY, RIGHT_BRACE_KEY, RIGHT_BRACKET_KEY, STRING_KEY, VALUE_KEY } from "../../src/grammar/index.js";
 
-const OBJECT_GRAMMAR = [`root ::= object`,];
+const OBJECT_GRAMMAR = [`root ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {
   type: 'object',
   properties: {
@@ -12,23 +15,23 @@ const STREET_SCHEMA = {
   },
 };
 const STREET_GRAMMAR = [
-  `ra ::= "\\"number\\":" number`,
-  `rb ::= "\\"street_name\\":" string`,
-  `rc ::= "\\"Street\\"" | "\\"Avenue\\"" | "\\"Boulevard\\""`,
-  `rd ::= "\\"street_type\\":" rc`,
-  `re ::= ra "," rb`,
-  `rf ::= ra "," rb "," rd`,
-  `rg ::= ra "," rd`,
-  `rh ::= ra "," rd "," rb`,
-  `ri ::= rb "," ra`,
-  `rj ::= rb "," ra "," rd`,
-  `rk ::= rb "," rd`,
-  `rl ::= rb "," rd "," ra`,
-  `rm ::= rd "," ra`,
-  `rn ::= rd "," ra "," rb`,
-  `ro ::= rd "," rb`,
-  `rp ::= rd "," rb "," ra`,
-  `root ::= "{" (ra | re | rf | rg | rh | rb | ri | rj | rk | rl | rd | rm | rn | ro | rp)? "}"`,
+  `xa ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+  `xb ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
+  `xc ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
+  `xd ::= ${QUOTE_KEY} "street_type" ${QUOTE_KEY} ${COLON_KEY} xc`,
+  `xe ::= xa ${COMMA_KEY} xb`,
+  `xf ::= xa ${COMMA_KEY} xb ${COMMA_KEY} xd`,
+  `xg ::= xa ${COMMA_KEY} xd`,
+  `xh ::= xa ${COMMA_KEY} xd ${COMMA_KEY} xb`,
+  `xi ::= xb ${COMMA_KEY} xa`,
+  `xj ::= xb ${COMMA_KEY} xa ${COMMA_KEY} xd`,
+  `xk ::= xb ${COMMA_KEY} xd`,
+  `xl ::= xb ${COMMA_KEY} xd ${COMMA_KEY} xa`,
+  `xm ::= xd ${COMMA_KEY} xa`,
+  `xn ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
+  `xo ::= xd ${COMMA_KEY} xb`,
+  `xp ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
+  `root ::= ${LEFT_BRACE_KEY} (xa | xe | xf | xg | xh | xb | xi | xj | xk | xl | xd | xm | xn | xo | xp)? ${RIGHT_BRACE_KEY}`,
 ];
 
 describe('schema', () => {
@@ -37,49 +40,50 @@ describe('schema', () => {
     any,
     string[],
   ][] = [
-      [{}, '42', [`root ::= value`],],
-      [{}, '"42"', [`root ::= value`],],
-      [{}, '"string town"', [`root ::= value`],],
-      [{}, JSON.stringify({ "an": ["arbitrary", "object"], data: "foo" }), [`root ::= value`],],
-      [true, '42', [`root ::= value`],],
-      [{ type: 'string' }, '"foo"', [`root ::= string`,],],
+      [{}, '42', [`root ::= ${VALUE_KEY}`],],
+      [{}, '"42"', [`root ::= ${VALUE_KEY}`],],
+      [{}, '"string town"', [`root ::= ${VALUE_KEY}`],],
+      [{}, JSON.stringify({ "an": ["arbitrary", "object"], data: "foo" }), [`root ::= ${VALUE_KEY}`],],
+      [true, '42', [`root ::= ${VALUE_KEY}`],],
+      [{ type: 'string' }, '"foo"', [`root ::= ${STRING_KEY}`,],],
       [{
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         type: 'string'
-      }, '"foo"', [`root ::= string`,],],
-      [{ type: 'number' }, "123", [`root ::= number`,],],
-      [{ type: 'number' }, '-123.001', [`root ::= number`,],],
-      [{ type: 'boolean' }, 'true', [`root ::= boolean`,],],
-      [{ type: 'null' }, 'null', [`root ::= null`,],],
-      [{ type: 'string', minLength: 2 }, '"fo"', [`root ::= "\\"" char (char)+ "\\"" `],],
-      [{ type: 'string', minLength: 2 }, '"foo"', [`root ::= "\\"" char (char)+ "\\"" `],],
-      [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= "\\"" (char)? (char)? (char)? "\\"" `],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= "\\"" char char (char)? "\\"" `],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= "\\"" char char (char)? "\\"" `],],
-      [{ type: 'integer' }, "123", [`root ::= integer`,],],
-      [{ type: 'integer' }, "123.0", [`root ::= integer`,],],
-      [{ enum: ['red', null, 42] }, `"red"`, [`root ::= "\\"red\\"" | "null" | "42"`,],],
-      [{ enum: ['red', null, 42] }, `null`, [`root ::= "\\"red\\"" | "null" | "42"`,],],
-      [{ enum: ['red', null, 42] }, `42`, [`root ::= "\\"red\\"" | "null" | "42"`,],],
-      [{ type: ['string'] }, '"foo"', [`root ::= string`,],],
+      }, '"foo"', [`root ::= ${STRING_KEY}`,],],
+      [{ type: 'number' }, "123", [`root ::= ${NUMBER_KEY}`,],],
+      [{ type: 'number' }, '-123.001', [`root ::= ${NUMBER_KEY}`,],],
+      [{ type: 'boolean' }, 'true', [`root ::= ${BOOLEAN_KEY}`,],],
+      [{ type: 'null' }, 'null', [`root ::= ${NULL_KEY}`,],],
+      [{ type: 'string', minLength: 2 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY} `],],
+      [{ type: 'string', minLength: 2 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY} `],],
+      [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY} `],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY} `],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY} `],],
+      [{ type: 'integer' }, "123", [`root ::= ${INTEGER_KEY}`,],],
+      [{ type: 'integer' }, "123.0", [`root ::= ${INTEGER_KEY}`,],],
+      [{ enum: ['red', null, 42] }, `"red"`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `null`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `42`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `42`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ type: ['string'] }, '"foo"', [`root ::= ${STRING_KEY}`,],],
       [
         { type: ['string', 'number'] },
         '"foo"',
         [
-          `root ::= string | number`,
+          `root ::= ${STRING_KEY} | ${NUMBER_KEY}`,
         ]],
       [
         { type: ['string', 'number', 'boolean', 'null'] },
         '"foo"',
         [
-          `root ::= string | number | boolean | null`,
+          `root ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY}`,
         ],
       ],
       [
         { type: ['string', 'number', 'boolean', 'null', 'array', 'object'] },
         '"foo"',
         [
-          `root ::= string | number | boolean | null | array | object`,
+          `root ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY} | ${ARRAY_KEY} | ${OBJECT_KEY}`,
         ],
       ],
       [{ type: 'object' }, JSON.stringify({ foo: 'foo', bar: 1, baz: [1,] }), OBJECT_GRAMMAR,],
@@ -116,19 +120,19 @@ describe('schema', () => {
         },
         JSON.stringify({ "number": 1600, "street_name": "Foo", "street_type": "Boulevard" }),
         [
-          `ra ::= "\\"number\\":" number`,
-          `rb ::= "\\"street_name\\":" string`,
-          `rc ::= "\\"Street\\"" | "\\"Avenue\\"" | "\\"Boulevard\\""`,
-          `rd ::= "\\"street_type\\":" rc`,
-          `re ::= ra "," rb "," rd`,
-          `rf ::= ra "," rd`,
-          `rg ::= ra "," rd "," rb`,
-          `rh ::= rb "," ra "," rd`,
-          `ri ::= rb "," rd "," ra`,
-          `rj ::= rd "," ra`,
-          `rk ::= rd "," ra "," rb`,
-          `rl ::= rd "," rb "," ra`,
-          `root ::= "{" (re | rf | rg | rh | ri | rj | rk | rl) "}"`,
+          `xa ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xb ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
+          `xc ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
+          `xd ::= ${QUOTE_KEY} "street_type" ${QUOTE_KEY} ${COLON_KEY} xc`,
+          `xe ::= xa ${COMMA_KEY} xb ${COMMA_KEY} xd`,
+          `xf ::= xa ${COMMA_KEY} xd`,
+          `xg ::= xa ${COMMA_KEY} xd ${COMMA_KEY} xb`,
+          `xh ::= xb ${COMMA_KEY} xa ${COMMA_KEY} xd`,
+          `xi ::= xb ${COMMA_KEY} xd ${COMMA_KEY} xa`,
+          `xj ::= xd ${COMMA_KEY} xa`,
+          `xk ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
+          `xl ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -138,19 +142,19 @@ describe('schema', () => {
         },
         JSON.stringify({ "street_type": "Boulevard", "number": 1600 }),
         [
-          `ra ::= "\\"number\\":" number`,
-          `rb ::= "\\"street_name\\":" string`,
-          `rc ::= "\\"Street\\"" | "\\"Avenue\\"" | "\\"Boulevard\\""`,
-          `rd ::= "\\"street_type\\":" rc`,
-          `re ::= ra "," rb "," rd`,
-          `rf ::= ra "," rd`,
-          `rg ::= ra "," rd "," rb`,
-          `rh ::= rb "," ra "," rd`,
-          `ri ::= rb "," rd "," ra`,
-          `rj ::= rd "," ra`,
-          `rk ::= rd "," ra "," rb`,
-          `rl ::= rd "," rb "," ra`,
-          `root ::= "{" (re | rf | rg | rh | ri | rj | rk | rl) "}"`,
+          `xa ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xb ::= ${QUOTE_KEY} "street_name" ${QUOTE_KEY} ${COLON_KEY} ${STRING_KEY}`,
+          `xc ::= ${QUOTE_KEY} "Street" ${QUOTE_KEY} | ${QUOTE_KEY} "Avenue" ${QUOTE_KEY} | ${QUOTE_KEY} "Boulevard" ${QUOTE_KEY}`,
+          `xd ::= ${QUOTE_KEY} "street_type" ${QUOTE_KEY} ${COLON_KEY} xc`,
+          `xe ::= xa ${COMMA_KEY} xb ${COMMA_KEY} xd`,
+          `xf ::= xa ${COMMA_KEY} xd`,
+          `xg ::= xa ${COMMA_KEY} xd ${COMMA_KEY} xb`,
+          `xh ::= xb ${COMMA_KEY} xa ${COMMA_KEY} xd`,
+          `xi ::= xb ${COMMA_KEY} xd ${COMMA_KEY} xa`,
+          `xj ::= xd ${COMMA_KEY} xa`,
+          `xk ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
+          `xl ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -167,11 +171,11 @@ describe('schema', () => {
         },
         JSON.stringify({ "number": 1600, "country": "USA", }),
         [
-          `ra ::= "\\"number\\":" number`,
-          `rb ::= "\\"country\\":\\"USA\\""`,
-          `rc ::= ra "," rb`,
-          `rd ::= rb "," ra`,
-          `root ::= "{" (ra | rc | rb | rd)? "}"`,
+          `xa ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xb ::= ${QUOTE_KEY} "country" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "USA" ${QUOTE_KEY}`,
+          `xc ::= xa ${COMMA_KEY} xb`,
+          `xd ::= xb ${COMMA_KEY} xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -188,40 +192,40 @@ describe('schema', () => {
         },
         JSON.stringify({ "country": "USA", "number": 1600, }),
         [
-          `ra ::= "\\"number\\":" number`,
-          `rb ::= "\\"country\\":\\"USA\\""`,
-          `rc ::= ra "," rb`,
-          `rd ::= rb "," ra`,
-          `root ::= "{" (ra | rc | rb | rd)? "}"`,
+          `xa ::= ${QUOTE_KEY} "number" ${QUOTE_KEY} ${COLON_KEY} ${NUMBER_KEY}`,
+          `xb ::= ${QUOTE_KEY} "country" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "USA" ${QUOTE_KEY}`,
+          `xc ::= xa ${COMMA_KEY} xb`,
+          `xd ::= xb ${COMMA_KEY} xa`,
+          `root ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
         ],
       ],
-      [{ type: 'array' }, JSON.stringify([1, 'a', {}]), [`root ::= array`,],],
+      [{ type: 'array' }, JSON.stringify([1, 'a', {}]), [`root ::= ${ARRAY_KEY}`,],],
       [
         { type: 'array', items: { type: 'number' } },
         JSON.stringify([1, 2, 3]),
         [
-          `root ::= "[" (number ("," number)*)? "]"`,
+          `root ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
       [
         { type: 'array', items: { type: 'number' } },
         JSON.stringify([]),
         [
-          `root ::= "[" (number ("," number)*)? "]"`,
+          `root ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
       [
         { type: 'array', items: { type: ['number', 'string'] } },
         JSON.stringify([1, "foo", 3]),
         [
-          `ra ::= number | string`,
-          `root ::= "[" (ra ("," ra)*)? "]"`,
+          `xa ::= ${NUMBER_KEY} | ${STRING_KEY}`,
+          `root ::= ${LEFT_BRACKET_KEY} (xa (${COMMA_KEY} xa)*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
     ];
   test.each(testCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
     const grammar = JSON2GBNF(schema);
-    expect(grammar).toEqual([...expected, ...JSON_VALUE_DEFS].join('\n'));
+    expect(grammar).toEqual([...expected, ...GLOBAL_CONSTANTS].join('\n'));
     let parser = GBNF(grammar);
     parser = parser.add(initial);
     expect(parser.size).toBeGreaterThan(0);
