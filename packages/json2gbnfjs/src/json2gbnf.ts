@@ -37,6 +37,8 @@ import {
   isSchemaConst,
   isSchemaEnum,
   isSchemaObject,
+  JSONSchemaMultipleBasicTypes,
+  isSchemaMultipleBasicTypes,
 } from './types.js';
 
 
@@ -247,6 +249,9 @@ class SchemaParser {
           return KEYS[key];
         }).join(' | ')}`, symbolName);
       } else {
+        if (isSchemaMultipleBasicTypes(schema)) {
+          throw new Error('This should not be possible: encountered array of types');
+        }
         const ruleDef = this.parseType(schema);
         this.addRule(`${ruleDef}`, symbolName);
       }

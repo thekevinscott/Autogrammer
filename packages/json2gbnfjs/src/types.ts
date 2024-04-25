@@ -55,14 +55,15 @@ export interface JSONSchemaObject {
   minProperties?: number;
   maxProperties?: number;
 }
-export interface JSONSchemaTypeArray {
+export interface JSONSchemaMultipleBasicTypes {
   type: ('string' | 'number' | 'boolean' | 'null' | 'object' | 'array')[]
 }
-export type JSONSchema = JSONSchemaValue | JSONSchemaTypeArray;
+export type JSONSchema = JSONSchemaValue | JSONSchemaMultipleBasicTypes;
 export type TopLevelJSONSchema = {} | JSONSchema & {
   $schema?: string;
 } | boolean;
 
+export const isSchemaMultipleBasicTypes = (schema: unknown): schema is JSONSchemaMultipleBasicTypes => typeof schema === 'object' && schema !== null && 'type' in schema && Array.isArray(schema['type']);
 export const isSchemaEnum = (schema: unknown): schema is JSONSchemaObjectValueEnum => typeof schema === 'object' && schema !== null && 'enum' in schema;
 export const isSchemaConst = (schema: unknown): schema is JSONSchemaObjectValueConst => typeof schema === 'object' && schema !== null && 'const' in schema;
 export const isSchemaObject = (schema: unknown): schema is JSONSchemaObject => typeof schema === 'object' && schema !== null && 'type' in schema && schema['type'] === 'object';
