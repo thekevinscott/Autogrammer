@@ -9,6 +9,8 @@ import {
   integerDef,
   whitespaceDef,
   whitespaceRepeatingDef,
+} from './grammar-definitions.js';
+import {
   VALUE_KEY,
   OBJECT_KEY,
   ARRAY_KEY,
@@ -27,7 +29,8 @@ import {
   RIGHT_BRACE_KEY,
   WHITESPACE_KEY,
   WHITESPACE_REPEATING_KEY,
-} from './grammar/index.js';
+} from './grammar-keys.js';
+
 export const JSON_ALL_VALID_VALUES = `${OBJECT_KEY} | ${ARRAY_KEY} | ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY}`;
 export const GLOBAL_CONSTANTS = [
   `${VALUE_KEY} ::= ${JSON_ALL_VALID_VALUES}`,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 export interface JSONSchemaObjectValueEnum {
-  enum: string[];
+  enum: (string | null)[];
 }
 export interface JSONSchemaObjectValueConst {
   const: string;
@@ -28,11 +28,8 @@ export interface JSONSchemaNull {
   type: 'null';
 }
 
-export interface JSONSchemaArray {
+interface BaseJSONSchemaArray {
   type: 'array';
-  items?: {
-    type: 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
-  } | false;
   prefixItems?: unknown;
   unevaluatedItems?: unknown;
   contains?: unknown;
@@ -42,6 +39,29 @@ export interface JSONSchemaArray {
   maxItems?: number;
   uniqueItems?: boolean;
 }
+
+export type PrimitiveType = 'string' | 'number' | 'boolean' | 'null' | 'object' | 'array';
+export interface JSONSchemaArrayMultipleItemType extends BaseJSONSchemaArray {
+  items: {
+    type: PrimitiveType[];
+  };
+}
+export interface JSONSchemaArraySingularItemType extends BaseJSONSchemaArray {
+  items: {
+    type: PrimitiveType;
+  };
+}
+export interface JSONSchemaArrayBooleanItem extends BaseJSONSchemaArray {
+  items: boolean;
+}
+export interface JSONSchemaArrayNoItemType extends BaseJSONSchemaArray {
+  items?: undefined; // _no_ type is a valid type of array
+};
+export type JSONSchemaArray =
+  JSONSchemaArrayNoItemType |
+  JSONSchemaArrayMultipleItemType |
+  JSONSchemaArraySingularItemType |
+  JSONSchemaArrayBooleanItem;
 export type JSONSchemaValue = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject | JSONSchemaObjectValueEnum;
 export interface JSONSchemaObject {
   type: 'object';
@@ -63,10 +83,12 @@ export type TopLevelJSONSchema = {} | JSONSchema & {
   $schema?: string;
 } | boolean;
 
-export const isSchemaMultipleBasicTypes = (schema: unknown): schema is JSONSchemaMultipleBasicTypes => typeof schema === 'object' && schema !== null && 'type' in schema && Array.isArray(schema['type']);
-export const isSchemaEnum = (schema: unknown): schema is JSONSchemaObjectValueEnum => typeof schema === 'object' && schema !== null && 'enum' in schema;
-export const isSchemaConst = (schema: unknown): schema is JSONSchemaObjectValueConst => typeof schema === 'object' && schema !== null && 'const' in schema;
-export const isSchemaObject = (schema: unknown): schema is JSONSchemaObject => typeof schema === 'object' && schema !== null && 'type' in schema && schema['type'] === 'object';
-export const isEmptyObject = (schema: JSONSchema | {}): schema is {} => typeof schema === 'object' && Object.keys(schema).filter(key => {
-  return key !== '$schema';
-}).length === 0;
+export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject;
+
+export type AddRule = (rule: string, symbolName?: string) => string;
+export type GetConst = (key: string, opts?: { left?: boolean; right?: boolean }) => string;
+
+export interface SchemaOpts {
+  fixedOrder?: boolean;
+  whitespace?: number;
+}

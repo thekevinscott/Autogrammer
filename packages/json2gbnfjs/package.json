@@ -68,7 +68,11 @@
   ],
   "author": "Kevin Scott",
   "license": "MIT",
+  "dependencies": {
+    "mustache": "^4.2.0"
+  },
   "devDependencies": {
+    "@types/mustache": "^4.2.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",
     "@typescript-eslint/eslint-plugin": "^7.3.1",

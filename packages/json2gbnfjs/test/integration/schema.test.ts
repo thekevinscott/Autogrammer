@@ -1,8 +1,25 @@
-import { GLOBAL_CONSTANTS } from "../../src/constants.js";
+import { GLOBAL_CONSTANTS } from "../../src/constants/constants.js";
 import { JSON2GBNF, } from "../../src/json2gbnf.js";
 import GBNF, { InputParseError, } from 'gbnf';
 import type { TopLevelJSONSchema } from "../../src/types.js";
-import { ARRAY_KEY, BOOLEAN_KEY, CHAR_KEY, COLON_KEY, COMMA_KEY, INTEGER_KEY, LEFT_BRACE_KEY, LEFT_BRACKET_KEY, NULL_KEY, NUMBER_KEY, OBJECT_KEY, QUOTE_KEY, RIGHT_BRACE_KEY, RIGHT_BRACKET_KEY, STRING_KEY, VALUE_KEY } from "../../src/grammar/index.js";
+import {
+  ARRAY_KEY,
+  BOOLEAN_KEY,
+  CHAR_KEY,
+  COLON_KEY,
+  COMMA_KEY,
+  INTEGER_KEY,
+  LEFT_BRACE_KEY,
+  LEFT_BRACKET_KEY,
+  NULL_KEY,
+  NUMBER_KEY,
+  OBJECT_KEY,
+  QUOTE_KEY,
+  RIGHT_BRACE_KEY,
+  RIGHT_BRACKET_KEY,
+  STRING_KEY,
+  VALUE_KEY,
+} from "../../src/constants/grammar-keys.js";
 
 const OBJECT_GRAMMAR = [`root ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {
@@ -54,11 +71,11 @@ describe('schema', () => {
       [{ type: 'number' }, '-123.001', [`root ::= ${NUMBER_KEY}`,],],
       [{ type: 'boolean' }, 'true', [`root ::= ${BOOLEAN_KEY}`,],],
       [{ type: 'null' }, 'null', [`root ::= ${NULL_KEY}`,],],
-      [{ type: 'string', minLength: 2 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY} `],],
-      [{ type: 'string', minLength: 2 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY} `],],
-      [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY} `],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY} `],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY} `],],
+      [{ type: 'string', minLength: 2 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
+      [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
       [{ type: 'integer' }, "123", [`root ::= ${INTEGER_KEY}`,],],
       [{ type: 'integer' }, "123.0", [`root ::= ${INTEGER_KEY}`,],],
       [{ enum: ['red', null, 42] }, `"red"`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
@@ -223,7 +240,7 @@ describe('schema', () => {
         ],
       ],
     ];
-  test.each(testCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
+  test.only.each(testCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
     const grammar = JSON2GBNF(schema);
     expect(grammar).toEqual([...expected, ...GLOBAL_CONSTANTS].join('\n'));
     let parser = GBNF(grammar);

@@ -3,19 +3,20 @@ export const OBJECT_KEY = 'obj';
 export const ARRAY_KEY = 'arr';
 export const STRING_KEY = 'str';
 export const NUMBER_KEY = 'num';
-export const BOOLEAN_KEY = 'bool';
+export const BOOLEAN_KEY = 'bol';
 export const NULL_KEY = 'nll';
 export const CHAR_KEY = 'chr';
 export const INTEGER_KEY = 'int';
-export const COMMA_KEY = 'comma';
-export const COLON_KEY = 'colon';
-export const QUOTE_KEY = 'quote';
-export const LEFT_BRACKET_KEY = 'lbracket';
-export const RIGHT_BRACKET_KEY = 'rbracket';
-export const LEFT_BRACE_KEY = 'lbrace';
-export const RIGHT_BRACE_KEY = 'rbrace';
+export const COMMA_KEY = 'com';
+export const COLON_KEY = 'col';
+export const QUOTE_KEY = 'qot';
+export const LEFT_BRACKET_KEY = 'lbkt';
+export const RIGHT_BRACKET_KEY = 'rbkt';
+export const LEFT_BRACE_KEY = 'lbrc';
+export const RIGHT_BRACE_KEY = 'rbrc';
 export const WHITESPACE_KEY = 'ws';
 export const WHITESPACE_REPEATING_KEY = 'wss';
+
 export const KEYS: Record<string, string> = {
   VALUE_KEY,
   OBJECT_KEY,
