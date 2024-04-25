@@ -42,7 +42,7 @@
       "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts "
     },
     "build:esm": {
-      "command": "tsc"
+      "command": "tsc -p ./tsconfig.json"
     },
     "build:umd": {
       "command": "vite build"
