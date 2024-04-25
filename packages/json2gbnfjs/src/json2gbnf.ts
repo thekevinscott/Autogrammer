@@ -37,7 +37,6 @@ import {
   isSchemaConst,
   isSchemaEnum,
   isSchemaObject,
-  JSONSchemaMultipleBasicTypes,
   isSchemaMultipleBasicTypes,
 } from './types.js';
 
