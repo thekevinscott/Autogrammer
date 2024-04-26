@@ -1,4 +1,4 @@
-name: "Cut Release for JSON2GBNFjs"
+name: "Cut Release for JSON2GBNF (Javascript)"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   tagged-release:
-    name: "Cut Release for JSON2GBNFjs"
+    name: "Cut Release for JSON2GBNF (Javascript)"
     runs-on: "ubuntu-latest"
 
     steps:

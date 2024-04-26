@@ -1,4 +1,4 @@
-name: Publish AutogrammerJS to NPM
+name: Publish Autogrammer (Javascript) to NPM
 on:
   push:
     tags:
