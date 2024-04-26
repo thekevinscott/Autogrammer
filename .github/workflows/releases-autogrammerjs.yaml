@@ -7,7 +7,7 @@ on:
 
 jobs:
   tagged-release:
-    name: "Cut Release for Autogrammer"
+    name: "Cut Release for Autogrammer (Javascript)"
     runs-on: "ubuntu-latest"
 
     steps:
