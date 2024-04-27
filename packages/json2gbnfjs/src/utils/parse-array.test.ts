@@ -13,7 +13,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { SchemaParser, } from '../schema-parser.js';
+import { Grammar, } from '../schema-parser.js';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
@@ -24,14 +24,14 @@ vi.mock('./parse-type.js', async () => {
 });
 
 const getMockParser = () => {
-  class MockSchemaParser {
+  class MockGrammar {
     rules = 'foo';
     addRule = vi.fn().mockImplementation((key: string) => key);
     getConst = vi.fn().mockImplementation((key: string) => key);
     opts = {};
   }
 
-  return new MockSchemaParser() as any as SchemaParser;
+  return new MockGrammar() as any as Grammar;
 };
 
 describe('parseArray', () => {

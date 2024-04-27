@@ -7,7 +7,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { SchemaParser } from '../schema-parser.js';
+import { Grammar } from '../schema-parser.js';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
@@ -18,14 +18,14 @@ vi.mock('./parse-type.js', async () => {
 });
 
 describe('parse', () => {
-  let parser: SchemaParser;
+  let parser: Grammar;
 
   beforeEach(() => {
     parser = {
       addRule: vi.fn((rule: string) => rule),
       getConst: vi.fn((key: string) => key),
       opts: {},
-    } as unknown as SchemaParser;
+    } as unknown as Grammar;
   });
 
   afterEach(() => {

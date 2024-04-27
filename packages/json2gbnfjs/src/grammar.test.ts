@@ -23,7 +23,7 @@ vi.mock('./utils/get-id.js', async () => {
   };
 });
 
-describe('SchemaParser', () => {
+describe('Grammar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

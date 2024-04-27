@@ -10,21 +10,21 @@ import {
   STRING_KEY,
 } from '../constants/grammar-keys.js';
 import {
-  type SchemaParser,
+  type Grammar,
 } from '../schema-parser.js';
 import {
   type ParseTypeArg,
 } from '../types.js';
 
 const getMockParser = () => {
-  class MockSchemaParser {
+  class MockGrammar {
     rules = 'foo';
     addRule = vi.fn();
     getConst = vi.fn();
     opts = {};
   }
 
-  return new MockSchemaParser() as any as SchemaParser;
+  return new MockGrammar() as any as Grammar;
 };
 
 describe('parseType', () => {

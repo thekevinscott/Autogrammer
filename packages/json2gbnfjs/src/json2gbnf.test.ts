@@ -1,7 +1,7 @@
 import { vi, } from 'vitest';
 import { JSON2GBNF } from "./json2gbnf";
-import { SchemaParser } from "./schema-parser.js";
-import type * as _SchemaParser from './schema-parser.js';
+import { Grammar } from "./schema-parser.js";
+import type * as _Grammar from './schema-parser.js';
 import { isSchemaObject } from './types.js';
 import type * as _types from './types.js';
 import { VALUE_KEY } from './constants/grammar-keys.js';
@@ -17,10 +17,10 @@ vi.mock('./utils/parse.js', async () => {
 });
 
 vi.mock('./schema-parser.js', async () => {
-  const actual = await vi.importActual('./schema-parser.js') as typeof _SchemaParser;
+  const actual = await vi.importActual('./schema-parser.js') as typeof _Grammar;
   return {
     ...actual,
-    SchemaParser: vi.fn(),
+    Grammar: vi.fn(),
   };
 });
 
@@ -59,12 +59,12 @@ describe('JSON2GBNF', () => {
 
   test('it adds root rule if passed true', () => {
     const addRule = vi.fn();
-    vi.mocked(SchemaParser).mockImplementation(() => {
-      class MockSchemaParser {
+    vi.mocked(Grammar).mockImplementation(() => {
+      class MockGrammar {
         addRule = addRule;
         grammar = 'foo';
       }
-      return new MockSchemaParser() as any as SchemaParser;
+      return new MockGrammar() as any as Grammar;
     });
 
     expect(JSON2GBNF(true)).toEqual('foo');
@@ -73,12 +73,12 @@ describe('JSON2GBNF', () => {
 
   test('it adds root rule if passed an empty object', () => {
     const addRule = vi.fn();
-    vi.mocked(SchemaParser).mockImplementation(() => {
-      class MockSchemaParser {
+    vi.mocked(Grammar).mockImplementation(() => {
+      class MockGrammar {
         addRule = addRule;
         grammar = 'foo';
       }
-      return new MockSchemaParser() as any as SchemaParser;
+      return new MockGrammar() as any as Grammar;
     });
 
     expect(JSON2GBNF({})).toEqual('foo');
@@ -86,15 +86,15 @@ describe('JSON2GBNF', () => {
   });
 
   test('it returns a string if schema is an object', () => {
-    class MockSchemaParser {
+    class MockGrammar {
       grammar = 'foo';
       addRule = vi.fn();
       getConst = vi.fn();
       opts = {};
     }
 
-    const mockParser = new MockSchemaParser() as any as SchemaParser;
-    vi.mocked(SchemaParser).mockImplementation(() => {
+    const mockParser = new MockGrammar() as any as Grammar;
+    vi.mocked(Grammar).mockImplementation(() => {
       return mockParser;
     });
 

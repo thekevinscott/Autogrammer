@@ -4,16 +4,16 @@ import {
   WHITESPACE_KEY,
   WHITESPACE_REPEATING_KEY,
 } from '../constants/grammar-keys.js';
-import type { SchemaParser, } from '../schema-parser.js';
+import type { Grammar, } from '../schema-parser.js';
 
 describe('getWhitespace', () => {
-  let parser: SchemaParser;
+  let parser: Grammar;
 
   beforeEach(() => {
     parser = {
       addRule: vi.fn((rule: string) => rule),
       whitespace: 0,
-    } as unknown as SchemaParser;
+    } as unknown as Grammar;
   });
 
   afterEach(() => {

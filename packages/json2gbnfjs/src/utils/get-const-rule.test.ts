@@ -1,12 +1,12 @@
 import { getConstRule } from './get-const-rule.js';
-import { SchemaParser } from '../schema-parser.js';
+import { Grammar } from '../schema-parser.js';
 import { getWhitespace } from './get-whitespace.js';
 import { vi } from 'vitest';
 
 vi.mock('./get-whitespace.js');
 
 describe('getConstRule', () => {
-  const mockParser: SchemaParser = {} as SchemaParser;
+  const mockParser: Grammar = {} as Grammar;
 
   afterEach(() => {
     vi.clearAllMocks();
