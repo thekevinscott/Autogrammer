@@ -11,11 +11,11 @@ import type {
   ParseTypeArg,
 } from '../types.js';
 import {
-  type SchemaParser,
-} from '../schema-parser.js';
+  type Grammar,
+} from '../grammar.js';
 
 export const parseType = (
-  parser: SchemaParser,
+  parser: Grammar,
   schema: ParseTypeArg,
 ): string => {
   const { type, } = schema;

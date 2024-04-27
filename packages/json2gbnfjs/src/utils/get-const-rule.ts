@@ -1,9 +1,9 @@
-import { SchemaParser, } from "../schema-parser.js";
+import { Grammar, } from "../grammar.js";
 import { getWhitespace, } from "./get-whitespace.js";
 import { join, } from "./join.js";
 
 export const getConstRule = (
-  parser: SchemaParser,
+  parser: Grammar,
   key: string,
   left: boolean,
   right: boolean,

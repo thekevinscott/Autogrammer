@@ -8,7 +8,7 @@ import { buildGrammar, } from './utils/build-grammar.js';
 import { getConstKey, } from './utils/get-const-key.js';
 import { getConstRule, } from './utils/get-const-rule.js';
 
-export class SchemaParser {
+export class Grammar {
   #rules = new Map<string, string>();
   fixedOrder: boolean;
   // whitespace can be Infinity or an integer greater than or equal to 0.

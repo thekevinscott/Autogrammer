@@ -11,8 +11,8 @@ import type {
   PrimitiveType,
 } from '../types.js';
 import type {
-  SchemaParser,
-} from '../schema-parser.js';
+  Grammar,
+} from '../grammar.js';
 import {
   isSchemaArrayWithBooleanItemsType,
   isSchemaArrayWithoutItems,
@@ -30,7 +30,7 @@ const UNSUPPORTED_PROPERTIES = [
 ];
 
 export const parseArray = (
-  parser: SchemaParser,
+  parser: Grammar,
   schema: JSONSchemaArray,
 ): string => {
   for (const key of UNSUPPORTED_PROPERTIES) {

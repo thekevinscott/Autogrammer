@@ -1,8 +1,8 @@
 // parse.ts
 import { KEYS, NULL_KEY, } from "../constants/grammar-keys.js";
 import {
-  type SchemaParser,
-} from "../schema-parser.js";
+  type Grammar,
+} from "../grammar.js";
 import {
   isSchemaEnum,
 } from "../type-guards.js";
@@ -13,7 +13,7 @@ import {
 import { parseType, } from "./parse-type.js";
 
 export const parse = (
-  parser: SchemaParser,
+  parser: Grammar,
   schema: JSONSchema,
   symbolName: string,
 ) => {

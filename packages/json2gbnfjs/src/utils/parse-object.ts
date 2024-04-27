@@ -13,7 +13,7 @@ import {
   JSONSchemaValue,
 } from '../types.js';
 import { parseType, } from './parse-type.js';
-import { SchemaParser, } from '../schema-parser.js';
+import { Grammar, } from '../grammar.js';
 import {
   join,
   joinWith,
@@ -33,7 +33,7 @@ const UNSUPPORTED_PROPERTIES = [
   'maxProperties',
 ];
 
-const getPropertiesValue = (parser: SchemaParser, value: JSONSchemaValue): string[] => {
+const getPropertiesValue = (parser: Grammar, value: JSONSchemaValue): string[] => {
   if (isSchemaConst(value)) {
     return [
       QUOTE_KEY,
@@ -48,7 +48,7 @@ const getPropertiesValue = (parser: SchemaParser, value: JSONSchemaValue): strin
 };
 
 export const parseObject = (
-  parser: SchemaParser,
+  parser: Grammar,
   schema: JSONSchemaObject,
 ) => {
   for (const key of UNSUPPORTED_PROPERTIES) {

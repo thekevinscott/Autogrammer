@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { VALUE_KEY, } from './constants/grammar-keys.js';
 import {
-  SchemaParser,
-} from './schema-parser.js';
+  Grammar,
+} from './grammar.js';
 import {
   isEmptyObject,
   hasDollarSchemaProp,
@@ -28,7 +28,7 @@ export function JSON2GBNF<T extends JSONSchema>(
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
 
-  const parser = new SchemaParser(opts);
+  const parser = new Grammar(opts);
   if (schema === true || isEmptyObject(schema)) {
     parser.addRule(VALUE_KEY, 'root');
   } else {
