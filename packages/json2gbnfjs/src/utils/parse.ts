@@ -8,6 +8,7 @@ import {
 } from "../type-guards.js";
 import {
   JSONSchema,
+  ParseTypeArg,
 } from "../types.js";
 import { parseType, } from "./parse-type.js";
 
@@ -36,7 +37,8 @@ export const parse = (
         return KEYS[key];
       }).join(' | ')}`, symbolName);
     } else {
-      const ruleDef = parseType(parser, schema);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const ruleDef = parseType(parser, schema as unknown as ParseTypeArg);
       parser.addRule(`${ruleDef}`, symbolName);
     }
   }

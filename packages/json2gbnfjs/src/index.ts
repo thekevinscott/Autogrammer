@@ -10,8 +10,6 @@ export {
   type JSONSchemaObjectValueEnum,
   type JSONSchemaString,
   type TopLevelJSONSchema,
-  isEmptyObject,
-  isSchemaConst,
-  isSchemaEnum,
-  isSchemaObject,
 } from './types.js';
+
+export * from './type-guards.js';
