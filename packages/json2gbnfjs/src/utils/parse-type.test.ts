@@ -11,7 +11,7 @@ import {
 } from '../constants/grammar-keys.js';
 import {
   type Grammar,
-} from '../schema-parser.js';
+} from '../grammar.js';
 import {
   type ParseTypeArg,
 } from '../types.js';

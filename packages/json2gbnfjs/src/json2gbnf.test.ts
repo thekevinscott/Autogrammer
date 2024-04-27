@@ -1,8 +1,8 @@
 import { vi, } from 'vitest';
 import { JSON2GBNF } from "./json2gbnf";
-import { Grammar } from "./schema-parser.js";
-import type * as _Grammar from './schema-parser.js';
-import { isSchemaObject } from './types.js';
+import { Grammar } from "./grammar.js";
+import type * as _Grammar from './grammar.js';
+import { isSchemaObject } from './type-guards.js';
 import type * as _types from './types.js';
 import { VALUE_KEY } from './constants/grammar-keys.js';
 import { parse } from './utils/parse.js';
@@ -16,8 +16,8 @@ vi.mock('./utils/parse.js', async () => {
   };
 });
 
-vi.mock('./schema-parser.js', async () => {
-  const actual = await vi.importActual('./schema-parser.js') as typeof _Grammar;
+vi.mock('./grammar.js', async () => {
+  const actual = await vi.importActual('./grammar.js') as typeof _Grammar;
   return {
     ...actual,
     Grammar: vi.fn(),

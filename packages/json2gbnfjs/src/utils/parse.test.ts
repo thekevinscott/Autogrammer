@@ -7,7 +7,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { Grammar } from '../schema-parser.js';
+import { Grammar } from '../grammar.js';
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;

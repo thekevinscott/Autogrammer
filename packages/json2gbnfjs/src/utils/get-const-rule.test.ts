@@ -1,5 +1,5 @@
 import { getConstRule } from './get-const-rule.js';
-import { Grammar } from '../schema-parser.js';
+import { Grammar } from '../grammar.js';
 import { getWhitespace } from './get-whitespace.js';
 import { vi } from 'vitest';
 

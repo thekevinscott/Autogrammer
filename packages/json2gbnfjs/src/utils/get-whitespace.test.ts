@@ -4,7 +4,7 @@ import {
   WHITESPACE_KEY,
   WHITESPACE_REPEATING_KEY,
 } from '../constants/grammar-keys.js';
-import type { Grammar, } from '../schema-parser.js';
+import type { Grammar, } from '../grammar.js';
 
 describe('getWhitespace', () => {
   let parser: Grammar;
