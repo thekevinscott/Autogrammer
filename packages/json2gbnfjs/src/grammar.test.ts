@@ -1,4 +1,4 @@
-import { SchemaParser } from './schema-parser.js';
+import { Grammar } from './grammar.js';
 import { getConstKey } from './utils/get-const-key.js';
 import { getConstRule } from './utils/get-const-rule.js';
 import { buildGrammar } from './utils/build-grammar.js';
@@ -29,26 +29,26 @@ describe('SchemaParser', () => {
   });
 
   it('should initialize with default options', () => {
-    const parser = new SchemaParser();
+    const parser = new Grammar();
     expect(parser.whitespace).toBe(0);
     expect(parser.fixedOrder).toBe(false);
   });
 
   it('should initialize with provided options', () => {
-    const parser = new SchemaParser({ whitespace: 2, fixedOrder: true });
+    const parser = new Grammar({ whitespace: 2, fixedOrder: true });
     expect(parser.whitespace).toBe(2);
     expect(parser.fixedOrder).toBe(true);
   });
 
   it('should throw an error if whitespace is less than 0', () => {
-    expect(() => new SchemaParser({ whitespace: -1 })).toThrowError(
+    expect(() => new Grammar({ whitespace: -1 })).toThrowError(
       'Whitespace must be greater than or equal to 0. It can also be infinity.'
     );
   });
 
   describe('getConst', () => {
     it('should return the key if whitespace is 0', () => {
-      const parser = new SchemaParser({ whitespace: 0 });
+      const parser = new Grammar({ whitespace: 0 });
       const result = parser.getConst('KEY');
       expect(result).toBe('KEY');
       expect(getConstRule).not.toHaveBeenCalled();
@@ -56,7 +56,7 @@ describe('SchemaParser', () => {
     });
 
     it('should call getConstRule and getConstKey if whitespace is not 0', () => {
-      const parser = new SchemaParser({ whitespace: 1 });
+      const parser = new Grammar({ whitespace: 1 });
       vi.mocked(getConstRule).mockReturnValueOnce('CONST_RULE');
       vi.mocked(getConstKey).mockReturnValueOnce('CONST_KEY');
       const result = parser.getConst('KEY', { left: true, right: false });
@@ -68,13 +68,13 @@ describe('SchemaParser', () => {
 
   describe('addRule', () => {
     it('should add a rule with the provided key', () => {
-      const parser = new SchemaParser();
+      const parser = new Grammar();
       const result = parser.addRule('RULE', 'KEY');
       expect(result).toBe('KEY');
     });
 
     it('should generate a key if not provided', () => {
-      const parser = new SchemaParser();
+      const parser = new Grammar();
       const result = parser.addRule('RULE');
       expect(result).toBe('x0');
     });
@@ -82,7 +82,7 @@ describe('SchemaParser', () => {
 
   describe('grammar', () => {
     it('should return the built grammar', () => {
-      const parser = new SchemaParser();
+      const parser = new Grammar();
       parser.addRule('RULE1', 'KEY1');
       parser.addRule('RULE2', 'KEY2');
       vi.mocked(buildGrammar).mockReturnValueOnce('GRAMMAR');
