@@ -20,7 +20,7 @@ vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
   return {
     ...actual,
-    parseType: vi.fn((schema: any) => 'parsedType'),
+    parseType: vi.fn(() => 'parsedType'),
   };
 });
 
@@ -37,7 +37,7 @@ const getMockParser = (fixedOrder = false) => {
 
 describe('parseObject', () => {
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should return OBJECT_KEY if properties is undefined', () => {
@@ -65,8 +65,13 @@ describe('parseObject', () => {
         bar: { type: 'number', },
       },
     };
+    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockParser = getMockParser();
-    const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType)? ${RIGHT_BRACE_KEY}`;
+    const expected = [
+      LEFT_BRACE_KEY,
+      `(${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType)?`,
+      RIGHT_BRACE_KEY,
+    ].join(' ')
     expect(parseObject(mockParser, schema)).toBe(expected);
     expect(mockParser.addRule).toHaveBeenCalledTimes(4);
     expect(mockParser.getConst).toHaveBeenCalledTimes(4);
@@ -80,6 +85,7 @@ describe('parseObject', () => {
         foo: { enum: ['a', 'b'], },
       },
     };
+    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockParser = getMockParser();
     const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "a" ${QUOTE_KEY} | ${QUOTE_KEY} "b" ${QUOTE_KEY})? ${RIGHT_BRACE_KEY}`;
     expect(parseObject(mockParser, schema)).toBe(expected);
@@ -95,6 +101,7 @@ describe('parseObject', () => {
         foo: { const: 'bar', },
       },
     };
+    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockParser = getMockParser();
     const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY})? ${RIGHT_BRACE_KEY}`;
     expect(parseObject(mockParser, schema)).toBe(expected);
@@ -112,8 +119,13 @@ describe('parseObject', () => {
       },
       required: ['foo'],
     };
+    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockParser = getMockParser();
-    const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType) ${RIGHT_BRACE_KEY}`;
+    const expected = [
+      LEFT_BRACE_KEY,
+      `(${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType | ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType)`,
+      RIGHT_BRACE_KEY,
+    ].join(' ');
     expect(parseObject(mockParser, schema)).toBe(expected);
     expect(mockParser.addRule).toHaveBeenCalledTimes(4);
     expect(mockParser.getConst).toHaveBeenCalledTimes(4);
@@ -128,6 +140,7 @@ describe('parseObject', () => {
         bar: { type: 'number', },
       },
     };
+    vi.mocked(parseType).mockImplementation(() => 'parsedType');
     const mockParser = getMockParser(true);
     const expected = `${LEFT_BRACE_KEY} (${QUOTE_KEY} "foo" ${QUOTE_KEY} ${COLON_KEY} parsedType ${COMMA_KEY} ${QUOTE_KEY} "bar" ${QUOTE_KEY} ${COLON_KEY} parsedType) ${RIGHT_BRACE_KEY}`;
     expect(parseObject(mockParser, schema)).toBe(expected);

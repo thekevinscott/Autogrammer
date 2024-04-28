@@ -36,7 +36,7 @@ const getMockParser = () => {
 
 describe('parseArray', () => {
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should return ARRAY_KEY if items is undefined', () => {

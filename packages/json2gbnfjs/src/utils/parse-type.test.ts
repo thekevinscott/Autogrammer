@@ -29,7 +29,7 @@ const getMockParser = () => {
 
 describe('parseType', () => {
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should parse string type', () => {

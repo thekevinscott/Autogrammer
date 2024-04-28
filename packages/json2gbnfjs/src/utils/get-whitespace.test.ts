@@ -17,7 +17,7 @@ describe('getWhitespace', () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should return WHITESPACE_REPEATING_KEY when whitespace is Infinity', () => {

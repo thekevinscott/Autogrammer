@@ -2,6 +2,7 @@ import { Grammar } from './grammar.js';
 import { getConstKey } from './utils/get-const-key.js';
 import { getConstRule } from './utils/get-const-rule.js';
 import { buildGrammar } from './utils/build-grammar.js';
+import { getID } from './utils/get-id.js';
 import * as _getID from './utils/get-id.js';
 import * as _buildGrammar from './utils/build-grammar.js';
 import { vi } from 'vitest';
@@ -25,19 +26,19 @@ vi.mock('./utils/get-id.js', async () => {
 
 describe('Grammar', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should initialize with default options', () => {
-    const parser = new Grammar();
-    expect(parser.whitespace).toBe(0);
-    expect(parser.fixedOrder).toBe(false);
+    const grammar = new Grammar();
+    expect(grammar.whitespace).toBe(0);
+    expect(grammar.fixedOrder).toBe(false);
   });
 
   it('should initialize with provided options', () => {
-    const parser = new Grammar({ whitespace: 2, fixedOrder: true });
-    expect(parser.whitespace).toBe(2);
-    expect(parser.fixedOrder).toBe(true);
+    const grammar = new Grammar({ whitespace: 2, fixedOrder: true });
+    expect(grammar.whitespace).toBe(2);
+    expect(grammar.fixedOrder).toBe(true);
   });
 
   it('should throw an error if whitespace is less than 0', () => {
@@ -48,45 +49,46 @@ describe('Grammar', () => {
 
   describe('getConst', () => {
     it('should return the key if whitespace is 0', () => {
-      const parser = new Grammar({ whitespace: 0 });
-      const result = parser.getConst('KEY');
+      const grammar = new Grammar({ whitespace: 0 });
+      const result = grammar.getConst('KEY');
       expect(result).toBe('KEY');
       expect(getConstRule).not.toHaveBeenCalled();
       expect(getConstKey).not.toHaveBeenCalled();
     });
 
     it('should call getConstRule and getConstKey if whitespace is not 0', () => {
-      const parser = new Grammar({ whitespace: 1 });
+      const grammar = new Grammar({ whitespace: 1 });
       vi.mocked(getConstRule).mockReturnValueOnce('CONST_RULE');
       vi.mocked(getConstKey).mockReturnValueOnce('CONST_KEY');
-      const result = parser.getConst('KEY', { left: true, right: false });
+      const result = grammar.getConst('KEY', { left: true, right: false });
       expect(result).toBe('CONST_KEY');
-      expect(getConstRule).toHaveBeenCalledWith(parser, 'KEY', true, false);
+      expect(getConstRule).toHaveBeenCalledWith(grammar, 'KEY', true, false);
       expect(getConstKey).toHaveBeenCalledWith('KEY', true, false);
     });
   });
 
   describe('addRule', () => {
     it('should add a rule with the provided key', () => {
-      const parser = new Grammar();
-      const result = parser.addRule('RULE', 'KEY');
+      const grammar = new Grammar();
+      const result = grammar.addRule('RULE', 'KEY');
       expect(result).toBe('KEY');
     });
 
     it('should generate a key if not provided', () => {
-      const parser = new Grammar();
-      const result = parser.addRule('RULE');
+      const grammar = new Grammar();
+      vi.mocked(getID).mockReturnValueOnce('0');
+      const result = grammar.addRule('RULE');
       expect(result).toBe('x0');
     });
   });
 
   describe('grammar', () => {
     it('should return the built grammar', () => {
-      const parser = new Grammar();
-      parser.addRule('RULE1', 'KEY1');
-      parser.addRule('RULE2', 'KEY2');
+      const grammar = new Grammar();
+      grammar.addRule('RULE1', 'KEY1');
+      grammar.addRule('RULE2', 'KEY2');
       vi.mocked(buildGrammar).mockReturnValueOnce('GRAMMAR');
-      const result = parser.grammar;
+      const result = grammar.grammar;
       expect(result).toBe('GRAMMAR');
     });
   });

@@ -9,7 +9,7 @@ describe('getConstRule', () => {
   const mockParser: Grammar = {} as Grammar;
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should return the rule with left and right whitespace', () => {

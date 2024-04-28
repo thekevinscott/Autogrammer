@@ -29,7 +29,7 @@ describe('parse', () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should parse enum schema', () => {
