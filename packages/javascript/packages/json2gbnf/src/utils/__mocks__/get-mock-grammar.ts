@@ -1,6 +1,6 @@
-import { vi } from 'vitest';
-import { AddRule, GetConst } from '../../types.js';
-import { type Grammar } from '../../grammar.js';
+import { vi, } from 'vitest';
+import { AddRule, GetConst, } from '../../types.js';
+import { type Grammar, } from '../../grammar.js';
 export const getMockGrammar = ({
   getConst = vi.fn().mockImplementation((key: string) => key),
   addRule = vi.fn().mockImplementation((key: string) => key),
@@ -17,6 +17,6 @@ export const getMockGrammar = ({
     fixedOrder = fixedOrder;
   }
 
-  return new MockGrammar() as any as Grammar;
+  return new MockGrammar() as unknown as Grammar;
 };
 

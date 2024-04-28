@@ -1,5 +1,5 @@
-import { COLON_KEY, QUOTE_KEY, STRING_KEY, VALUE_KEY } from "../constants/grammar-keys.js";
-import { join } from "./join.js";
+import { COLON_KEY, QUOTE_KEY, STRING_KEY, VALUE_KEY, } from "../constants/grammar-keys.js";
+import { join, } from "./join.js";
 
 export const getPropertyDefinition = (SEPARATOR: string): string => {
   const PROP = [
