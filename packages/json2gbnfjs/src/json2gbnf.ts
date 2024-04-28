@@ -13,6 +13,9 @@ import {
 } from './types.js';
 import { parse, } from './utils/parse.js';
 
+// https://json-schema.org/understanding-json-schema/basics
+// false will always be invalid
+export const BLANK_GRAMMAR = `root ::= ""`;
 
 export function JSON2GBNF<T extends JSONSchema>(
   schema?: {} | null | T | boolean,
@@ -22,7 +25,7 @@ export function JSON2GBNF<T extends JSONSchema>(
     throw new Error('Bad schema provided');
   }
   if (schema === false) {
-    throw new Error('Not implemented yet');
+    return BLANK_GRAMMAR;
   }
   if (schema !== true && hasDollarSchemaProp(schema) && schema['$schema'] !== 'https://json-schema.org/draft/2020-12/schema') {
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);

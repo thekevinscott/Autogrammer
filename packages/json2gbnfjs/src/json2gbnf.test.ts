@@ -1,5 +1,5 @@
 import { vi, } from 'vitest';
-import { JSON2GBNF } from "./json2gbnf";
+import { BLANK_GRAMMAR, JSON2GBNF } from "./json2gbnf";
 import { Grammar } from "./grammar.js";
 import type * as _Grammar from './grammar.js';
 import { hasDollarSchemaProp } from './type-guards.js';
@@ -45,8 +45,8 @@ describe('JSON2GBNF', () => {
     expect(() => JSON2GBNF(undefined)).toThrow('Bad schema provided');
   });
 
-  test('it throws if given "false"', () => {
-    expect(() => JSON2GBNF(false)).toThrow('Not implemented yet');
+  test('it returns blank grammar if passed false', () => {
+    expect(JSON2GBNF(false)).toEqual(BLANK_GRAMMAR);
   });
 
   test('it throws an error if schema is an object with an unsupported schema version', () => {

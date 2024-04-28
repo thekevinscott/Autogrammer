@@ -52,7 +52,7 @@ const STREET_GRAMMAR = [
 ];
 
 describe('schema', () => {
-  const testCases: [
+  const successTestCases: [
     TopLevelJSONSchema,
     any,
     string[],
@@ -240,7 +240,7 @@ describe('schema', () => {
         ],
       ],
     ];
-  test.each(testCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
+  test.each(successTestCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
     const grammar = JSON2GBNF(schema);
     expect(grammar).toEqual([...expected, ...GLOBAL_CONSTANTS].join('\n'));
     let parser = GBNF(grammar);
@@ -249,75 +249,83 @@ describe('schema', () => {
   });
 
   test.each([
-    // [
-    //   false,
-    //   1,
-    //   DEFAULT_SCHEMA,
-    // ],
-    [{ type: 'string' }, '42', 0],
-    [{ type: 'number' }, '"42"', 0],
-    // [{
-    //   "$schema": "https://json-schema.org/draft/2020-11/schema",
-    //   type: 'string'
-    // }, 'foo', [
-    //   `root ::= string`,
-    //   `string ::= ${stringDef}`,
-    // ],],
-    [{ type: 'string', minLength: 2 }, '"f"', 2],
-    [{ type: 'string', minLength: 3 }, '"fo"', 3],
-    [{ type: 'string', maxLength: 2 }, '"foo"', 3],
-    [{ type: 'string', minLength: 2, maxLength: 2 }, '"f"', 2],
-    [{ type: 'string', minLength: 2, maxLength: 2 }, '"foo"', 3],
-    [{ type: 'string', minLength: 2, maxLength: 3 }, '"f"', 2],
-    [{ type: 'string', minLength: 2, maxLength: 3 }, '"fooo"', 4],
-    [{ type: 'integer' }, '-1.5', 3],
-    [{ type: 'integer' }, '-1.0001', 6],
-    [{ type: 'integer' }, '"42"', 0],
-    [{ type: 'boolean' }, '0', 0],
-    [{ type: 'object' }, '123', 0],
-    [{ type: 'object' }, '"foo"', 0],
-    [{ type: 'array' }, JSON.stringify({ foo: 'foo' }), 0,],
-    [
-      { type: 'array', items: { type: 'number' } },
-      JSON.stringify([1, 'a', 3]),
-      3,
-    ],
-    [
-      { type: 'array', items: { type: ['number', 'string'] } },
-      JSON.stringify([1, "foo", []]),
-      9,
-    ],
-    [{ enum: ['red', null, 42] }, `422`, 2,],
-    [{ enum: ['red', null, 42] }, `0`, 0,],
+    [null,],
+    [undefined,],
     [
       {
-        type: 'object',
-        properties: {
-          country: {
-            const: 'USA',
-          }
-        }
-      },
-      JSON.stringify({ "country": "UR" }),
-      13,
+        "$schema": "https://json-schema.org/draft/2020-11/schema",
+        type: 'string'
+      }
     ],
-    [
-      {
-        type: 'object',
-        properties: {
-          country: {
-            const: 'USA',
-          }
-        }
-      },
-      JSON.stringify({ "country": "USAA" }),
-      15,
-    ],
-  ] as [
+  ])('it throws if given invalid input %s', input => {
+    expect(() => JSON2GBNF(input)).toThrow();
+
+  });
+
+  const failureTestCases: [
     TopLevelJSONSchema,
     string,
     number,
-  ][])('it parses a schema %s to grammar and rejects %s', (schema, initial, errorPos) => {
+  ][] = [
+      [
+        false,
+        '1',
+        0,
+      ],
+      [{ type: 'string' }, '42', 0],
+      [{ type: 'number' }, '"42"', 0],
+      [{ type: 'string', minLength: 2 }, '"f"', 2],
+      [{ type: 'string', minLength: 3 }, '"fo"', 3],
+      [{ type: 'string', maxLength: 2 }, '"foo"', 3],
+      [{ type: 'string', minLength: 2, maxLength: 2 }, '"f"', 2],
+      [{ type: 'string', minLength: 2, maxLength: 2 }, '"foo"', 3],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"f"', 2],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fooo"', 4],
+      [{ type: 'integer' }, '-1.5', 3],
+      [{ type: 'integer' }, '-1.0001', 6],
+      [{ type: 'integer' }, '"42"', 0],
+      [{ type: 'boolean' }, '0', 0],
+      [{ type: 'object' }, '123', 0],
+      [{ type: 'object' }, '"foo"', 0],
+      [{ type: 'array' }, JSON.stringify({ foo: 'foo' }), 0,],
+      [
+        { type: 'array', items: { type: 'number' } },
+        JSON.stringify([1, 'a', 3]),
+        3,
+      ],
+      [
+        { type: 'array', items: { type: ['number', 'string'] } },
+        JSON.stringify([1, "foo", []]),
+        9,
+      ],
+      [{ enum: ['red', null, 42] }, `422`, 2,],
+      [{ enum: ['red', null, 42] }, `0`, 0,],
+      [
+        {
+          type: 'object',
+          properties: {
+            country: {
+              const: 'USA',
+            }
+          }
+        },
+        JSON.stringify({ "country": "UR" }),
+        13,
+      ],
+      [
+        {
+          type: 'object',
+          properties: {
+            country: {
+              const: 'USA',
+            }
+          }
+        },
+        JSON.stringify({ "country": "USAA" }),
+        15,
+      ],
+    ];
+  test.each(failureTestCases)('it parses a schema %s to grammar and rejects %s', (schema, initial, errorPos) => {
     const grammar = JSON2GBNF(schema);
     let parser = GBNF(grammar);
     expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
