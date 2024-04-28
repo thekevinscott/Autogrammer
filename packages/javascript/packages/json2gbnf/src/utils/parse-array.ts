@@ -18,7 +18,7 @@ import {
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
 
-const UNSUPPORTED_PROPERTIES = [
+const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
   'prefixItems',
   'unevaluatedItems',
   'contains',

@@ -8,11 +8,20 @@ import {
   NUMBER_KEY,
 } from '../constants/grammar-keys.js';
 import type {
+  JSONSchemaNumber,
   ParseTypeArg,
 } from '../types.js';
 import {
   type Grammar,
 } from '../grammar.js';
+
+const UNSUPPORTED_NUMERIC_PROPERTIES: (keyof JSONSchemaNumber)[] = [
+  'exclusiveMinimum',
+  'exclusiveMaximum',
+  'multipleOf',
+  'minimum',
+  'maximum',
+];
 
 export const parseType = (
   parser: Grammar,
@@ -22,7 +31,7 @@ export const parseType = (
   if (type === 'string') {
     return parseString(schema);
   } else if (type === 'integer' || type === 'number') {
-    for (const key of ['exclusiveMinimum', 'exclusiveMaximum', 'multipleOf', 'minimum', 'maximum',]) {
+    for (const key of UNSUPPORTED_NUMERIC_PROPERTIES) {
       if (schema[key] !== undefined) {
         throw new Error(`${key} is not supported`);
       }
