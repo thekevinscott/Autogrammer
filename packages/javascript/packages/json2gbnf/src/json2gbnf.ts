@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { VALUE_KEY, } from './constants/grammar-keys.js';
 import {
   Grammar,
