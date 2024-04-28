@@ -5,10 +5,12 @@ import {
 } from "../schema-parser.js";
 import {
   isSchemaEnum,
+  isSchemaMultipleBasicTypes,
 } from "../type-guards.js";
-import {
+import type {
   JSONSchema,
 } from "../types.js";
+import { joinWith, } from "./join.js";
 import { parseType, } from "./parse-type.js";
 
 export const parse = (
@@ -16,28 +18,32 @@ export const parse = (
   schema: JSONSchema,
   symbolName: string,
 ) => {
-  if (isSchemaEnum(schema)) {
-    parser.addRule(`${schema.enum.map(e => {
-      const type = JSON.stringify(e);
-      if (type === 'null') {
-        return NULL_KEY;
-      }
-      return JSON.stringify(type);
-    }).join(" | ")}`, symbolName);
+  if (isSchemaMultipleBasicTypes(schema)) {
+    // if type is an array, then it must not be a structured data type
+    parser.addRule(
+      joinWith(
+        ' | ',
+        ...schema.type.map(type => {
+          const key = `${type.toUpperCase()}_KEY`;
+          if (!(key in KEYS)) {
+            throw new Error(`Unknown type ${type} for schema ${JSON.stringify(schema)}`);
+          }
+          return KEYS[key];
+        })),
+      symbolName,
+    );
+  } else if (isSchemaEnum(schema)) {
+    parser.addRule(
+      joinWith(
+        " | ",
+        ...schema.enum.map(e => JSON.stringify(e)).map(type => type === 'null' ? NULL_KEY : JSON.stringify(type))
+      ),
+      symbolName,
+    );
   } else {
-    const { type, } = schema;
-    if (Array.isArray(type)) {
-      // if type is an array, then it must not be a structured data type
-      parser.addRule(`${type.map(_type => {
-        const key = `${_type.toUpperCase()}_KEY`;
-        if (!(key in KEYS)) {
-          throw new Error(`Unknown type ${_type} for schema ${JSON.stringify(schema)}`);
-        }
-        return KEYS[key];
-      }).join(' | ')}`, symbolName);
-    } else {
-      const ruleDef = parseType(parser, schema);
-      parser.addRule(`${ruleDef}`, symbolName);
-    }
+    parser.addRule(
+      parseType(parser, schema),
+      symbolName,
+    );
   }
 };
