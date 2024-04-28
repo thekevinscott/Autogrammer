@@ -17,6 +17,7 @@ import { parse, } from './utils/parse.js';
 export const BLANK_GRAMMAR = `root ::= ""`;
 
 export function JSON2GBNF<T extends JSONSchema>(
+  // eslint-disable-next-line @typescript-eslint/ban-types
   schema?: {} | null | T | boolean,
   opts?: SchemaOpts
 ): string {
