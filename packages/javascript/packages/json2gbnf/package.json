@@ -33,7 +33,7 @@
       "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
     },
     "copy:assets": {
-      "command": "cp ../../LICENSE ./LICENSE "
+      "command": "cp ../../../../LICENSE ./LICENSE "
     },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
