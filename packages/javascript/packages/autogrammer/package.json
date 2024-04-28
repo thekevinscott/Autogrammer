@@ -33,7 +33,7 @@
       "command": "vite build"
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../LICENSE ./LICENSE",
+      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../../../LICENSE ./LICENSE",
       "files": [
         "./src/**/*.ts",
         "package.json",
