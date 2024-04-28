@@ -2,7 +2,7 @@ import { vi, } from 'vitest';
 import { JSON2GBNF } from "./json2gbnf";
 import { Grammar } from "./grammar.js";
 import type * as _Grammar from './grammar.js';
-import { isSchemaObject } from './type-guards.js';
+import { hasDollarSchemaProp } from './type-guards.js';
 import type * as _types from './types.js';
 import { VALUE_KEY } from './constants/grammar-keys.js';
 import { parse } from './utils/parse.js';
@@ -24,17 +24,17 @@ vi.mock('./grammar.js', async () => {
   };
 });
 
-vi.mock('./types.js', async () => {
-  const actual = await vi.importActual('./types.js') as typeof _types;
+vi.mock('./type-guards.js', async () => {
+  const actual = await vi.importActual('./type-guards.js') as typeof _types;
   return {
     ...actual,
-    isSchemaObject: vi.fn(),
+    hasDollarSchemaProp: vi.fn().mockReturnValue(false),
   };
 });
 
 describe('JSON2GBNF', () => {
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   test('it throws an error if schema is null', () => {
@@ -50,7 +50,7 @@ describe('JSON2GBNF', () => {
   });
 
   test('it throws an error if schema is an object with an unsupported schema version', () => {
-    vi.mocked(isSchemaObject).mockReturnValue(true);
+    vi.mocked(hasDollarSchemaProp).mockReturnValue(true);
     const schema = 'https://json-schema.org/draft/2020-11/schema';
     expect(() => JSON2GBNF({
       $schema: schema,
