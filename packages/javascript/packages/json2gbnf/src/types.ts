@@ -84,7 +84,7 @@ export type TopLevelJSONSchema = {} | JSONSchema & {
   $schema?: string;
 } | boolean;
 
-export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject | JSONSchemaObjectValueConst;
+export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject;
 
 export type AddRule = (rule: string, symbolName?: string) => string;
 export type GetConst = (key: string, opts?: { left?: boolean; right?: boolean }) => string;

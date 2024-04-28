@@ -23,6 +23,7 @@ import {
   isSchemaEnum,
 } from '../type-guards.js';
 import { getPropertyDefinition, } from './get-property-definition.js';
+import { getConstDefinition, } from './get-const-definition.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'patternProperties',
@@ -36,11 +37,7 @@ const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
 
 const getPropertiesValue = (grammar: Grammar, value: JSONSchemaValue): string[] => {
   if (isSchemaConst(value)) {
-    return [
-      QUOTE_KEY,
-      `"${value.const}"`,
-      QUOTE_KEY,
-    ];
+    return getConstDefinition(value);
   }
   if (isSchemaEnum(value)) {
     return [parseEnum(value, grammar.addRule),];

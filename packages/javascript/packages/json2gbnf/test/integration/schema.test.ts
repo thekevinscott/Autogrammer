@@ -76,6 +76,8 @@ describe('schema', () => {
       [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`],],
       [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
       [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      // top-level const
+      [{ type: 'string', const: "foo" }, '"foo"', [`root ::= ${QUOTE_KEY} "foo" ${QUOTE_KEY}`],],
       [{ type: 'integer' }, "123", [`root ::= ${INTEGER_KEY}`,],],
       [{ type: 'integer' }, "123.0", [`root ::= ${INTEGER_KEY}`,],],
       [{ enum: ['red', null, 42] }, `"red"`, [`root ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],

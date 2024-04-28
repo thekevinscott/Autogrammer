@@ -4,13 +4,15 @@ import {
   type Grammar,
 } from "../grammar.js";
 import {
+  isSchemaConst,
   isSchemaEnum,
   isSchemaMultipleBasicTypes,
 } from "../type-guards.js";
 import type {
   JSONSchema,
 } from "../types.js";
-import { joinWith, } from "./join.js";
+import { getConstDefinition, } from "./get-const-definition.js";
+import { join, joinWith, } from "./join.js";
 import { parseType, } from "./parse-type.js";
 
 export const parse = (
@@ -38,6 +40,11 @@ export const parse = (
         " | ",
         ...schema.enum.map(e => JSON.stringify(e)).map(type => type === 'null' ? NULL_KEY : JSON.stringify(type))
       ),
+      symbolName,
+    );
+  } else if (isSchemaConst(schema)) {
+    parser.addRule(
+      join(...getConstDefinition(schema)),
       symbolName,
     );
   } else {
