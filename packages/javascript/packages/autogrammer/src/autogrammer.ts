@@ -1,4 +1,4 @@
-import Contortionist, { ExternalExecuteOptions, } from 'contort';
+import Contortionist, { ExternalExecuteOptions, ModelProtocol, } from 'contort';
 import { getGrammar, } from './grammars/index.js';
 import { ConstructorOptions, SUPPORTED_LANGUAGES, SupportedLanguage, isSupportedLanguage, } from './types.js';
 import { buildPrompt, } from './utils.js';
@@ -6,7 +6,7 @@ import { Variables, } from './grammars/get-grammar.js';
 
 export class Autogrammer<L extends SupportedLanguage> {
   language: L;
-  contortionist: Contortionist<undefined>;
+  contortionist: Contortionist<ModelProtocol>;
 
   /**
    * Instantiates an instance of Autogrammer.
@@ -40,7 +40,7 @@ export class Autogrammer<L extends SupportedLanguage> {
       modelOptions = {},
     }: {
       languageOptions?: Variables<L>,
-      modelOptions?: ExternalExecuteOptions<undefined, boolean>,
+      modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     },
   ): Promise<string> {
     if (languageOptions !== undefined) {

@@ -1,4 +1,4 @@
-import type { ContortionistOptions, } from "contort";
+import type { ContortionistOptions, ModelProtocol, } from "contort";
 
 export type SupportedLanguage =
   'sql' |
@@ -16,5 +16,5 @@ export const isSupportedLanguage = (language: string): language is SupportedLang
 
 export interface ConstructorOptions<L extends SupportedLanguage> {
   language: L;
-  model: ContortionistOptions<undefined>['model'];
+  model: ContortionistOptions<ModelProtocol>['model'];
 }
