@@ -59,20 +59,20 @@ importers:
         specifier: ^0.14.0
         version: 0.14.4
 
-  packages/autogrammarjs:
+  packages/javascript/autogrammar:
     dependencies:
       autogrammer:
         specifier: workspace:*
-        version: link:../autogrammerjs
+        version: link:../autogrammer
 
-  packages/autogrammerjs:
+  packages/javascript/autogrammer:
     dependencies:
       contort:
         specifier: ^0.0.10
         version: 0.0.10
       json2gbnf:
         specifier: workspace:*
-        version: link:../json2gbnfjs
+        version: link:../json2gbnf
       mustache:
         specifier: ^4.2.0
         version: 4.2.0
@@ -123,7 +123,7 @@ importers:
         specifier: ^0.14.4
         version: 0.14.4
 
-  packages/json2gbnfjs:
+  packages/javascript/json2gbnf:
     devDependencies:
       '@types/jest':
         specifier: ^29.5.12

@@ -1,4 +1,4 @@
-import Autogrammer from '../../../packages/autogrammer/src/index.js';
+import Autogrammer from '../../../packages/javascript/autogrammer/src/index.js';
 import { pipeline } from '@xenova/transformers';
 // const model = pipeline('text-generation', 'Xenova/gpt2');
 

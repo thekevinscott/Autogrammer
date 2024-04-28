@@ -3,7 +3,7 @@ name: Publish JSON2GBNFjs to NPM
 on:
   push:
     tags:
-      - "json2gbnfjs-v*"
+      - "js/json2gbnf-v*"
 
 jobs:
   build:
@@ -38,18 +38,18 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/json2gbnfjs
+        working-directory: ./packages/javascript/json2gbnf
         run: pnpm install
 
       - name: Build package
-        working-directory: ./packages/json2gbnfjs
+        working-directory: ./packages/javascript/json2gbnf
         run: pnpm build
 
       - name: 'Check build output'
-        working-directory: ./packages/json2gbnfjs
+        working-directory: ./packages/javascript/json2gbnf
         run: 'pnpm build:check'
 
       - run: pnpm publish --no-git-checks
-        working-directory: ./packages/json2gbnfjs
+        working-directory: ./packages/javascript/json2gbnf
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

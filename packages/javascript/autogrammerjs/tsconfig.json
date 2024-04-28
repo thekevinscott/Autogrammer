@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../autogrammer/dist",
+    "rootDir": "../autogrammer/src"
+  },
+  "include": ["../autogrammer/src/**/*.ts"],
+  "exclude": [
+    "../autogrammer/node_modules",
+    "../autogrammer/.vscode-test",
+    "../autogrammer/dist",
+    "../autogrammer/.wireit",
+    "../autogrammer/env",
+    "../autogrammer/src/**/*.test.ts"
+  ]
+}

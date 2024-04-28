@@ -3,7 +3,7 @@ name: "Cut Release for Autogrammer (Python)"
 on:
   push:
     tags:
-      - "autogrammerpy-v*"
+      - "py-autogrammer-v*"
 
 jobs:
   tagged-release:
@@ -20,10 +20,10 @@ jobs:
           version: 8
 
       - run: python -m pip install -U pip setuptools build
-        working-directory: ./packages/autogrammerpy
+        working-directory: ./packages/python/autogrammer
 
       - run: make build_package 
-        working-directory: ./packages/autogrammerpy
+        working-directory: ./packages/python/autogrammer
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -31,6 +31,6 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
           files: |
-            packages/autogrammerpy/dist/autogrammer-*.tar.gz
-            packages/autogrammerpy/dist/autogrammer-*.whl
+            packages/python/autogrammer/dist/autogrammer-*.tar.gz
+            packages/python/autogrammer/dist/autogrammer-*.whl
 
