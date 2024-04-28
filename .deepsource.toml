@@ -1,15 +1,15 @@
 version = 1
 
 test_patterns = [
-  "packages/javascript/autogrammer/src/**/*.ts",
-  "packages/javascript/autogrammer/src/**/*.ts",
+  "packages/javascript/packages/autogrammer/src/**/*.ts",
+  "packages/javascript/packages/autogrammer/src/**/*.ts",
 ]
 
 exclude_patterns = [
-  "packages/javascript/autogrammer/src/**/*.test.ts", 
-  "packages/javascript/autogrammer/test/**/*.ts", 
-  "packages/javascript/autogrammer/src/**/*.test.ts", 
-  "packages/javascript/autogrammer/test/**/*.ts", 
+  "packages/javascript/packages/autogrammer/src/**/*.test.ts", 
+  "packages/javascript/packages/autogrammer/test/**/*.ts", 
+  "packages/javascript/packages/autogrammer/src/**/*.test.ts", 
+  "packages/javascript/packages/autogrammer/test/**/*.ts", 
   # "examples/**", 
   # "scripts/**", 
   # "test/**", 

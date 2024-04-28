@@ -40,19 +40,19 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./packages/javascript/autogrammer
+        working-directory: ./packages/javascript/packages/autogrammer
         run: pnpm install
 
       - name: 'Build'
-        working-directory: ./packages/javascript/autogrammer
+        working-directory: ./packages/javascript/packages/autogrammer
         run: 'pnpm build'
 
       - name: 'Check build output'
-        working-directory: ./packages/javascript/autogrammer
+        working-directory: ./packages/javascript/packages/autogrammer
         run: 'pnpm build:check'
 
       - name: 'Pack'
-        working-directory: ./packages/javascript/autogrammer
+        working-directory: ./packages/javascript/packages/autogrammer
         run: 'pnpm pack'
 
       - name: Release
@@ -61,4 +61,4 @@ jobs:
           fail_on_unmatched_files: true
           generate_release_notes: true
           files: |
-            packages/javascript/autogrammer/autogrammer-*.tgz
+            packages/javascript/packages/autogrammer/autogrammer-*.tgz
