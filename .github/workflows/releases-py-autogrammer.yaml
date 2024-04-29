@@ -3,7 +3,7 @@ name: "Cut Release for Autogrammer (Python)"
 on:
   push:
     tags:
-      - "py-autogrammer-v*"
+      - "py/autogrammer-v*"
 
 jobs:
   tagged-release:

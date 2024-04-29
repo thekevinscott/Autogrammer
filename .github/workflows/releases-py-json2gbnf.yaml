@@ -3,7 +3,7 @@ name: "Cut Release for JSON2GBNF (Python)"
 on:
   push:
     tags:
-      - "py-json2gbnf-v*"
+      - "py/json2gbnf-v*"
 
 jobs:
   tagged-release:

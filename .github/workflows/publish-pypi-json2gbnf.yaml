@@ -3,7 +3,7 @@ name: Publish JSON2GBNF (Python) to PyPI
 on:
   push:
     tags:
-      - "py-json2gbnf-v*"
+      - "py/json2gbnf-v*"
 
 jobs:
   release:
