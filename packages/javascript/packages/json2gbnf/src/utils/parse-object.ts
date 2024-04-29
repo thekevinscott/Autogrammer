@@ -27,7 +27,6 @@ import { getConstDefinition, } from './get-const-definition.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'patternProperties',
-  // 'additionalProperties',
   'allOf',
   'unevaluatedProperties',
   'propertyNames',

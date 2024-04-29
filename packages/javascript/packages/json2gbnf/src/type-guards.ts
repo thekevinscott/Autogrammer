@@ -7,9 +7,11 @@ import type {
   JSONSchemaArrayNoItemType,
   JSONSchemaArraySingularItemType,
   JSONSchemaMultipleBasicTypes,
+  JSONSchemaNumber,
   JSONSchemaObject,
   JSONSchemaObjectValueConst,
   JSONSchemaObjectValueEnum,
+  JSONSchemaString,
 } from "./types.js";
 
 const isObject = (schema: unknown): schema is Record<string, unknown> => typeof schema === 'object' && schema !== null;
@@ -55,3 +57,10 @@ export const isSchemaArraySingularItemsType = (
 export const isSchemaArrayMultipleItemsType = (
   schema: JSONSchemaArray
 ): schema is JSONSchemaArrayMultipleItemType => 'items' in schema && typeof schema.items === 'object' && Array.isArray(schema.items.type) === true;
+
+export const isSchemaString = (
+  schema: unknown
+): schema is JSONSchemaString => isObject(schema) && 'type' in schema && schema['type'] === 'string';
+export const isSchemaNumber = (
+  schema: unknown
+): schema is JSONSchemaNumber => isObject(schema) && 'type' in schema && (schema['type'] === 'number' || schema['type'] === 'integer');
