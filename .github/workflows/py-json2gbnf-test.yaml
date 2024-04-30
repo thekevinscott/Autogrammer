@@ -16,13 +16,13 @@ env:
 
 jobs:
   lint:
-    name: "Lint"
+    name: "Python / JSON2GBNF / Lint"
     uses: ./.github/workflows/py-shared-lint.yaml
     with:
       package: ./packages/json2gbnf/python
 
   unit-test:
-    name: "Unit Test ${{ matrix.pyversion }}"
+    name: "Python / JSON2GBNF / Unit Test ${{ matrix.pyversion }}"
     strategy:
       fail-fast: false
       matrix:
@@ -38,7 +38,7 @@ jobs:
       package: ./packages/json2gbnf/python
 
   build:
-    name: "Build"
+    name: "Python / JSON2GBNF / Build"
     uses: ./.github/workflows/py-shared-build.yaml
     with:
       package: ./packages/json2gbnf/python

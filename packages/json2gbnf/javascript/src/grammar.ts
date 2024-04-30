@@ -14,7 +14,7 @@ export class Grammar {
   // whitespace can be Infinity or an integer greater than or equal to 0.
   whitespace: number;
 
-  constructor({ whitespace = 0, fixedOrder = false, }: SchemaOpts = {}) {
+  constructor({ whitespace = 1, fixedOrder = false, }: SchemaOpts = {}) {
     if (whitespace < 0) {
       throw new Error('Whitespace must be greater than or equal to 0. It can also be infinity.');
     }

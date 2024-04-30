@@ -1,1 +1,0 @@
-{"version":3,"file":"get-const-definition.js","sourceRoot":"","sources":["../../src/utils/get-const-definition.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,GAAG,MAAM,8BAA8B,CAAC;AAG1D,MAAM,CAAC,MAAM,kBAAkB,GAAG,CAAC,KAAiC,EAAE,EAAE,CAAC,CAAC;IACxE,SAAS;IACT,IAAI,KAAK,CAAC,KAAK,GAAG;IAClB,SAAS;CACV,CAAC,CAAC"}

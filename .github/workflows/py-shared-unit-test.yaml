@@ -72,7 +72,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-
       - run: make test
         working-directory: ${{ inputs.package }}
 

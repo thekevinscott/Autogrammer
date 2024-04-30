@@ -296,7 +296,9 @@ describe('schema', () => {
       ],
     ];
   test.each(successTestCases)('it parses a schema %s to grammar with %s', (schema, initial, expected) => {
-    const grammar = JSON2GBNF(schema);
+    const grammar = JSON2GBNF(schema, {
+      whitespace: 0,
+    });
     expect(grammar).toEqual([...expected, ...GLOBAL_CONSTANTS].join('\n'));
     let parser = GBNF(grammar);
     parser = parser.add(initial);

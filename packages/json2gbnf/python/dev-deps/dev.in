@@ -5,4 +5,5 @@ pytest-watcher
 pytest-cov
 pytest-mock
 pytest-describe
+pythonmonkey
 ruff

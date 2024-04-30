@@ -16,19 +16,19 @@ env:
 
 jobs:
   lint:
-    name: "JSON2GBNF / Lint"
+    name: "Javascript / JSON2GBNF / Lint"
     uses: ./.github/workflows/js-shared-lint.yaml
     with:
       package: "./packages/json2gbnf/javascript"
 
   unit-test:
-    name: "JSON2GBNF / Unit Test"
+    name: "Javascript / JSON2GBNF / Unit Test"
     uses: ./.github/workflows/js-shared-unit-test.yaml
     with:
       package: "./packages/json2gbnf/javascript"
 
   build:
-    name: "JSON2GBNF / Build"
+    name: "Javascript / JSON2GBNF / Build"
     uses: ./.github/workflows/js-shared-build.yaml
     with:
       package: "./packages/json2gbnf/javascript"

@@ -8,7 +8,7 @@ cfgv==3.4.0
     # via pre-commit
 distlib==0.3.8
     # via virtualenv
-filelock==3.13.4
+filelock==3.14.0
     # via virtualenv
 identify==2.5.36
     # via pre-commit
@@ -22,7 +22,7 @@ pyyaml==6.0.1
     # via pre-commit
 ruff==0.4.2
     # via -r dev-deps/lint.in
-virtualenv==20.26.0
+virtualenv==20.26.1
     # via pre-commit
 
 # The following packages are considered to be unsafe in a requirements file:

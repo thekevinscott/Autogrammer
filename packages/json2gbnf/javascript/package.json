@@ -23,6 +23,7 @@
     "copy:gbnf": "wireit",
     "copy:assets": "wireit",
     "lint": "wireit",
+    "test:integration": "wireit",
     "test:unit": "wireit",
     "test": "wireit",
     "build": "wireit",
@@ -34,14 +35,20 @@
     "copy:gbnf": {
       "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
     },
+    "test:integration": {
+      "command": "vitest --config ./vitest.config.integration.ts run",
+      "dependencies": [
+        "../../gbnf/javascript:build"
+      ]
+    },
     "test:unit": {
-      "command": "vitest --config ./vite.config.ts run",
+      "command": "vitest --config ./vitest.config.unit.ts run",
       "dependencies": [
         "../../gbnf/javascript:build"
       ]
     },
     "test": {
-      "command": "pnpm test:unit"
+      "command": "pnpm test:unit && pnpm test:integration"
     },
     "copy:assets": {
       "command": "cp ../../../LICENSE ./LICENSE "

@@ -1,7 +1,5 @@
 .DS_Store
 node_modules
-dist
-env
 .wireit
 .parcel-cache
 .mypy-cache
@@ -9,3 +7,6 @@ env
 .ipynb_checkpoints
 build
 *.egg-info
+dist
+coverage
+__pycache__

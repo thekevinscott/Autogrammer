@@ -1,11 +1,12 @@
 [project]
 name = "json2gbnf"
-version = "0.0.1"
+version = "0.0.4"
 # Notes
 authors = [{ name = "Kevin Scott", email = "kevin@autogrammer.dev" }]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+"pythonmonkey"
 ]
 classifiers = [
 ]

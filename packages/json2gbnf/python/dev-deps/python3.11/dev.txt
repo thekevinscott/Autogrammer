@@ -4,12 +4,24 @@
 #
 #    pip-compile --allow-unsafe --output-file=dev-deps/python3.11/dev.txt dev-deps/dev.in
 #
+aiodns==3.2.0
+    # via aiohttp
+aiohttp[speedups]==3.9.5
+    # via pythonmonkey
+aiosignal==1.3.1
+    # via aiohttp
+attrs==23.2.0
+    # via aiohttp
 backports-tarfile==1.1.1
     # via jaraco-context
+brotli==1.1.0
+    # via aiohttp
 build==1.2.1
     # via pip-tools
 certifi==2024.2.2
     # via requests
+cffi==1.16.0
+    # via pycares
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
@@ -18,8 +30,14 @@ coverage[toml]==7.5.0
     # via pytest-cov
 docutils==0.21.2
     # via readme-renderer
+frozenlist==1.4.1
+    # via
+    #   aiohttp
+    #   aiosignal
 idna==3.7
-    # via requests
+    # via
+    #   requests
+    #   yarl
 importlib-metadata==7.1.0
     # via
     #   keyring
@@ -42,6 +60,10 @@ more-itertools==10.2.0
     # via
     #   jaraco-classes
     #   jaraco-functools
+multidict==6.0.5
+    # via
+    #   aiohttp
+    #   yarl
 nh3==0.2.17
     # via readme-renderer
 packaging==24.0
@@ -54,6 +76,12 @@ pkginfo==1.10.0
     # via twine
 pluggy==1.5.0
     # via pytest
+pminit==0.4.0
+    # via pythonmonkey
+pycares==4.4.0
+    # via aiodns
+pycparser==2.22
+    # via cffi
 pygments==2.17.2
     # via
     #   readme-renderer
@@ -75,6 +103,8 @@ pytest-describe==2.2.0
 pytest-mock==3.14.0
     # via -r dev-deps/dev.in
 pytest-watcher==0.4.2
+    # via -r dev-deps/dev.in
+pythonmonkey==0.4.0
     # via -r dev-deps/dev.in
 readme-renderer==43.0
     # via twine
@@ -100,6 +130,8 @@ watchdog==4.0.0
     # via pytest-watcher
 wheel==0.43.0
     # via pip-tools
+yarl==1.9.4
+    # via aiohttp
 zipp==3.18.1
     # via importlib-metadata
 

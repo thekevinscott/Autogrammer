@@ -31,7 +31,7 @@ describe('Grammar', () => {
 
   it('should initialize with default options', () => {
     const grammar = new Grammar();
-    expect(grammar.whitespace).toBe(0);
+    expect(grammar.whitespace).toBe(1);
     expect(grammar.fixedOrder).toBe(false);
   });
 
