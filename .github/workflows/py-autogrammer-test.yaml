@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'packages/autogrammer/python/**'
-      - '.github/workflows/python/autogrammer/test.yaml'
+      - '.github/workflows/py-autogrammer-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'

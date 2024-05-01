@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'packages/gbnf/python/**'
-      - '.github/workflows/python/gbnf/test.yaml'
+      - '.github/workflows/py-gbnf-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'

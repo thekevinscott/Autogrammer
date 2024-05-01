@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'packages/contort/javascript/**'
-      - '.github/workflows/javascript/contort/test.yaml'
+      - '.github/workflows/js-contort-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'

@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'packages/json2gbnf/javascript/**'
-      - '.github/workflows/javascript/json2gbnf/test.yaml'
+      - '.github/workflows/js-json2gbnf-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
