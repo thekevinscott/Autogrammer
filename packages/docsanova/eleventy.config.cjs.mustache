@@ -1,0 +1,73 @@
+const path = require('path');
+const fs = require('fs');
+
+function autoCollection (eleventyConfig = {}, pluginConfig = {}) {
+  const { baseDir, prefix = '', fileGlob } = pluginConfig;
+  const dirs = fs
+    .readdirSync(baseDir, { withFileTypes: true })
+    .reduce((acc = {}, dir = {}) => {
+      if (dir.isDirectory() && dir.name.includes('node_modules') === false && dir.name.startsWith('.') === false && dir.name.startsWith('_') === false) {
+        const key = prefix + dir.name;
+        acc[key] = {
+          key,
+          name: dir.name,
+          glob: path.join(baseDir, dir.name, fileGlob),
+        };
+      }
+      return acc;
+    }, {});
+
+  for (const [name, data] of Object.entries(dirs)) {
+    eleventyConfig.addCollection(name, (collectionApi) => {
+      return collectionApi.getFilteredByGlob(data.glob);
+    });
+  }
+  eleventyConfig.addGlobalData(`${prefix}collections`, dirs);
+};
+
+const sortByOrder = (values) => {
+  if (values === undefined) {
+    return undefined;
+  }
+  // console.log('values', values);
+  return values.sort(({
+  data: {
+    displayOrder: a,
+  },
+}, {
+  data: {
+    displayOrder: b,
+  },
+}) => {
+  if (a === undefined && b !== undefined) { return 1; }
+  if (b === undefined && a !== undefined) { return -1; }
+  return a - b;
+});
+};
+
+module.exports = function (eleventyConfig) {
+  eleventyConfig.addFilter('sortByOrder', sortByOrder);
+  // config.addPassthroughCopy('./src/images/');
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './.js'));
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './_internal_js'));
+  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', './styles'));
+
+  eleventyConfig.addPlugin(autoCollection, {
+    baseDir: "{{{tmpInput}}}",
+    prefix: "c_",
+    fileGlob: "*.md",
+  });
+  eleventyConfig.setUseGitIgnore(false);
+  eleventyConfig.addFilter("bust", (url) => {
+    const [urlPart, paramPart] = url.split("?");
+    const params = new URLSearchParams(paramPart || "");
+    params.set("v", new Date().getTime());
+    return `${urlPart}?${params}`;
+  });
+
+  return {
+    markdownTemplateEngine: 'njk',
+    dataTemplateEngine: 'njk',
+    htmlTemplateEngine: 'njk',
+  };
+};

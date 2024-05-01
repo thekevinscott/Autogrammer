@@ -1,0 +1,7 @@
+<header role="banner" class="site-head">
+  {% for item in docsanova.nav %}
+    <a href="{{ item.url }}" class="{{ 'active' if page.url.startsWith(item.url) and item.url != '/' }}"
+      >{{ item.text }}</a
+    >
+  {% endfor %}
+</header>

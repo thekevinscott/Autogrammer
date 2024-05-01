@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ docsanova.title }}</title>
+    <link rel="stylesheet" href="{{ '/styles/reset.css' | url | bust }}" />
+    <link rel="stylesheet" href="{{ '/styles/github-markdown.css' | url | bust }}" />
+    <link rel="stylesheet" href="{{ '/styles/variables.css' | url | bust }}" />
+    <link rel="stylesheet" href="{{ '/styles/style.css' | url | bust }}" />
+  </head>
+  <body>
+    {% include "partials/head.html" %}
+    <div id="container">
+      {% block content %}{% endblock %}
+    </div>
+    <script async=false defer=false type="module" src="{{ docsanova.url }}/_internal_js/spa.js"></script>
+    <script async=false defer=false type="module" src="{{ docsanova.url }}/.js/index.js"></script>
+  </body>
+</html>

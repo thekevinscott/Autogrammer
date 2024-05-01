@@ -1,0 +1,21 @@
+:root {
+  --padding: .5rem;
+  --font-size-small: .75rem;
+  --font-size-normal: 1.000rem;
+  /* --font-size-medium: 1.125rem; */
+  --font-size-large: 1.5rem;
+
+  --max-width: 1200px;
+  --min-width: 400px;
+
+  --color-primary: #FB5895;
+  --color-primary: #FB5895;
+  --color-primary-shadow: #DF3373;
+  /* --color-primary-blue: #5677fb; */
+  --color-primary-blue: rgb(40, 87, 164);
+  --color-light-bg: #E9F3FC;
+  --color-dark-bg: #BFDBF7;
+  --color-dark-blue: #043C5E;
+}
+
+[data-theme='dark'] {}

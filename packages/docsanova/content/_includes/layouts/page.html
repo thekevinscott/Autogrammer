@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %} 
+{% block content %}
+<main tabindex="-1">
+      {% include "partials/nav.html" %}
+  <article  class="markdown-body">
+    <h1>{{ title }}</h1>
+    {{ content | safe }}
+  </article>
+
+</main>
+{% endblock %}
+
+

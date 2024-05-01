@@ -113,6 +113,8 @@
     "grammar"
   ],
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.35",
+    "@xenova/transformers": "^2.17.1",
     "contort": "workspace:*",
     "json2gbnf": "workspace:*",
     "mustache": "^4.2.0"

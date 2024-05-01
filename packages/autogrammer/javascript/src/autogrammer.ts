@@ -15,10 +15,11 @@ import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
 import JSON2GBNF, { JSONSchema, } from 'json2gbnf';
+import * as webllm from "@mlc-ai/web-llm";
 
 export class Autogrammer {
   #language?: SupportedLanguage;
-  #contortionist: Contortionist<ModelProtocol>;
+  #contortionist?: Contortionist<ModelProtocol>;
 
   /**
    * Instantiates an instance of Autogrammer.
@@ -39,9 +40,7 @@ export class Autogrammer {
       this.language = language;
     }
     if (model) {
-      this.#contortionist = new Contortionist({
-        model,
-      });
+      this.contortionist = model;
     }
   }
 
@@ -61,11 +60,24 @@ export class Autogrammer {
     this.#language = language;
   }
 
-
-  set model(model: ModelDefinition<ModelProtocol>) {
+  set contortionist(model: ModelDefinition<ModelProtocol>) {
     this.#contortionist = new Contortionist({
       model,
     });
+  }
+
+  get contortionist(): Contortionist<ModelProtocol> {
+    if (!this.#contortionist) {
+      const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
+        initProgressCallback: console.log,
+      });
+      // "Llama-3-8B-Instruct-q4f32_1",
+      // const model = pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0');
+      this.#contortionist = new Contortionist({
+        model,
+      });
+    }
+    return this.#contortionist;
   }
 
   public async execute(
@@ -78,10 +90,7 @@ export class Autogrammer {
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
     },
   ): Promise<string> {
-    const contortionist = this.#contortionist;
-    if (!contortionist) {
-      throw new Error('No model');
-    }
+    const contortionist = this.contortionist;
     contortionist.grammar = JSON2GBNF(languageOptions, {
       fixedOrder: false,
       whitespace: 1,

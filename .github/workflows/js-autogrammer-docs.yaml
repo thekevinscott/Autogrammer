@@ -1,0 +1,23 @@
+name: 'Docs // JS / Autogrammer'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/autogrammer/javascript/**'
+      - '.github/workflows/js-autogrammer-docs.yaml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'tsconfig.json'
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  docs:
+    name: "Autogrammer / Docs"
+    uses: ./.github/workflows/js-shared-docs.yaml
+    with:
+      package: ./packages/autogrammer/docs
+      site_id: "autogrammer"
