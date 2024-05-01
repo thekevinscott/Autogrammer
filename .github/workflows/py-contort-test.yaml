@@ -31,7 +31,6 @@ jobs:
             enable_coverage: true
           - pyversion: "3.10"
             more_hypothesis_examples_if_cron: true
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/shared/python/unit-test.yaml
     with:
       package: ./packages/contort/python

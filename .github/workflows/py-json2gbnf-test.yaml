@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'packages/json2gbnf/python/**'
-      - '.github/workflows/python/json2gbnf/test.yaml'
+      - '.github/workflows/py-json2gbnf-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
@@ -31,7 +31,6 @@ jobs:
             enable_coverage: true
           - pyversion: "3.10"
             more_hypothesis_examples_if_cron: true
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/shared/python/unit-test.yaml
     with:
       package: ./packages/json2gbnf/python
