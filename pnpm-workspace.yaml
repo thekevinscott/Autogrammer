@@ -1,0 +1,9 @@
+packages:
+  # all packages in direct subdirs of packages/
+  - 'packages/**/javascript/**/*'
+  # # all packages in subdirs of components/
+  # - 'dev/**/*'
+  # tmp folder - this is used for integration tests
+  - 'tmp/**/*'
+  # # exclude packages that are inside test directories
+  # - '!**/test/**'
