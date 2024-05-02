@@ -48,7 +48,7 @@ jobs:
         run: pip install .
         working-directory: ${{ inputs.package }}
 
-      - run: make test 
+      - run: pytest .
         working-directory: ${{ inputs.package }}
         shell: bash
 
