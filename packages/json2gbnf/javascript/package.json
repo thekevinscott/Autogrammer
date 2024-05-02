@@ -35,7 +35,7 @@
       "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.ts run"
+      "command": "vitest --config ./vite.config.ts run"
     },
     "test": {
       "command": "pnpm test:unit"
