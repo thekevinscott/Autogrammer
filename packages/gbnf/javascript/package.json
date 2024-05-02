@@ -69,7 +69,12 @@
         "tsconfig.json"
       ],
       "output": [
-        "./dist/**"
+        "./LICENSE",
+        "./dist/index.js",
+        "./dist/index.js.map",
+        "./dist/index.d.ts",
+        "./dist/index.umd.cjs",
+        "./dist/index.umd.cjs.map"
       ]
     }
   },

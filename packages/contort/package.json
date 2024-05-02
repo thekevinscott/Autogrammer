@@ -84,8 +84,7 @@
       ],
       "output": [
         "./dist/**",
-        "./LICENSE",
-        "./README.md"
+        "./LICENSE"
       ]
     }
   },
