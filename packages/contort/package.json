@@ -94,7 +94,7 @@
     "grammar"
   ],
   "dependencies": {
-    "gbnf": "^0.1.4"
+    "gbnf": "workspace:*"
   },
   "devDependencies": {
     "mock-llm-api": "workspace:*",
