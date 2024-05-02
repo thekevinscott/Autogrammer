@@ -28,15 +28,15 @@ jobs:
       - run: python3 -m venv .venv/dev && source .venv/dev/bin/activate
         working-directory: ${{ inputs.package }}
 
-      - run: pip install -U pip setuptools wheel 
+      - run: source .venv/dev/bin/activate && pip install -U pip setuptools wheel 
         working-directory: ${{ inputs.package }}
 
       - name: Install build dependencies
-        run: pip install -r dev-deps/python3.11/build.txt
+        run: source .venv/dev/bin/activate && pip install -r dev-deps/python3.11/build.txt
         working-directory: ${{ inputs.package }}
 
       - name: Install dependencies
-        run: pip install .
+        run: source .venv/dev/bin/activate && pip install .
         working-directory: ${{ inputs.package }}
 
       - uses: actions/setup-node@v4

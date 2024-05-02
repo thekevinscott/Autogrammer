@@ -30,6 +30,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^1.5.2
         version: 1.5.3(vitest@1.5.3(@types/node@20.12.7)(terser@5.31.0))
+      cpx2:
+        specifier: ^7.0.1
+        version: 7.0.1
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
