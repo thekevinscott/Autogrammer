@@ -23,10 +23,18 @@
   },
   "wireit": {
     "lint": {
-      "command": "eslint -c .eslintrc.cjs src --ext .ts"
+      "command": "eslint -c .eslintrc.cjs src --ext .ts",
+      "dependencies": [
+        "../../json2gbnf/javascript:build",
+        "../../contort:build"
+      ]
     },
     "test:unit": {
-      "command": "vitest --config ./vite.config.ts"
+      "command": "vitest --config ./vite.config.ts",
+      "dependencies": [
+        "../../json2gbnf/javascript:build",
+        "../../contort:build"
+      ]
     },
     "test": {
       "command": "pnpm test:unit -- run"
@@ -42,6 +50,10 @@
     },
     "build": {
       "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
+      "dependencies": [
+        "../../json2gbnf/javascript:build",
+        "../../contort:build"
+      ],
       "files": [
         "./src/**/*.ts",
         "package.json",
@@ -67,9 +79,8 @@
     "grammar"
   ],
   "dependencies": {
-    "contort": "^0.0.10",
-    "json2gbnf": "workspace:*",
-    "mustache": "^4.2.0"
+    "contort": "workspace:*",
+    "json2gbnf": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
