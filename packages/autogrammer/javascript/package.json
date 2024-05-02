@@ -80,7 +80,8 @@
   ],
   "dependencies": {
     "contort": "workspace:*",
-    "json2gbnf": "workspace:*"
+    "json2gbnf": "workspace:*",
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
