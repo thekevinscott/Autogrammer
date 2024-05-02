@@ -13,9 +13,7 @@ jobs:
   unit-test:
     name: 'Unit Test ${{ matrix.pyversion }}'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
+
     strategy:
       fail-fast: false
       matrix:
@@ -48,9 +46,8 @@ jobs:
         run: pip install .
         working-directory: ${{ inputs.package }}
 
-      - run: pytest .
+      - run: make test
         working-directory: ${{ inputs.package }}
-        shell: bash
 
       - name: Upload coverage to Codecov  # https://github.com/codecov/codecov-action
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d

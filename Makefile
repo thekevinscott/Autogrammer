@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 test_js:
 	cd packages/autogrammer/javascript \
 	&& make test \

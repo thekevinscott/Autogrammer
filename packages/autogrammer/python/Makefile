@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 init:
 	source .venv/dev/bin/activate && pip install -r requirements.txt
 
