@@ -71,6 +71,7 @@
       "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && pnpm copy:assets && pnpm copy:gbnf",
       "files": [
         "./src/**/*.ts",
+        "!./src/**/*.test.ts",
         "./src/**/*.gbnf",
         "package.json",
         "vite.config.ts",
@@ -80,11 +81,7 @@
       ],
       "output": [
         "./LICENSE",
-        "./dist/index.js",
-        "./dist/index.js.map",
-        "./dist/index.d.ts",
-        "./dist/index.umd.cjs",
-        "./dist/index.umd.cjs.map"
+        "./dist/**"
       ]
     }
   },

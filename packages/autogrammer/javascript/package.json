@@ -13,6 +13,7 @@
     ".": "./dist/autogrammer.js"
   },
   "scripts": {
+    "clean": "wireit",
     "lint": "wireit",
     "test:unit": "wireit",
     "test": "wireit",
@@ -36,6 +37,9 @@
         "../../contort:build"
       ]
     },
+    "clean": {
+      "command": "rimraf ./dist"
+    },
     "test": {
       "command": "pnpm test:unit"
     },
@@ -49,18 +53,20 @@
       "command": "vite build"
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
+      "command": "pnpm clean && pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
       "dependencies": [
         "../../json2gbnf/javascript:build",
         "../../contort:build"
       ],
       "files": [
         "./src/**/*.ts",
+        "!./src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
       ],
       "output": [
+        "./LICENSE",
         "./dist/**"
       ]
     }
