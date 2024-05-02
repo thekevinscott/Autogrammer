@@ -20,6 +20,7 @@
     }
   },
   "scripts": {
+    "copy": "wireit",
     "copy:gbnf": "wireit",
     "copy:assets": "wireit",
     "lint": "wireit",
@@ -32,9 +33,6 @@
     "build:umd": "wireit"
   },
   "wireit": {
-    "copy:gbnf": {
-      "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
-    },
     "test:integration": {
       "command": "vitest --config ./vitest.config.integration.ts run",
       "dependencies": [
@@ -50,8 +48,26 @@
     "test": {
       "command": "pnpm test:unit && pnpm test:integration"
     },
+    "copy": {
+      "command": "pnpm copy:gbnf && pnpm copy:assets"
+    },
+    "copy:gbnf": {
+      "command": "cpx \"./src/**/*.gbnf\" ./dist -v",
+      "files": [
+        "./src/**/*.gbnf"
+      ],
+      "output": [
+        "./dist/**/*.gbnf"
+      ]
+    },
     "copy:assets": {
-      "command": "cp ../../../LICENSE ./LICENSE "
+      "command": "cp ../../../LICENSE ./LICENSE ",
+      "files": [
+        "../../../LICENSE"
+      ],
+      "output": [
+        "./LICENSE"
+      ]
     },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts",
@@ -75,7 +91,7 @@
       ]
     },
     "build": {
-      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && pnpm copy:assets && pnpm copy:gbnf",
+      "command": "rimraf ./dist && pnpm build:umd && pnpm build:esm && pnpm copy",
       "files": [
         "./src/**/*.ts",
         "!./src/**/*.test.ts",

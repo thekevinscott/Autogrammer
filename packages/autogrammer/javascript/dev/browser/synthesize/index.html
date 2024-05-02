@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Synthesize: Autogrammer</title>
+  <title>Generate: Autogrammer Dev</title>
   <link rel="stylesheet" href="../global.css" />
   <style>
-    body {
-      padding: 20px;
+    html, body, form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    form, textarea, pre  {
+      flex: 1;
+      gap: 1em;
+    }
+    select {
+      max-width: 200px;
     }
     textarea {
       width: 100%;;
@@ -22,14 +31,37 @@
       margin: 1em 0;
       overflow-x: auto;
     }
+    button[type="submit"] {
+      padding: 5px;
+      height: 40px;
+    }
+    wc-monaco-editor {
+      max-height: 50%;
+    }
   </style>
 </head>
 <body>
   <form id="form">
+    <textarea id="input" name="input">Write me a function in C that adds two numbers:</textarea>
+    <div>
+    <select id="grammar-selector">
+      <option value=""> - </option>
+    </select>
+    <select id="model-selector">
+      <option value=""> - </option>
+    </select>
+
+    </div>
     <wc-monaco-editor id="grammar"></wc-monaco-editor>
-    <button id="submit" type="submit">Synthesize</button>
+
+    <button id="submit" type="submit">Generate</button>
   </form>
+  <hr />
+  <label>Output</label>
   <pre id="output">
+  </pre>
+  <label>Output (No Grammar)</label>
+  <pre id="output-no-grammar">
   </pre>
   <script type="module" src="./index.ts"></script>
 </body>

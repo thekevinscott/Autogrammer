@@ -66,12 +66,18 @@ importers:
 
   packages/autogrammer/javascript/dev/browser:
     dependencies:
+      '@mlc-ai/web-llm':
+        specifier: latest
+        version: 0.2.35
+      '@vanillawc/wc-monaco-editor':
+        specifier: ^1.10.15
+        version: 1.10.15
       '@xenova/transformers':
         specifier: ^2.16.0
         version: 2.17.1
-      contort:
-        specifier: ^0.0.10
-        version: 0.0.10
+      autogrammer:
+        specifier: workspace:*
+        version: link:../..
     devDependencies:
       vite:
         specifier: ^5.1.4
@@ -1580,9 +1586,6 @@ packages:
     resolution: {integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==}
     engines: {node: '>= 0.6'}
 
-  contort@0.0.10:
-    resolution: {integrity: sha512-M7+MmDFRTXh7ld8S7NBqwI/sE1fECP/h9omMdYN95Afh8E8EoWKKEBAXMhSqY5gilLZQ7o34N6IwgljZa0SfcQ==}
-
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
@@ -2038,9 +2041,6 @@ packages:
 
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
-
-  gbnf@0.1.6:
-    resolution: {integrity: sha512-li3wTZ8dGcGzV8hreFOYYZCL6qsws1f1ZBuEa+enT44oj2hFw2ybPu5u0zrzZQf5spZEvq2GTuZVqxVnw7kScA==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -5046,11 +5046,6 @@ snapshots:
 
   content-type@1.0.5: {}
 
-  contort@0.0.10:
-    dependencies:
-      '@xenova/transformers': 2.17.1
-      gbnf: 0.1.6
-
   convert-source-map@2.0.0: {}
 
   cookie-signature@1.0.6: {}
@@ -5632,8 +5627,6 @@ snapshots:
   function-bind@1.1.2: {}
 
   functions-have-names@1.2.3: {}
-
-  gbnf@0.1.6: {}
 
   gensync@1.0.0-beta.2: {}
 
