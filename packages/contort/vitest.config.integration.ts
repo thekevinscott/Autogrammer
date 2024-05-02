@@ -4,7 +4,7 @@ import path from 'path';
 export default defineConfig({
   test: {
     testTimeout: 20000,
-    hookTimeout: 60000,
+    hookTimeout: 45000,
     include: [
       'integration-tests/**/*.test.ts',
     ],
