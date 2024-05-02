@@ -4,6 +4,8 @@ on:
     paths:
       - 'packages/contort/javascript/**'
       - '.github/workflows/js-contort-test.yaml'
+      - '.github/workflows/js-shared-unit-test.yaml'
+      - '.github/workflows/js-shared-integration-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'

@@ -4,6 +4,8 @@ on:
     paths:
       - 'packages/autogrammer/python/**'
       - '.github/workflows/py-autogrammer-test.yaml'
+      - '.github/workflows/py-shared-unit-test.yaml'
+      - '.github/workflows/py-shared-integration-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'

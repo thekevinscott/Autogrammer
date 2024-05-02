@@ -4,6 +4,8 @@ on:
     paths:
       - 'packages/autogrammer/javascript/**'
       - '.github/workflows/js-autogrammer-test.yaml'
+      - '.github/workflows/js-shared-unit-test.yaml'
+      - '.github/workflows/js-shared-integration-test.yaml'
       - 'package.json'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
