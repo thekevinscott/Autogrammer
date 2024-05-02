@@ -16,7 +16,7 @@ import {
 import MockLLMAPI from "../utils/mock-llm-api.js";
 import { buildContortionist } from "../utils/build-contortionist.js";
 
-setLogLevel('warn')
+setLogLevel('verbose');
 const configureNonStreamingServer = (content: string) => _configureNonStreamingServer(content, makeLlamaCPPResponse);
 const configureStreamingServer = (content: string, n: number) => _configureStreamingServer(content, n, makeLlamaCPPResponse);
 

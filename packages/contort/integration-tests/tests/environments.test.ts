@@ -28,7 +28,7 @@ import {
 import MockLLMAPI from "../utils/mock-llm-api.js";
 import { makeLlamaCPPResponse } from "../__mocks__/mock-llama-cpp-response.js";
 
-setLogLevel('warn');
+setLogLevel('verbose');
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
