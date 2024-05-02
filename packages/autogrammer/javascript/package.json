@@ -30,14 +30,14 @@
       ]
     },
     "test:unit": {
-      "command": "vitest --config ./vite.config.ts",
+      "command": "vitest --config ./vite.config.ts run",
       "dependencies": [
         "../../json2gbnf/javascript:build",
         "../../contort:build"
       ]
     },
     "test": {
-      "command": "pnpm test:unit -- run"
+      "command": "pnpm test:unit"
     },
     "build:check": {
       "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./LICENSE"

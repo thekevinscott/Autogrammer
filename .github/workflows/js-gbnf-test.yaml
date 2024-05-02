@@ -25,6 +25,12 @@ jobs:
     with:
       package: ./packages/gbnf/javascript
 
+  integration-test:
+    name: "Integration Test"
+    uses: ./.github/workflows/js-shared-integration-test.yaml
+    with:
+      package: ./packages/gbnf/javascript
+
   build:
     name: "Build"
     uses: ./.github/workflows/js-shared-build.yaml

@@ -35,13 +35,13 @@
       "command": "rimraf ./dist"
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.unit.ts"
+      "command": "vitest --config ./vitest.config.unit.ts run"
     },
     "test": {
-      "command": "pnpm test:unit -- run && pnpm test:integration -- run "
+      "command": "pnpm test:unit && pnpm test:integration "
     },
     "test:integration": {
-      "command": "vitest --config ./vitest.config.integration.ts"
+      "command": "vitest --config ./vitest.config.integration.ts run"
     },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts"

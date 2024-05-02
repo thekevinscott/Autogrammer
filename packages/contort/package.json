@@ -39,16 +39,16 @@
       ]
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.unit.ts",
+      "command": "vitest --config ./vitest.config.unit.ts run",
       "dependencies": [
         "../gbnf/javascript:build"
       ]
     },
     "test": {
-      "command": "pnpm test:unit -- run && pnpm test:integration -- run "
+      "command": "pnpm test:unit && pnpm test:integration "
     },
     "test:integration": {
-      "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1",
+      "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1 run",
       "dependencies": [
         "../mock-llm-api:build",
         "../gbnf/javascript:build"

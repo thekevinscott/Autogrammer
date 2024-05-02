@@ -35,10 +35,10 @@
       "command": "cpx \"./src/**/*.gbnf\" ./dist -v"
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.ts"
+      "command": "vitest --config ./vitest.config.ts run"
     },
     "test": {
-      "command": "pnpm test:unit -- run"
+      "command": "pnpm test:unit"
     },
     "copy:assets": {
       "command": "cp ../../../LICENSE ./LICENSE "

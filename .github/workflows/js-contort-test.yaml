@@ -32,50 +32,7 @@ jobs:
       package: ./packages/contort
 
   integration-test:
-    name: 'Integration Test'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v4
-        with:
-          lfs: 'true'
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      - uses: pnpm/action-setup@v3
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
-
-      - name: Install dependencies
-        run: pnpm install && pnpx playwright install-deps && pnpm exec playwright install
-
-      # This should slightly speed up the subsequent test command, as the build
-      # will be pre-cached
-      - name: Pre-build
-        working-directory: ./packages/contort
-        run: pnpm build
-
-      - name: 'Test'
-        run: 'pnpm test'
+    name: "Unit Test"
+    uses: ./.github/workflows/js-shared-integration-test.yaml
+    with:
+      package: ./packages/contort

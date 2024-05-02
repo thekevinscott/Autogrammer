@@ -46,9 +46,9 @@ jobs:
         working-directory: ${{ inputs.package }}
         run: pnpm install
 
-      - name: 'Unit Test'
+      - name: 'Integration Test'
         working-directory: ${{ inputs.package }}
-        run: 'pnpm test:unit'
+        run: 'pnpm test:integration'
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
