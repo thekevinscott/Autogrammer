@@ -55,7 +55,7 @@
       ]
     },
     "build:check": {
-      "command": "path-exists ./dist/index.umd.cjs "
+      "command": "ls ./dist && path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts"
     },
     "build:esm": {
       "command": "vite build -c vite.config.esm.ts"
