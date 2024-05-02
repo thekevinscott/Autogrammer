@@ -44,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ inputs.package }}
-        run: pnpm install
+        run: pnpm install && pnpm exec playwright install  
 
       - name: 'Integration Test'
         working-directory: ${{ inputs.package }}
