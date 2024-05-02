@@ -56,25 +56,19 @@
       "command": "vite build -c ./vite.config.umd.ts"
     },
     "build": {
-      "command": "pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
-      "dependencies": [
-        "clean"
+      "command": "pnpm clean && pnpm build:umd && pnpm build:esm && cp ../../../LICENSE ./LICENSE",
+      "output": [
+        "./LICENSE",
+        "dist/**"
       ],
       "files": [
-        "./src/**/*.ts",
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
         "vite.config.umd.ts",
         "vite.config.esm.ts",
         "tsconfig.json"
-      ],
-      "output": [
-        "./LICENSE",
-        "./dist/index.js",
-        "./dist/index.js.map",
-        "./dist/index.d.ts",
-        "./dist/index.umd.cjs",
-        "./dist/index.umd.cjs.map"
       ]
     }
   },

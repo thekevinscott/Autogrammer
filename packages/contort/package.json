@@ -67,9 +67,8 @@
       "command": "cp ../../LICENSE ./LICENSE"
     },
     "build": {
-      "command": "pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
+      "command": "pnpm clean && pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
       "dependencies": [
-        "clean",
         "../gbnf/javascript:build"
       ],
       "files": [
