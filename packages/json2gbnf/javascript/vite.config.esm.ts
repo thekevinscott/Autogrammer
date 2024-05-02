@@ -1,6 +1,6 @@
 import config from './vite.config.js';
 import { mergeConfig, } from 'vitest/config';
-// import dts from 'vite-plugin-dts';
+import dts from 'vite-plugin-dts';
 
 export default mergeConfig(config, {
   build: {
@@ -14,5 +14,5 @@ export default mergeConfig(config, {
     target: 'esnext',
     minify: true,
   },
-  // plugins: [dts({ rollupTypes: true, }),],
+  plugins: [dts({ rollupTypes: true, }),],
 });
