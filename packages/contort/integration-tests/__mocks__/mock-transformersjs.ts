@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 class Callable extends Function {
   constructor() {
     super();
-    var closure = function (...args) { return closure._call(...args) }
+    const closure = function (...args) { return closure._call(...args) }
     return Object.setPrototypeOf(closure, new.target.prototype)
   }
 
