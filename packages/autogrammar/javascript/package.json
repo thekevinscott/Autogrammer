@@ -1,8 +1,0 @@
-{
-  "name": "autogrammar",
-  "version": "0.0.1",
-  "author": "Kevin Scott",
-  "dependencies": {
-    "autogrammer": "workspace:*"
-  }
-}
