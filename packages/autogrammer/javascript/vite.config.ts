@@ -1,24 +1,25 @@
 import { defineConfig, } from 'vitest/config';
+import { externalizeDeps, } from 'vite-plugin-externalize-deps';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
-    sourcemap: true,
-    lib: {
-      entry: 'src/index.ts',
-      formats: ['es', 'umd',],
-      fileName: 'index',
-      name: 'Autogrammer',
-    },
+    emptyOutDir: false,
   },
-  plugins: [dts(),],
+  plugins: [
+    externalizeDeps({
+      // except: [
+      //   'gbnf',
+      // ],
+    }),
+    dts(),
+  ],
   test: {
     coverage: {
-      provider: 'v8', // or 'v8'
+      provider: 'v8',
     },
     include: ['**/*.test.ts',],
     globals: true,
-    // ts
     typecheck: {
       tsconfig: './tsconfig.test.json',
     },

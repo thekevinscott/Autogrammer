@@ -1,12 +1,16 @@
-import Contortionist, { ExternalExecuteOptions, ModelProtocol, } from 'contort';
+import Contortionist, {
+  type ExternalExecuteOptions,
+  type ModelDefinition,
+  type ModelProtocol,
+} from 'contort';
 import { getGrammar, } from './grammars/index.js';
 import { ConstructorOptions, SUPPORTED_LANGUAGES, SupportedLanguage, isSupportedLanguage, } from './types.js';
 import { buildPrompt, } from './utils.js';
 import { Variables, } from './grammars/get-grammar.js';
 
-export class Autogrammer<L extends SupportedLanguage> {
-  language: L;
-  contortionist: Contortionist<ModelProtocol>;
+export class Autogrammer {
+  #language: SupportedLanguage;
+  #contortionist: Contortionist<ModelProtocol>;
 
   /**
    * Instantiates an instance of Autogrammer.
@@ -22,18 +26,38 @@ export class Autogrammer<L extends SupportedLanguage> {
    * 
    * @returns an instance of a Autogrammer class.
    */
-  constructor({ language, model, }: ConstructorOptions<L>) {
+  constructor({ language, model, }: ConstructorOptions<SupportedLanguage>) {
     if (!isSupportedLanguage(language)) {
       throw new Error(`Unsupported language: ${language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
     }
-    this.language = language;
-    this.contortionist = new Contortionist({
+    this.#language = language;
+    this.#contortionist = new Contortionist({
       model,
-      grammar: getGrammar<L>(language),
+      grammar: getGrammar(language),
     });
   }
 
-  public async synthesize(
+  get language(): SupportedLanguage {
+    if (!isSupportedLanguage(this.#language)) {
+      throw new Error(`Unsupported language: ${this.#language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
+    }
+    return this.#language;
+  }
+  set language(language: SupportedLanguage) {
+    if (!isSupportedLanguage(language)) {
+      throw new Error(`Unsupported language: ${language as string}. Only one of ${JSON.stringify(SUPPORTED_LANGUAGES)} are supported.`);
+    }
+    this.#language = language;
+  }
+
+  set model(model: ModelDefinition<ModelProtocol>) {
+    this.#contortionist = new Contortionist({
+      model,
+      grammar: getGrammar(this.language),
+    });
+  }
+
+  public async synthesize<L extends SupportedLanguage>(
     prompt: string,
     {
       languageOptions,
@@ -44,8 +68,8 @@ export class Autogrammer<L extends SupportedLanguage> {
     },
   ): Promise<string> {
     if (languageOptions !== undefined) {
-      if (this.language === 'sql') {
-        this.contortionist.grammar = getGrammar<'sql'>(this.language, languageOptions);
+      if (this.#language === 'sql') {
+        this.#contortionist.grammar = getGrammar<'sql'>(this.#language, languageOptions);
         // console.log(this.contortionist.grammar);
         // } else if (this.language === 'json') {
         //   const grammar = await compile(languageOptions, 'Root');
@@ -55,13 +79,13 @@ export class Autogrammer<L extends SupportedLanguage> {
         throw new Error('I dont know this one');
       }
     }
-    const builtPrompt = buildPrompt(prompt, this.language);
-    return await this.contortionist.execute(builtPrompt, {
+    const builtPrompt = buildPrompt(prompt, this.#language);
+    return await this.#contortionist.execute(builtPrompt, {
       ...modelOptions,
     });
   };
 
   abort = () => {
-    this.contortionist.abort();
+    this.#contortionist.abort();
   };
 }
