@@ -3,10 +3,21 @@ import Contortionist, {
   type ModelDefinition,
   type ModelProtocol,
 } from 'contort';
-import { getGrammar, } from './grammars/index.js';
-import { ConstructorOptions, SUPPORTED_LANGUAGES, SupportedLanguage, isSupportedLanguage, } from './types.js';
+import {
+  getGrammar,
+} from './grammars/index.js';
+import type {
+  ConstructorOptions,
+  SupportedLanguage,
+} from './types.js';
 import { buildPrompt, } from './utils.js';
 import { Variables, } from './grammars/get-grammar.js';
+import {
+  isSupportedLanguage,
+} from './type-guards.js';
+import {
+  SUPPORTED_LANGUAGES,
+} from './constants.js';
 
 export class Autogrammer {
   #language: SupportedLanguage;
