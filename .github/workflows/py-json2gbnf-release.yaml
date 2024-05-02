@@ -9,7 +9,6 @@ jobs:
   release:
     name: "Cut Release for JSON2GBNF (Python)"
     uses: ./.github/workflows/py-shared-release.yaml
-
     with:
       package: "./packages/json2gbnf/python"
       files: |

@@ -8,14 +8,7 @@ on:
       files:
         required: true
         description: "Newline-delimited list of path globs for asset files to upload"
-      fail_on_unmatched_files: 
-        required: false
-        default: true
-        type: boolean;
-      generate_release_notes: 
-        required: false
-        default: true
-        type: boolean;
+        type: string
 
 jobs:
   release:
@@ -41,6 +34,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          fail_on_unmatched_files: ${{ inputs.fail_on_unmatched_files }} 
-          generate_release_notes: ${{ inputs.generate_release_notes }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
           files: ${{ inputs.files }}
