@@ -64,9 +64,6 @@ jobs:
       - run: make build_all
         working-directory: ${{ inputs.package }}
 
-      - run: ls ./dist
-        working-directory: ${{ inputs.package }}
-
       - name: Publish
         uses: pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e
         with:

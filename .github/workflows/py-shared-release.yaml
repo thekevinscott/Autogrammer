@@ -68,9 +68,6 @@ jobs:
       - run: make build_all
         working-directory: ${{ inputs.package }}
 
-      - run: ls ./dist
-        working-directory: ${{ inputs.package }}
-
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
