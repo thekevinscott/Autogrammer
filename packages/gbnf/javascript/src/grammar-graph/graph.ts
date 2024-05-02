@@ -7,14 +7,16 @@ import {
   type UnresolvedRule,
   type Pointers,
   customInspectSymbol,
+  type ValidInput,
+  type ResolvedGraphPointer,
+} from "./types.js";
+import {
   isRange,
   isRuleChar,
   isRuleCharExcluded,
   isRuleEnd,
   isRuleRef,
-  type ValidInput,
-  type ResolvedGraphPointer,
-} from "./types.js";
+} from './type-guards.js';
 import { isPointInRange, } from "../utils/is-point-in-range.js";
 import { InputParseError, } from "../utils/errors.js";
 import { RuleRef, } from "./rule-ref.js";
@@ -24,9 +26,9 @@ type RootNode = Map<number, GraphNode>;
 const makePointers = () => new GenericSet<ResolvedGraphPointer, string>(p => p.id);
 export class Graph {
   roots = new Map<number, RootNode>();
-  rootId: number;
-  rootNode: RootNode;
-  pointers: Pointers;
+  // rootId: number;
+  #rootNode?: RootNode;
+  pointers?: Pointers;
   grammar: string;
 
   constructor(grammar: string, stackedRules: UnresolvedRule[][][], rootId: number) {
@@ -38,9 +40,9 @@ export class Graph {
       const nodes = new Map<number, GraphNode>();
       for (let pathId = 0; pathId < stack.length; pathId++) {
         const path = stack[pathId];
-        let node: GraphNode;
+        let node: GraphNode | undefined = undefined;
         for (let stepId = path.length - 1; stepId >= 0; stepId--) {
-          const next: GraphNode = node;
+          const next: undefined | GraphNode = node;
           const rule = stack[pathId][stepId];
           uniqueRules.add(rule);
           if (isRuleRef(rule)) {
@@ -50,7 +52,13 @@ export class Graph {
           // here, we ensure we always use the same reference for an identical rule.
           // this makes future comparisons easier.
           const uniqueRule = uniqueRules.get(rule);
+          if (uniqueRule === undefined) {
+            throw new Error('Could not get unique rule');
+          }
           node = new GraphNode(uniqueRule, { stackId, pathId, stepId, }, next);
+        }
+        if (node === undefined) {
+          throw new Error('Could not get node');
         }
         nodes.set(pathId, node);
       }
@@ -61,11 +69,32 @@ export class Graph {
 
     for (const ruleRef of ruleRefs) {
       const referencedNodes = new Set<GraphNode>();
-      for (const node of this.roots.get(ruleRef.value).values()) {
+      for (const node of this.getRootNode(ruleRef.value).values()) {
         referencedNodes.add(node);
       }
       ruleRef.nodes = referencedNodes;
     }
+  }
+
+  getRootNode = (value: number): RootNode => {
+    const rootNode = this.roots.get(value);
+    if (!rootNode) {
+      throw new Error(`Root node not found for value: ${value}`);
+    }
+    return rootNode;
+  };
+
+  get rootNode(): RootNode {
+    if (!this.#rootNode) {
+      throw new Error('Root node is not defined');
+    }
+    return this.#rootNode;
+  }
+  set rootNode(rootNode: undefined | RootNode) {
+    if (!rootNode) {
+      throw new Error('Root node is not defined');
+    }
+    this.#rootNode = rootNode;
   }
 
   getInitialPointers = (): Pointers => {
@@ -96,7 +125,10 @@ export class Graph {
           if (isValid) {
             return true;
           }
-          return isRange(possibleCodePoint) ? isPointInRange(codePoint, possibleCodePoint) : codePoint === possibleCodePoint;
+          if (isRange(possibleCodePoint)) {
+            return isPointInRange(codePoint, possibleCodePoint);
+          }
+          return codePoint === possibleCodePoint;
         }, false);
         this.setValid(rulePointers, valid);
       } else if (isRuleCharExcluded(rule)) {
@@ -163,7 +195,7 @@ export class Graph {
   ): IterableIterator<{ node: GraphNode; parent?: GraphPointer; }> {
     for (const node of rootNodes.values()) {
       if (isRuleRef(node.rule)) {
-        yield* this.fetchNodesForRootNode(this.roots.get(node.rule.value), new GraphPointer(node, parent));
+        yield* this.fetchNodesForRootNode(this.getRootNode(node.rule.value), new GraphPointer(node, parent));
       } else {
         yield { node, parent, };
       }
@@ -194,10 +226,12 @@ export class Graph {
       if (isRuleRef(rule)) {
         throw new Error('Encountered a reference rule in the graph, this should not happen');
       }
-      if (!seenRules.has(rule)) {
-        seenRules.set(rule, [pointer,],);
+      let seenRule = seenRules.get(rule);
+      if (!seenRule) {
+        seenRule = [pointer,];
+        seenRules.set(rule, seenRule,);
       } else {
-        seenRules.get(rule).push(pointer);
+        seenRule.push(pointer);
       }
     }
 

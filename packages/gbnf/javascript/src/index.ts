@@ -1,6 +1,8 @@
 export { GBNF as default, } from './gbnf.js';
 export {
   isRange,
+} from './grammar-graph/type-guards.js';
+export {
   RuleType,
   type ResolvedRule as Rule,
   type RuleCharExclude,

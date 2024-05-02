@@ -3,11 +3,13 @@ import { getParentStackId, } from "./get-parent-stack-id.js";
 import type { GraphNode, } from "./graph-node.js";
 import type { GraphPointer, } from "./graph-pointer.js";
 import {
+  type PrintOpts,
+} from "./types.js";
+import {
   isRange,
   isRuleChar,
   isRuleRef,
-  type PrintOpts,
-} from "./types.js";
+} from './type-guards.js';
 
 export const printGraphPointer = (pointer: GraphPointer) => (
   {

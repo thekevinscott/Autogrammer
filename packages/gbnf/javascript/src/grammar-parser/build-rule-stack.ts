@@ -1,6 +1,10 @@
 import {
   InternalRuleDefChar,
   InternalRuleDefCharNot,
+  type InternalRuleDef,
+} from "../rules-builder/types.js";
+import {
+
   isRuleDefAlt,
   isRuleDefChar,
   isRuleDefCharAlt,
@@ -8,17 +12,18 @@ import {
   isRuleDefCharRngUpper,
   isRuleDefEnd,
   isRuleDefRef,
-  type InternalRuleDef,
-} from "../rules-builder/types.js";
+} from '../rules-builder/type-guards.js';
 import { RuleRef, } from "../grammar-graph/rule-ref.js";
 import {
   UnresolvedRule,
   RuleChar,
   RuleCharExclude,
   RuleType,
+} from "../grammar-graph/types.js";
+import {
   isRange,
   isRuleEnd,
-} from "../grammar-graph/types.js";
+} from "../grammar-graph/type-guards.js";
 
 function makeCharRule<R extends (InternalRuleDefChar | InternalRuleDefCharNot)>(ruleDef: R): R extends InternalRuleDefChar ? RuleChar : RuleCharExclude {
   return {
@@ -46,6 +51,9 @@ export const buildRuleStack = (linearRules: InternalRuleDef[]): UnresolvedRule[]
           const prevValue = charRule.value.pop();
           if (isRange(prevValue)) {
             throw new Error(`Unexpected range, expected a number but got an array: ${JSON.stringify(prevValue)}`);
+          }
+          if (prevValue === undefined) {
+            throw new Error('Unexpected undefined value');
           }
           charRule.value.push([
             prevValue,

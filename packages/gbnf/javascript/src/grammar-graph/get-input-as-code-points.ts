@@ -5,9 +5,11 @@ export const getInputAsCodePoints = (src: ValidInput): number[] => {
     return Array.isArray(src) ? src : [src,];
   }
 
-  const codePoints: number[] = [];
-  for (let i = 0; i < src.length; i++) {
-    codePoints.push(src.codePointAt(i));
-  }
-  return codePoints;
+  return src.split('').map((char) => {
+    const codePoint = char.codePointAt(0);
+    if (codePoint === undefined) {
+      throw new Error(`Could not get code point for character: ${char}`);
+    }
+    return codePoint;
+  });
 };

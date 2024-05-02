@@ -4,9 +4,11 @@ import { GBNF, } from './gbnf.js';
 import { InternalRuleType, } from './rules-builder/types.js';
 
 import {
-  isRange,
   RuleType,
 } from './grammar-graph/types.js';
+import {
+  isRange,
+} from './grammar-graph/type-guards.js';
 import { ParseState, } from './grammar-graph/parse-state.js';
 import {
   InputParseError,

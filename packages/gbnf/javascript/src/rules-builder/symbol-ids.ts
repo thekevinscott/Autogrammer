@@ -17,13 +17,25 @@ export class SymbolIds {
   }
 
   get(key: string): number {
-    return this.#map.get(key);
+    const val = this.#map.get(key);
+    if (val === undefined) {
+      throw new Error(`SymbolIds does not contain key: ${key}`);
+    }
+    return val;
   }
   reverseGet(key: number): string {
-    return this.#reverseMap.get(key);
+    const val = this.#reverseMap.get(key);
+    if (val === undefined) {
+      throw new Error(`SymbolIds does not contain value: ${key}`);
+    }
+    return val;
   }
   getPos(key: string): number {
-    return this.#pos.get(key);
+    const pos = this.#pos.get(key);
+    if (pos === undefined) {
+      throw new Error(`SymbolIds does not contain key: ${key}`);
+    }
+    return pos;
   }
   set(key: string, value: number, pos: number): void {
     this.#map.set(key, value);

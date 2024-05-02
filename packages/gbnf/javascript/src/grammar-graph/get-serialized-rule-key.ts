@@ -1,11 +1,13 @@
 import {
   type UnresolvedRule,
+  RuleType,
+} from "./types.js";
+import {
   isRuleChar,
   isRuleCharExcluded,
   isRuleEnd,
   isRuleRef,
-  RuleType,
-} from "./types.js";
+} from './type-guards.js';
 
 export const KEY_TRANSLATION = {
   [RuleType.END]: 0,

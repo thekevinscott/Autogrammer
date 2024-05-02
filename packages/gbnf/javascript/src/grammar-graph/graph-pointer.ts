@@ -4,13 +4,15 @@ import { printGraphPointer, } from "./print.js";
 import {
   UnresolvedRule,
   customInspectSymbol,
-  isRuleEnd,
   type ResolvedGraphPointer,
+} from "./types.js";
+import {
+  isRuleEnd,
   isGraphPointerRuleRef,
   isGraphPointerRuleEnd,
   isGraphPointerRuleChar,
   isGraphPointerRuleCharExclude,
-} from "./types.js";
+} from './type-guards.js';
 
 
 export class GraphPointer<R extends UnresolvedRule = UnresolvedRule> {
@@ -36,6 +38,9 @@ export class GraphPointer<R extends UnresolvedRule = UnresolvedRule> {
      */
     if (isGraphPointerRuleRef(this)) {
       if (resolved) {
+        if (!this.node.next) {
+          throw new Error(`No next node: ${JSON.stringify(this.node)}`);
+        }
         yield* new GraphPointer(this.node.next, this.parent).resolve();
       } else {
 
@@ -69,6 +74,9 @@ export class GraphPointer<R extends UnresolvedRule = UnresolvedRule> {
         yield* this.parent.fetchNext();
       }
     } else {
+      if (!this.node.next) {
+        throw new Error(`No next node: ${JSON.stringify(this.node)}`);
+      }
       const pointer = new GraphPointer(this.node.next, this.parent);
       yield* pointer.resolve();
     }

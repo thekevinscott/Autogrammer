@@ -16,7 +16,11 @@ export const parseChar = (src: string, pos: number): [number, number] => {
       case ']':
         return [src.charCodeAt(pos + 1), 2,];
       case '\\':
-        return [src.codePointAt(pos + 1), 2,];
+        const codePoint = src.codePointAt(pos + 1);
+        if (codePoint === undefined) {
+          throw new GrammarParseError(src, pos, "Could not get code point for character");
+        }
+        return [codePoint, 2,];
       default:
         throw new GrammarParseError(src, pos, `Unknown escape at ${src[pos]}`);
     }

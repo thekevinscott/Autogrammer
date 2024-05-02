@@ -18,6 +18,9 @@ export class GenericSet<T, K> {
   delete = (el: T) => {
     const key = this.getKey(el);
     const ref = this.#keys.get(key);
+    if (!ref) {
+      throw new Error('Could not get ref');
+    }
     this.#keys.delete(key);
     this.#set.delete(ref);
   };
