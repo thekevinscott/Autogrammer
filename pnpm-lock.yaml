@@ -353,8 +353,8 @@ importers:
         specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.0)
       gbnf:
-        specifier: ^0.1.6
-        version: 0.1.6
+        specifier: workspace:*
+        version: link:../../gbnf/javascript
       path-exists-cli:
         specifier: ^2.0.0
         version: 2.0.0
