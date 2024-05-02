@@ -17,19 +17,19 @@ jobs:
     name: "Lint"
     uses: ./.github/workflows/js-shared-lint.yaml
     with:
-      package: ./packages/contort/javascript
+      package: ./packages/contort
 
   unit-test:
     name: "Unit Test"
     uses: ./.github/workflows/js-shared-unit-test.yaml
     with:
-      package: ./packages/contort/javascript
+      package: ./packages/contort
 
   build:
     name: "Build"
     uses: ./.github/workflows/js-shared-build.yaml
     with:
-      package: ./packages/contort/javascript
+      package: ./packages/contort
 
   integration-test:
     name: 'Integration Test'

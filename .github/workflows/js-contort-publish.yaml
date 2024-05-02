@@ -9,4 +9,4 @@ jobs:
   publish:
     uses: ./.github/workflows/js-shared-publish.yaml
     with:
-      package: "./packages/contort/javascript"
+      package: "./packages/contort"

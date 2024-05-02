@@ -11,6 +11,6 @@ jobs:
     uses: ./.github/workflows/js-shared-release.yaml
 
     with:
-      package: "./packages/contort/javascript"
+      package: "./packages/contort"
       files: |
         packages/contort/javascript/contort-*.tgz
