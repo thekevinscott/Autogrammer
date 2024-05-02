@@ -9,6 +9,8 @@ import cors from 'cors';
 const serversToClose = [];
 process.on('exit', async () => await Promise.all(serversToClose.map(server => server.close())));
 
+const isString = (value: unknown): value is string => value instanceof String || typeof value === 'string';
+
 export default class MockLLMAPI {
   app: Express = express();
   server: Server;
@@ -39,6 +41,3 @@ export default class MockLLMAPI {
     });
   });
 }
-
-const isString = (value: unknown): value is string => value instanceof String || typeof value === 'string';
-
