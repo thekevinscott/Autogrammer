@@ -33,10 +33,16 @@
       "command": "rimraf ./dist"
     },
     "lint": {
-      "command": "eslint -c ./.eslintrc.cjs src --ext .ts"
+      "command": "eslint -c ./.eslintrc.cjs src --ext .ts",
+      "dependencies": [
+        "../gbnf/javascript:build"
+      ]
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.unit.ts"
+      "command": "vitest --config ./vitest.config.unit.ts",
+      "dependencies": [
+        "../gbnf/javascript:build"
+      ]
     },
     "test": {
       "command": "pnpm test:unit -- run && pnpm test:integration -- run "
@@ -44,7 +50,8 @@
     "test:integration": {
       "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1",
       "dependencies": [
-        "../mock-llm-api:build"
+        "../mock-llm-api:build",
+        "../gbnf/javascript:build"
       ]
     },
     "build:check": {
@@ -62,7 +69,8 @@
     "build": {
       "command": "pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
       "dependencies": [
-        "clean"
+        "clean",
+        "../gbnf/javascript:build"
       ],
       "files": [
         "../../README.md",
