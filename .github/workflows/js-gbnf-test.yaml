@@ -14,25 +14,25 @@ env:
 
 jobs:
   lint:
-    name: "Lint"
+    name: "GBNF / Lint"
     uses: ./.github/workflows/js-shared-lint.yaml
     with:
       package: ./packages/gbnf/javascript
 
   unit-test:
-    name: "Unit Test"
+    name: "GBNF / Unit Test"
     uses: ./.github/workflows/js-shared-unit-test.yaml
     with:
       package: ./packages/gbnf/javascript
 
   integration-test:
-    name: "Integration Test"
+    name: "GBNF / Integration Test"
     uses: ./.github/workflows/js-shared-integration-test.yaml
     with:
       package: ./packages/gbnf/javascript
 
   build:
-    name: "Build"
+    name: "GBNF / Build"
     uses: ./.github/workflows/js-shared-build.yaml
     with:
       package: ./packages/gbnf/javascript

@@ -14,19 +14,19 @@ env:
 
 jobs:
   lint:
-    name: "Lint"
+    name: "Autogrammer / Lint"
     uses: ./.github/workflows/js-shared-lint.yaml
     with:
       package: ./packages/autogrammer/javascript
 
   unit-test:
-    name: "Unit Test"
+    name: "Autogrammer / Unit Test"
     uses: ./.github/workflows/js-shared-unit-test.yaml
     with:
       package: ./packages/autogrammer/javascript
 
   build:
-    name: "Build"
+    name: "Autogrammer / Build"
     uses: ./.github/workflows/js-shared-build.yaml
     with:
       package: ./packages/autogrammer/javascript
