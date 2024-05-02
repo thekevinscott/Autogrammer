@@ -4,13 +4,25 @@
   "private": true,
   "main": "./dist/index.js",
   "scripts": {
+    "clean": "wireit",
+    "build:esm": "wireit",
     "build": "wireit"
   },
   "wireit": {
+    "clean": {
+      "command": "rimraf ./dist",
+      "files": [
+        "./dist/**"
+      ]
+    },
+    "build:esm": {
+      "command": "tsc"
+    },
     "build": {
-      "command": "rimraf ./dist && tsc",
+      "command": "pnpm clean && pnpm build:esm",
       "files": [
         "./src/**/*.ts",
+        "!./src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
@@ -22,6 +34,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
