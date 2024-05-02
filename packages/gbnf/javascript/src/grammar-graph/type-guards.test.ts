@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
+  RuleType,
+  RuleChar,
+  RuleCharExclude,
+  RuleEnd,
+} from './types.js';
+import {
   isRule,
   isRuleType,
   isRuleRef,
@@ -7,15 +13,11 @@ import {
   isRuleChar,
   isRuleCharExcluded,
   isRange,
-  RuleType,
-  RuleChar,
-  RuleCharExclude,
-  RuleEnd,
   isGraphPointerRuleCharExclude,
   isGraphPointerRuleChar,
   isGraphPointerRuleEnd,
   isGraphPointerRuleRef
-} from './types.js';
+} from './type-guards.js';
 import { RuleRef } from './rule-ref.js';
 import { GraphPointer } from './graph-pointer.js';
 import { GraphNode } from './graph-node.js';
