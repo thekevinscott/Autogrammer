@@ -3,9 +3,6 @@ import Contortionist, {
   type ModelDefinition,
   type ModelProtocol,
 } from 'contort';
-import {
-  getGrammar,
-} from './grammars/index.js';
 import type {
   ConstructorOptions,
   SupportedLanguage,
@@ -44,7 +41,6 @@ export class Autogrammer {
     if (model) {
       this.#contortionist = new Contortionist({
         model,
-        grammar: this.language ? getGrammar(this.language) : undefined,
       });
     }
   }
@@ -69,7 +65,6 @@ export class Autogrammer {
   set model(model: ModelDefinition<ModelProtocol>) {
     this.#contortionist = new Contortionist({
       model,
-      grammar: getGrammar(this.language),
     });
   }
 
@@ -101,6 +96,10 @@ export class Autogrammer {
   };
 
   abort = () => {
-    this.#contortionist.abort();
+    const contortionist = this.#contortionist;
+    if (!contortionist) {
+      throw new Error('No model');
+    }
+    contortionist.abort();
   };
 }
