@@ -68,14 +68,15 @@ export class Autogrammer {
 
   get contortionist(): Contortionist<ModelProtocol> {
     if (!this.#contortionist) {
-      const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-        initProgressCallback: console.log,
-      });
-      // "Llama-3-8B-Instruct-q4f32_1",
-      // const model = pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0');
-      this.#contortionist = new Contortionist({
-        model,
-      });
+      throw new Error('No model');
+      // const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
+      //   initProgressCallback: console.log,
+      // });
+      // // "Llama-3-8B-Instruct-q4f32_1",
+      // // const model = pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0');
+      // this.#contortionist = new Contortionist({
+      //   model,
+      // });
     }
     return this.#contortionist;
   }
