@@ -47,9 +47,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        working-directory: ${{ inputs.package }}
-        run: pnpm install
+      - name: Install dependencies, build docsanova, then reinstall
+        run: pnpm install && cd packages/docsanova && pnpm build && cd ../../ && pnpm install
 
       - name: 'Build Docs'
         working-directory: ${{ inputs.package }}
