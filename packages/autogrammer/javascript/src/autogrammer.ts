@@ -15,7 +15,7 @@ import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
 import JSON2GBNF, { JSONSchema, } from 'json2gbnf';
-import * as webllm from "@mlc-ai/web-llm";
+// import * as webllm from "@mlc-ai/web-llm";
 
 export class Autogrammer {
   #language?: SupportedLanguage;
