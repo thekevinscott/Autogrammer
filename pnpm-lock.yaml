@@ -242,8 +242,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       testeroni:
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.1.2
+        version: 0.1.2
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -306,16 +306,6 @@ importers:
       wireit:
         specifier: ^0.14.0
         version: 0.14.4
-
-  packages/contort/tmp/node:
-    dependencies:
-      contort:
-        specifier: workspace:*
-        version: link:../..
-    devDependencies:
-      tslib:
-        specifier: 2.6.1
-        version: 2.6.1
 
   packages/docsanova:
     dependencies:
@@ -1168,6 +1158,7 @@ packages:
 
   '@types/commander@2.12.2':
     resolution: {integrity: sha512-0QEFiR8ljcHp9bAbWxecjVRuAMr16ivPiGOw6KFQBVrVd0RQIcM3xKdRisH2EDWgVWujiYtHwhSkSUoAAGzH7Q==}
+    deprecated: This is a stub types definition for commander (https://github.com/tj/commander.js). commander provides its own type definitions, so you don't need @types/commander installed!
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
@@ -2078,6 +2069,7 @@ packages:
   ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
     engines: {node: '>=0.10.0'}
+    hasBin: true
 
   electron-to-chromium@1.4.752:
     resolution: {integrity: sha512-P3QJreYI/AUTcfBVrC4zy9KvnZWekViThgQMX/VpJ+IsOBbcX5JFpORM4qWapwWQ+agb2nYAOyn/4PMXOk0m2Q==}
@@ -2170,6 +2162,7 @@ packages:
 
   eslint-config-prettier@9.1.0:
     resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
+    hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
 
@@ -2541,6 +2534,7 @@ packages:
   html-minifier-terser@6.1.0:
     resolution: {integrity: sha512-YXxSlJBZTP7RS3tWnQw74ooKa6L9b9i9QYXY21eUEvhZ3u9XLfv6OnFsQq6RxkhHygsaUMvYsZRV5rU/OVNZxw==}
     engines: {node: '>=12'}
+    hasBin: true
 
   html-webpack-plugin@5.6.0:
     resolution: {integrity: sha512-iwaY4wzbe48AfKLZ/Cc8k0L+FKG6oSNRaZ8x5A/T/IVDGyXcbHncM9TdDa93wn0FsSm82FhTKW7f3vS61thXAw==}
@@ -2801,6 +2795,7 @@ packages:
   jake@10.8.7:
     resolution: {integrity: sha512-ZDi3aP+fG/LchyBzUM804VjddnwfSfsdeYkwt8NcbKRvo4rFkjhs456iLFn3k2ZUWvNe4i48WACDbza8fhq2+w==}
     engines: {node: '>=10'}
+    hasBin: true
 
   jest-diff@29.7.0:
     resolution: {integrity: sha512-LMIgiIrhigmPrs03JHpxUh2yISK3vLFPkAodPeo0+BuF7wA2FoQbkEg1u8gBYBThncu7e1oEDUfIXVuTqLRUjw==}
@@ -3198,6 +3193,7 @@ packages:
   nunjucks@3.2.4:
     resolution: {integrity: sha512-26XRV6BhkgK0VOxfbU5cQI+ICFUtMLixv1noZn1tGU38kQH5A5nmmbk/O45xdyBhD1esk47nKrY0mvQpZIhRjQ==}
     engines: {node: '>= 6.9.0'}
+    hasBin: true
     peerDependencies:
       chokidar: ^3.3.0
     peerDependenciesMeta:
@@ -3932,14 +3928,16 @@ packages:
   terser@5.31.0:
     resolution: {integrity: sha512-Q1JFAoUKE5IMfI4Z/lkE/E6+SwgzO+x4tq4v1AyBLRj8VSYvRO6A/rQrPg1yud4g0En9EKI1TvFRF2tQFcoUkg==}
     engines: {node: '>=10'}
+    hasBin: true
 
   test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
     engines: {node: '>=8'}
 
-  testeroni@0.1.0:
-    resolution: {integrity: sha512-lV0H7diRXas4dmPZ1pdXg/EG8aPc6nfOaKttCSpsGM5nuzZ0fhydMXkWR4TmtEcpRDosNfV+CgzShHCuF4kDtw==}
+  testeroni@0.1.2:
+    resolution: {integrity: sha512-N2u5r7VEcwKrEvsXJoDre2RKyTO6hlPcdAJP66yGAdvd7ZsvuRHWHSWvQaHPBCWNyacyyLXeGko/LpP16JDvUw==}
     engines: {node: '>=20.0.0'}
+    hasBin: true
 
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -3992,6 +3990,7 @@ packages:
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
+    hasBin: true
     peerDependencies:
       '@swc/core': '>=1.2.50'
       '@swc/wasm': '>=1.2.50'
@@ -4002,9 +4001,6 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
-
-  tslib@2.6.1:
-    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
 
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
@@ -4017,6 +4013,7 @@ packages:
 
   tunnelmole@2.2.14:
     resolution: {integrity: sha512-ZtYsNRBQhqjZR665EjMf/XMOAuBDq6AJDHIE+9G9bU0GIR+Mg8pFUQ4mnkSeOIpErRu0S4KjTMvG9VZPCijcnw==}
+    hasBin: true
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -4072,6 +4069,7 @@ packages:
 
   update-browserslist-db@1.0.14:
     resolution: {integrity: sha512-JixKH8GR2pWYshIPUg/NujK3JO7JiqEEUiNArE86NQyrgUuZeTlZQN3xuS/yiV5Kb48ev9K6RqNkaJjXsdg7Jw==}
+    hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
 
@@ -4138,6 +4136,7 @@ packages:
   vite@5.2.10:
     resolution: {integrity: sha512-PAzgUZbP7msvQvqdSD+ErD5qGnSFiGOoWmV5yAKUEI0kdhjbH6nMWVyZQC/hSc4aXwc0oJ9aEdIiF9Oje0JFCw==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': ^18.0.0 || >=20.0.0
       less: '*'
@@ -4165,6 +4164,7 @@ packages:
   vitest@1.5.3:
     resolution: {integrity: sha512-2oM7nLXylw3mQlW6GXnRriw+7YvZFk/YNV8AxIC3Z3MfFbuziLGWP9GPxxu/7nRlXhqyxBikpamr+lEEj1sUEw==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@types/node': ^18.0.0 || >=20.0.0
@@ -4194,6 +4194,7 @@ packages:
 
   vue-tsc@1.8.27:
     resolution: {integrity: sha512-WesKCAZCRAbmmhuGl3+VrdWItEvfoFIPXOvUJkjULi+x+6G/Dy69yO3TBRJDr9eUlmsNAwVmxsNZxvHKzbkKdg==}
+    hasBin: true
     peerDependencies:
       typescript: '*'
 
@@ -4211,6 +4212,7 @@ packages:
   webpack@5.91.0:
     resolution: {integrity: sha512-rzVwlLeBWHJbmgTC/8TvAcu5vpJNII+MelQpylD4jNERPwpBJOE2lEcko1zJX3QJeLjTTAnQxn/OJ8bjDzVQaw==}
     engines: {node: '>=10.13.0'}
+    hasBin: true
     peerDependencies:
       webpack-cli: '*'
     peerDependenciesMeta:
@@ -8183,7 +8185,7 @@ snapshots:
       glob: 7.2.3
       minimatch: 3.1.2
 
-  testeroni@0.1.0:
+  testeroni@0.1.2:
     dependencies:
       '@schemastore/package': 0.0.10
       chalk: 5.3.0
@@ -8256,8 +8258,6 @@ snapshots:
       typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  tslib@2.6.1: {}
 
   tslib@2.6.2: {}
 

@@ -192,7 +192,11 @@ describe('llama.cpp', async () => {
       afterAll(async () => {
         await Promise.all([
           rimraf((await readdir(browserDir)).length > 1 ? outDir : browserDir),
-          browserRunner.afterAll(),
+          async () => {
+            try {
+              browserRunner.afterAll();
+            } catch (err) { }
+          },
         ]);
       });
 
