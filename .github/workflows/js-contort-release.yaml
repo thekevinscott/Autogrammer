@@ -13,4 +13,4 @@ jobs:
     with:
       package: "./packages/contort"
       files: |
-        packages/contort/javascript/contort-*.tgz
+        packages/contort/contort-*.tgz
