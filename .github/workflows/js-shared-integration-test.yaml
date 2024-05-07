@@ -50,6 +50,7 @@ jobs:
         working-directory: ${{ inputs.package }}
         run: pnpx playwright install  
 
+
       - name: 'Integration Test'
         working-directory: ${{ inputs.package }}
         run: 'pnpm test:integration'
