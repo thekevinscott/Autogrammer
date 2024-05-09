@@ -1,0 +1,19 @@
+name: Version Autogrammer (Javascript)
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'packages/autogrammer/javascript/**/*.ts'
+      - 'packages/autogrammer/javascript/**/*.gbnf'
+      - '!packages/autogrammer/javascript/**/*.test.ts'
+      # - '!packages/autogrammer/javascript/package.json'
+
+jobs:
+  version:
+    uses: ./.github/workflows/js-shared-version.yaml
+    with:
+      package: "./packages/autogrammer/javascript"
+      tag_prefix: "js/autogrammer-v"
+    secrets: inherit

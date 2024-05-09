@@ -1,0 +1,19 @@
+name: Version Contortionist (Javascript)
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'packages/contort/javascript/**/*.ts'
+      - 'packages/contort/javascript/**/*.gbnf'
+      - '!packages/contort/javascript/**/*.test.ts'
+      # - '!packages/contort/javascript/package.json'
+
+jobs:
+  version:
+    uses: ./.github/workflows/js-shared-version.yaml
+    with:
+      package: "./packages/contort/javascript"
+      tag_prefix: "js/contort-v"
+    secrets: inherit
