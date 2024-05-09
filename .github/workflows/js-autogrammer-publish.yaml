@@ -10,3 +10,4 @@ jobs:
     uses: ./.github/workflows/js-shared-publish.yaml
     with:
       package: "./packages/autogrammer/javascript"
+    secrets: inherit

@@ -16,18 +16,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
-
-      # https://github.com/actions/setup-node/issues/249
-      # - name: Overwrite .npmrc
-      #   run: |
-      #     echo -e '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\nregistry=https://registry.npmjs.org/\nalways-auth=true' > $NPM_CONFIG_USERCONFIG
-      #     cat $NPM_CONFIG_USERCONFIG
-
-      - name: Cat .npmrc
-        run: |
-          cat $NPM_CONFIG_USERCONFIG
 
       - uses: pnpm/action-setup@v3
         name: Install pnpm
@@ -59,6 +49,7 @@ jobs:
       - name: 'Check build output'
         working-directory: ${{ inputs.package }}
         run: 'pnpm build:check'
+
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       #   with:
@@ -70,4 +61,5 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 permissions:
+  contents: read
   id-token: write

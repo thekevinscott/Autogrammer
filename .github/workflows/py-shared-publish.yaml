@@ -69,3 +69,7 @@ jobs:
         with:
           verbose: true
           packages-dir: ${{ inputs.package }}/dist
+
+permissions:
+  contents: read
+  id-token: write

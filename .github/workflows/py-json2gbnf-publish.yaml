@@ -10,7 +10,8 @@ jobs:
     uses: ./.github/workflows/py-shared-publish.yaml
     with:
       package: "./packages/json2gbnf/python"
+    secrets: inherit
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read

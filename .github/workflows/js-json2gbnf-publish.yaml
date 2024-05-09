@@ -10,3 +10,4 @@ jobs:
     uses: ./.github/workflows/js-shared-publish.yaml
     with:
       package: "./packages/json2gbnf/javascript"
+    secrets: inherit
