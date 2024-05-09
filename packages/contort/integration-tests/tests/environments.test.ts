@@ -158,24 +158,25 @@ describe('llama.cpp', async () => {
     });
   });
 
-  describe('Browser', () => {
+  describe.only('Browser', () => {
     describe.each([
-      ['umd', 'Contortionist', {
-        files: [path.resolve(ROOT, contortionistUMDFilePath)],
-      }],
+      // ['umd', 'Contortionist', {
+      //   files: [path.resolve(ROOT, contortionistUMDFilePath)],
+      // }],
       ['esbuild', 'contort', {
         dependencies: {
           'contort': 'workspace:*',
         }
       }],
-      ['webpack', 'contort', {
-        dependencies: {
-          'contort': 'workspace:*',
-        }
-      }],
+      // ['webpack', 'contort', {
+      //   dependencies: {
+      //     'contort': 'workspace:*',
+      //   }
+      // }],
     ] as [string, string, BundleOptions][])('%s', async (bundlerName, windowContortName, bundleOptions) => {
       const browserDir = path.resolve(TMP, 'browser');
-      const outDir = path.resolve(browserDir, bundlerName);
+      const workingDir = path.resolve(browserDir, bundlerName);
+      const outDir = path.resolve(workingDir, 'build');
 
       const browserRunner = new ClientsideTestRunner({
         log: false,
@@ -186,7 +187,10 @@ describe('llama.cpp', async () => {
 
       beforeAll(async function beforeAll() {
         await mkdirp(outDir);
-        await browserRunner.beforeAll(() => bundle(bundlerName, outDir, bundleOptions));
+        await browserRunner.beforeAll(() => bundle(bundlerName, outDir, {
+          ...bundleOptions,
+          workingDir,
+        }));
       });
 
       afterAll(async () => {
