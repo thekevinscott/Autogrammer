@@ -50,10 +50,10 @@ jobs:
         working-directory: ${{ inputs.package }}
         run: pnpx playwright install  
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Integration Test'
         working-directory: ${{ inputs.package }}

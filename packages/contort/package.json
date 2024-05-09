@@ -48,7 +48,7 @@
       "command": "pnpm test:unit && pnpm test:integration "
     },
     "test:integration": {
-      "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1 run",
+      "command": "vitest --config ./vitest.config.integration.ts --pool=forks run",
       "dependencies": [
         "../mock-llm-api:build",
         "build"
