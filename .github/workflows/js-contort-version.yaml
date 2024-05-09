@@ -5,10 +5,11 @@ on:
     branches:
       - 'main'
     paths:
-      - 'packages/contort/javascript/**/*.ts'
-      - 'packages/contort/javascript/**/*.gbnf'
-      - '!packages/contort/javascript/**/*.test.ts'
-      # - '!packages/contort/javascript/package.json'
+      - 'packages/contort/**/*.ts'
+      - 'packages/contort/README.md'
+      - 'packages/contort/**/*.gbnf'
+      - '!packages/contort/**/*.test.ts'
+      # - '!packages/contort/package.json'
 
 jobs:
   version:

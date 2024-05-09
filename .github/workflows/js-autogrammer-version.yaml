@@ -6,6 +6,7 @@ on:
       - 'main'
     paths:
       - 'packages/autogrammer/javascript/**/*.ts'
+      - 'packages/autogrammer/javascript/README.md'
       - 'packages/autogrammer/javascript/**/*.gbnf'
       - '!packages/autogrammer/javascript/**/*.test.ts'
       # - '!packages/autogrammer/javascript/package.json'

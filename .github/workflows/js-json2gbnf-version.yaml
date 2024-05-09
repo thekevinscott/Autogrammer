@@ -6,6 +6,7 @@ on:
       - 'main'
     paths:
       - 'packages/json2gbnf/javascript/**/*.ts'
+      - 'packages/json2gbnf/javascript/README.md'
       - 'packages/json2gbnf/javascript/**/*.gbnf'
       - '!packages/json2gbnf/javascript/**/*.test.ts'
       # - '!packages/json2gbnf/javascript/package.json'
