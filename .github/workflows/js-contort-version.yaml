@@ -15,6 +15,6 @@ jobs:
   version:
     uses: ./.github/workflows/js-shared-version.yaml
     with:
-      package: "./packages/contort/javascript"
+      package: "./packages/contort"
       tag_prefix: "js/contort-v"
     secrets: inherit
