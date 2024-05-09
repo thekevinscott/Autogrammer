@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '.github/workflows/js-json2gbnf-version.yaml'
       - 'packages/json2gbnf/javascript/**/*.ts'
       - 'packages/json2gbnf/javascript/README.md'
       - 'packages/json2gbnf/javascript/**/*.gbnf'

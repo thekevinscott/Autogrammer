@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '.github/workflows/js-contort-version.yaml'
       - 'packages/contort/**/*.ts'
       - 'packages/contort/README.md'
       - 'packages/contort/**/*.gbnf'

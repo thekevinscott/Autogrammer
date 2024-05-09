@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
     paths:
+      - '.github/workflows/js-autogrammer-version.yaml'
       - 'packages/autogrammer/javascript/**/*.ts'
       - 'packages/autogrammer/javascript/README.md'
       - 'packages/autogrammer/javascript/**/*.gbnf'
