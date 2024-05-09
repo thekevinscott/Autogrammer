@@ -158,21 +158,21 @@ describe('llama.cpp', async () => {
     });
   });
 
-  describe.only('Browser', () => {
+  describe('Browser', () => {
     describe.each([
-      // ['umd', 'Contortionist', {
-      //   files: [path.resolve(ROOT, contortionistUMDFilePath)],
-      // }],
+      ['umd', 'Contortionist', {
+        files: [path.resolve(ROOT, contortionistUMDFilePath)],
+      }],
       ['esbuild', 'contort', {
         dependencies: {
           'contort': 'workspace:*',
         }
       }],
-      // ['webpack', 'contort', {
-      //   dependencies: {
-      //     'contort': 'workspace:*',
-      //   }
-      // }],
+      ['webpack', 'contort', {
+        dependencies: {
+          'contort': 'workspace:*',
+        }
+      }],
     ] as [string, string, BundleOptions][])('%s', async (bundlerName, windowContortName, bundleOptions) => {
       const browserDir = path.resolve(TMP, 'browser');
       const workingDir = path.resolve(browserDir, bundlerName);
