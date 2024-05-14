@@ -9,8 +9,6 @@ export const DOUBLE_QUOTE_KEY = 'dblqot';
 export const SINGLE_QUOTE_KEY = 'sngqot';
 export const LEFT_PAREN_KEY = 'lparen';
 export const RIGHT_PAREN_KEY = 'rparen';
-export const WHITESPACE_KEY = 'ws';
-export const WHITESPACE_REPEATING_KEY = 'wss';
 export const SEMI_KEY = 'semi';
 
 export const KEYS: Record<string, string> = {
@@ -24,6 +22,4 @@ export const KEYS: Record<string, string> = {
   DOUBLE_QUOTE_KEY,
   SINGLE_QUOTE_KEY,
   SEMI_KEY,
-  WHITESPACE_KEY,
-  WHITESPACE_REPEATING_KEY,
 };

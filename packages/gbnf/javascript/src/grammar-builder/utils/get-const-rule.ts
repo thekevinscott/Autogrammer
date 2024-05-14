@@ -1,15 +1,14 @@
-import { Grammar, } from "../grammar.js";
+import { GrammarBuilder, } from "../Grammar-Builder.js";
 import { getWhitespace, } from "./get-whitespace.js";
 import { join, } from "./join.js";
 
 export const getConstRule = (
-  parser: Grammar,
+  grammarBuilder: GrammarBuilder,
   key: string,
   left: boolean,
   right: boolean,
 ): string => join(
-  left ? getWhitespace(parser) : undefined,
+  left ? getWhitespace(grammarBuilder) : undefined,
   key,
-  right ? getWhitespace(parser) : undefined,
+  right ? getWhitespace(grammarBuilder) : undefined,
 );
-

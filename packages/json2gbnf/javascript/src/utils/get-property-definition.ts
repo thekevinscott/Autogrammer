@@ -2,7 +2,7 @@ import {
   QUOTE_KEY,
   VALUE_KEY,
 } from "../constants/grammar-keys.js";
-import { join, } from "./join.js";
+import { join, } from "gbnf";
 
 // export const OBJECT_KEY_DEF = `([^\\"])+`;
 export const OBJECT_KEY_DEF = `([a-zA-Z0-9])+`;

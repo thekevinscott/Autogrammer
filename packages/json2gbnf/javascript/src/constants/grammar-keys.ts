@@ -14,8 +14,6 @@ export const LEFT_BRACKET_KEY = 'lbkt';
 export const RIGHT_BRACKET_KEY = 'rbkt';
 export const LEFT_BRACE_KEY = 'lbrc';
 export const RIGHT_BRACE_KEY = 'rbrc';
-export const WHITESPACE_KEY = 'ws';
-export const WHITESPACE_REPEATING_KEY = 'wss';
 
 export const KEYS: Record<string, string> = {
   VALUE_KEY,
@@ -34,6 +32,4 @@ export const KEYS: Record<string, string> = {
   RIGHT_BRACKET_KEY,
   LEFT_BRACE_KEY,
   RIGHT_BRACE_KEY,
-  WHITESPACE_KEY,
-  WHITESPACE_REPEATING_KEY,
 };

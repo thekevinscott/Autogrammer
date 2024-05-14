@@ -1,5 +1,5 @@
 import { QUOTE_KEY, } from "../constants/grammar-keys.js";
-import { join, } from "./join.js";
+import { join, } from "gbnf";
 import {
   AddRule,
   JSONSchemaObjectValueEnum,

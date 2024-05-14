@@ -12,7 +12,7 @@ import type {
   JSONSchema,
 } from "../types.js";
 import { getConstDefinition, } from "./get-const-definition.js";
-import { join, joinWith, } from "./join.js";
+import { join, joinWith, } from "gbnf";
 import { parseType, } from "./parse-type.js";
 
 export const parse = (

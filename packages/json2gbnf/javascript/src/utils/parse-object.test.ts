@@ -19,7 +19,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { join, joinWith } from './join.js';
+import { join, joinPipe } from 'gbnf';
 import { OBJECT_KEY_DEF } from './get-property-definition.js';
 
 vi.mock('./parse-type.js', async () => {
@@ -65,8 +65,7 @@ describe('parseObject', () => {
     const mockGrammar = getMockGrammar();
     const expected = join(
       LEFT_BRACE_KEY,
-      `(${joinWith(
-        ' | ',
+      `(${joinPipe(
         join(
           QUOTE_KEY,
           `"foo"`,
@@ -126,7 +125,7 @@ describe('parseObject', () => {
     const mockGrammar = getMockGrammar();
     const expected = join(
       LEFT_BRACE_KEY,
-      `(${joinWith(' | ',
+      `(${joinPipe(
         join(
           QUOTE_KEY,
           `"foo"`,
@@ -190,7 +189,7 @@ describe('parseObject', () => {
     const mockGrammar = getMockGrammar();
     const expected = [
       LEFT_BRACE_KEY,
-      `(${joinWith(' | ',
+      `(${joinPipe(
         join(
           QUOTE_KEY,
           `"foo"`,
@@ -297,8 +296,7 @@ describe('parseObject', () => {
       });
       const expected = join(
         LEFT_BRACE_KEY,
-        `(${joinWith(
-          ' | ',
+        `(${joinPipe(
           join(
             QUOTE_KEY,
             `"foo"`,
@@ -368,8 +366,7 @@ describe('parseObject', () => {
       });
       const expected = join(
         LEFT_BRACE_KEY,
-        `(${joinWith(
-          ' | ',
+        `(${joinPipe(
           join(
             QUOTE_KEY,
             `"foo"`,

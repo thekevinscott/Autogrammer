@@ -4,7 +4,7 @@ import {
   LEFT_BRACKET_KEY,
   RIGHT_BRACKET_KEY,
 } from '../constants/grammar-keys.js';
-import { join, joinWith, } from './join.js';
+import { join, joinWith, } from 'gbnf';
 import { KEYS, } from '../constants/grammar-keys.js';
 import type {
   JSONSchemaArray,
@@ -17,6 +17,7 @@ import {
   isSchemaArrayWithBooleanItemsType,
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
+import { joinPipe, } from 'gbnf';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
   'prefixItems',
@@ -45,7 +46,7 @@ export const parseArray = (
     return ARRAY_KEY;
   }
   const types = ([] as PrimitiveType[]).concat(schema.items.type).map((type: string) => KEYS[`${type.toUpperCase()}_KEY`] ?? type);
-  const symbolId = types.length > 1 ? parser.addRule(joinWith(' | ', ...types)) : types[0];
+  const symbolId = types.length > 1 ? parser.addRule(joinPipe(...types)) : types[0];
   return join(
     parser.getConst(LEFT_BRACKET_KEY, { left: false, }),
     `(${symbolId} (${parser.getConst(COMMA_KEY)} ${symbolId})*)?`,

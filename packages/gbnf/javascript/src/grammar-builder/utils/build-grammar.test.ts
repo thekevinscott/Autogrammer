@@ -1,3 +1,8 @@
+import {
+  describe,
+  it,
+  expect,
+} from 'vitest';
 import { buildGrammar } from './build-grammar.js';
 
 import type * as _constants from '../constants/constants.js';
@@ -19,24 +24,26 @@ describe('buildGrammar', () => {
       ['rule3', 'key3'],
     ]).entries();
 
-    const expected = `key1 ::= rule1
-key2 ::= rule2
-key3 ::= rule3
-CONSTANT1
-CONSTANT2`;
+    const expected = [
+      `key1 ::= rule1`,
+      `key2 ::= rule2`,
+      `key3 ::= rule3`,
+      `CONSTANT1`,
+      `CONSTANT2`,
+    ];
 
-    const result = buildGrammar(entries);
-    expect(result).toBe(expected);
+    expect([...buildGrammar(entries)]).toStrictEqual(expected);
   });
 
   it('should handle an empty entries iterator', () => {
     const entries = new Map().entries();
 
-    const expected = `CONSTANT1
-CONSTANT2`;
+    const expected = [
+      `CONSTANT1`,
+      `CONSTANT2`,
+    ];
 
-    const result = buildGrammar(entries);
-    expect(result).toBe(expected);
+    expect([...buildGrammar(entries)]).toStrictEqual(expected);
   });
 
   it('should throw an error when a key is an empty string', () => {
@@ -44,7 +51,7 @@ CONSTANT2`;
       ['rule1', ''],
     ]).entries();
 
-    expect(() => buildGrammar(entries)).toThrowError('Key cannot be an empty string');
+    expect(() => [...buildGrammar(entries)]).toThrowError('Key cannot be an empty string');
   });
 
   it('should throw an error when a rule is an empty string', () => {
@@ -52,7 +59,7 @@ CONSTANT2`;
       ['', 'key1'],
     ]).entries();
 
-    expect(() => buildGrammar(entries)).toThrowError('Rule cannot be an empty string');
+    expect(() => [...buildGrammar(entries)]).toThrowError('Rule cannot be an empty string');
   });
 
   it('should handle entries with special characters', () => {
@@ -62,13 +69,14 @@ CONSTANT2`;
       ['rule5 ::= rule6', 'key3'],
     ]).entries();
 
-    const expected = `key1 ::= rule1 | rule2
-key2 ::= rule3 & rule4
-key3 ::= rule5 ::= rule6
-CONSTANT1
-CONSTANT2`;
+    const expected = [
+      `key1 ::= rule1 | rule2`,
+      `key2 ::= rule3 & rule4`,
+      `key3 ::= rule5 ::= rule6`,
+      `CONSTANT1`,
+      `CONSTANT2`,
+    ];
 
-    const result = buildGrammar(entries);
-    expect(result).toBe(expected);
+    expect([...buildGrammar(entries)]).toStrictEqual(expected);
   });
 });

@@ -1,8 +1,7 @@
 import { GLOBAL_CONSTANTS, } from "../constants/constants.js";
-import { joinWith, } from "./join.js";
+import { join, } from "./join.js";
 
-export const buildGrammar = (entries: IterableIterator<[string, string]>): string => {
-  const rules: string[] = [];
+export function* buildGrammar(entries: IterableIterator<[string, string]>): IterableIterator<string> {
   for (const [rule, key,] of entries) {
     if (key === '') {
       throw new Error('Key cannot be an empty string');
@@ -11,10 +10,11 @@ export const buildGrammar = (entries: IterableIterator<[string, string]>): strin
     if (rule === '') {
       throw new Error('Rule cannot be an empty string');
     }
-    rules.push(`${key} ::= ${rule}`);
+    yield join(
+      key,
+      '::=',
+      rule,
+    );
   }
-  return joinWith('\n',
-    ...rules,
-    ...GLOBAL_CONSTANTS,
-  );
+  yield* GLOBAL_CONSTANTS;
 };

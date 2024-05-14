@@ -5,8 +5,6 @@ import {
   nullDef,
   charDef,
   integerDef,
-  whitespaceDef,
-  whitespaceRepeatingDef,
 } from './grammar-definitions.js';
 import {
   STRING_KEY,
@@ -17,8 +15,6 @@ import {
   INTEGER_KEY,
   COMMA_KEY,
   DOUBLE_QUOTE_KEY,
-  WHITESPACE_KEY,
-  WHITESPACE_REPEATING_KEY,
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
   SEMI_KEY,
@@ -38,6 +34,4 @@ export const GLOBAL_CONSTANTS = [
   `${LEFT_PAREN_KEY} ::= "("`,
   `${RIGHT_PAREN_KEY} ::= ")"`,
   `${SEMI_KEY} ::= ";"`,
-  `${WHITESPACE_KEY} ::= ${whitespaceDef}`,
-  `${WHITESPACE_REPEATING_KEY} ::= ${whitespaceRepeatingDef}`,
 ];

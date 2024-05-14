@@ -7,8 +7,6 @@ import _numberDef from './grammar-definitions/number.gbnf?raw' assert { type: 't
 import _nullDef from './grammar-definitions/null.gbnf?raw' assert { type: 'text' };
 import _boolDef from './grammar-definitions/boolean.gbnf?raw' assert { type: 'text' };
 import _charDef from './grammar-definitions/char.gbnf?raw' assert { type: 'text' };
-import _whitespaceDef from './grammar-definitions/whitespace.gbnf?raw' assert { type: 'text' };
-import _whitespaceRepeatingDef from './grammar-definitions/whitespace-repeating.gbnf?raw' assert { type: 'text' };
 
 export const arrayDef = replace(_arrayDef);
 export const objectDef = replace(_objectDef);
@@ -18,5 +16,3 @@ export const stringDef = replace(_stringDef);
 export const boolDef = replace(_boolDef);
 export const nullDef = replace(_nullDef);
 export const charDef = replace(_charDef);
-export const whitespaceDef = replace(_whitespaceDef);
-export const whitespaceRepeatingDef = replace(_whitespaceRepeatingDef);

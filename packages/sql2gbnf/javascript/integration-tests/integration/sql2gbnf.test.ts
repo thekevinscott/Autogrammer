@@ -5,7 +5,11 @@ import {
 } from 'vitest';
 // import SQL2GBNF from 'sql2gbnf';
 import { SQL2GBNF } from '../../src/sql2gbnf.js';
-import GBNF, { InputParseError } from 'gbnf';
+import GBNF, {
+  WHITESPACE_KEY,
+  // InputParseError,
+  GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
+} from 'gbnf';
 import { GLOBAL_CONSTANTS } from '../../src/constants/constants.js';
 import {
   BOOLEAN_KEY,
@@ -15,7 +19,6 @@ import {
   DOUBLE_QUOTE_KEY,
   SEMI_KEY,
   STRING_KEY,
-  WHITESPACE_KEY,
   SINGLE_QUOTE_KEY,
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
@@ -299,7 +302,11 @@ describe('no schema', () => {
     'SELECT foo,bar,baz FROM table where foo = 1 and bar = "bar" AND baz = \'baz\' order by bar desc limit 2, 5;',
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const grammar = SQL2GBNF();
-    expect(grammar).toEqual([...NO_SCHEMA_GRAMMAR, ...GLOBAL_CONSTANTS].join('\n'));
+    expect(grammar).toEqual([
+      ...NO_SCHEMA_GRAMMAR,
+      ...GBNF_GLOBAL_CONSTANTS,
+      ...GLOBAL_CONSTANTS
+    ].join('\n'));
     let parser = GBNF(grammar);
     parser = parser.add(initial);
     expect(parser.size).toBeGreaterThan(0);

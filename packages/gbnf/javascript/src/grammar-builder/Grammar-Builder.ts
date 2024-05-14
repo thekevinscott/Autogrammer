@@ -8,11 +8,11 @@ import { buildGrammar, } from './utils/build-grammar.js';
 import { getConstKey, } from './utils/get-const-key.js';
 import { getConstRule, } from './utils/get-const-rule.js';
 
-export class Grammar {
+export class GrammarBuilder {
   #numberOfRulesWithoutKey = 0;
   #rules = new Map<string, string>();
   // whitespace can be Infinity or an integer greater than or equal to 0.
-  whitespace: number;
+  public whitespace: number;
 
   constructor({ whitespace = 1, }: SchemaOpts = {}) {
     if (whitespace < 0) {
@@ -21,7 +21,7 @@ export class Grammar {
     this.whitespace = whitespace;
   }
 
-  getConst: GetConst = (
+  public getConst: GetConst = (
     key: string,
     {
       left = true,
@@ -32,7 +32,7 @@ export class Grammar {
     getConstKey(key, left, right),
   ) : key;
 
-  addRule: AddRule = (
+  public addRule: AddRule = (
     rule,
     key,
   ) => {
@@ -41,14 +41,7 @@ export class Grammar {
     return symbolId;
   };
 
-  get grammar(): string {
-    const entries = [...this.#rules.entries(),];
-    console.log(entries.reduce<Record<string, string>>((acc, [key, value,]) => {
-      return {
-        ...acc,
-        [value]: key,
-      };
-    }, {}));
+  public get grammar(): string[] {
     return buildGrammar(this.#rules.entries());
   }
 }

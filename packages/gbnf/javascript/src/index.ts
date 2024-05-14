@@ -15,3 +15,4 @@ export {
   InputParseError,
   GrammarParseError,
 } from './utils/errors.js';
+export * from './grammar-builder/index.js';

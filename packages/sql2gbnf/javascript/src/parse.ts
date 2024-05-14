@@ -6,14 +6,17 @@ import {
   DOUBLE_QUOTE_KEY,
   SEMI_KEY,
   STRING_KEY,
-  WHITESPACE_KEY,
   SINGLE_QUOTE_KEY,
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
 } from "./constants/grammar-keys.js";
 import { Grammar, } from "./grammar.js";
 import { buildCase, } from "./utils/build-case.js";
-import { join, joinPipe, } from "./utils/join.js";
+import {
+  WHITESPACE_KEY,
+  join,
+  joinPipe,
+} from "gbnf";
 
 const getSelectQuery = ({
   distinctKey,

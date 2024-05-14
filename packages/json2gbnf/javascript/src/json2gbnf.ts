@@ -1,6 +1,7 @@
+import { GLOBAL_CONSTANTS, } from './constants/constants.js';
 import { VALUE_KEY, } from './constants/grammar-keys.js';
 import {
-  Grammar,
+  Grammar as Grammar,
 } from './grammar.js';
 import {
   isEmptyObject,
@@ -11,6 +12,7 @@ import {
   type SchemaOpts,
 } from './types.js';
 import { parse, } from './utils/parse.js';
+import { joinWith, } from 'gbnf';
 
 // https://json-schema.org/understanding-json-schema/basics
 // false will always be invalid
@@ -38,5 +40,8 @@ export function JSON2GBNF<T extends JSONSchema>(
     parse(parser, schema, 'root');
   }
 
-  return parser.grammar;
+  return joinWith('\n',
+    ...parser.grammar,
+    ...GLOBAL_CONSTANTS,
+  );
 };

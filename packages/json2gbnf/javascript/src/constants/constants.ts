@@ -7,8 +7,6 @@ import {
   nullDef,
   charDef,
   integerDef,
-  whitespaceDef,
-  whitespaceRepeatingDef,
 } from './grammar-definitions.js';
 import {
   VALUE_KEY,
@@ -27,8 +25,6 @@ import {
   RIGHT_BRACKET_KEY,
   LEFT_BRACE_KEY,
   RIGHT_BRACE_KEY,
-  WHITESPACE_KEY,
-  WHITESPACE_REPEATING_KEY,
 } from './grammar-keys.js';
 
 export const JSON_ALL_VALID_VALUES = `${OBJECT_KEY} | ${ARRAY_KEY} | ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY}`;
@@ -49,6 +45,4 @@ export const GLOBAL_CONSTANTS = [
   `${RIGHT_BRACKET_KEY} ::= "]"`,
   `${LEFT_BRACE_KEY} ::= "{"`,
   `${RIGHT_BRACE_KEY} ::= "}"`,
-  `${WHITESPACE_KEY} ::= ${whitespaceDef}`,
-  `${WHITESPACE_REPEATING_KEY} ::= ${whitespaceRepeatingDef}`,
 ];

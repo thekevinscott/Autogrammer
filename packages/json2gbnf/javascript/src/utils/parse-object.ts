@@ -17,7 +17,8 @@ import { Grammar, } from '../grammar.js';
 import {
   join,
   joinWith,
-} from './join.js';
+  joinPipe,
+} from 'gbnf';
 import {
   isSchemaConst,
   isSchemaEnum,
@@ -100,7 +101,7 @@ export const parseObject = (
 
     return join(
       LB,
-      `(${joinWith(' | ', ...permutations)})${required.length > 0 ? '' : '?'}`,
+      `(${joinPipe(...permutations)})${required.length > 0 ? '' : '?'}`,
       RB,
     );
   }
