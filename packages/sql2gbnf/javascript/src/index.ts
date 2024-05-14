@@ -1,15 +1,1 @@
 export { SQL2GBNF as default, } from './sql2gbnf.js';
-
-export {
-  type JSONSchema,
-  type JSONSchemaArray,
-  type JSONSchemaBoolean,
-  type JSONSchemaNull,
-  type JSONSchemaNumber,
-  type JSONSchemaObject,
-  type JSONSchemaObjectValueEnum,
-  type JSONSchemaString,
-  type TopLevelJSONSchema,
-} from './types.js';
-
-export * from './type-guards.js';
