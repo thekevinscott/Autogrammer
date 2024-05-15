@@ -1,5 +1,5 @@
 import { vi, } from 'vitest';
-import { BLANK_GRAMMAR, JSON2GBNF } from "./json2gbnf.js";
+import { BLANK_GRAMMAR, JSON2GBNF, ROOT_ID } from "./json2gbnf.js";
 import { Grammar } from "./grammar.js";
 import type * as _Grammar from './grammar.js';
 import { hasDollarSchemaProp } from './type-guards.js';
@@ -69,8 +69,8 @@ describe('JSON2GBNF', () => {
       return new MockGrammar() as any as Grammar;
     });
 
-    expect(JSON2GBNF(true)).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
-    expect(addRule).toHaveBeenCalledWith(VALUE_KEY, 'root');
+    expect(JSON2GBNF(true)).toEqual([`root ::= ${ROOT_ID}`, 'foo', ...GLOBAL_CONSTANTS].join('\n'));
+    expect(addRule).toHaveBeenCalledWith(VALUE_KEY, ROOT_ID);
   });
 
   test('it adds root rule if passed an empty object', () => {
@@ -83,8 +83,8 @@ describe('JSON2GBNF', () => {
       return new MockGrammar() as any as Grammar;
     });
 
-    expect(JSON2GBNF({})).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
-    expect(addRule).toHaveBeenCalledWith(VALUE_KEY, 'root');
+    expect(JSON2GBNF({})).toEqual([`root ::= ${ROOT_ID}`, 'foo', ...GLOBAL_CONSTANTS].join('\n'));
+    expect(addRule).toHaveBeenCalledWith(VALUE_KEY, ROOT_ID);
   });
 
   test('it returns a string if schema is an object', () => {
@@ -104,9 +104,9 @@ describe('JSON2GBNF', () => {
       type: 'string',
     };
 
-    expect(JSON2GBNF(schema)).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
+    expect(JSON2GBNF(schema)).toEqual([`root ::= ${ROOT_ID}`, 'foo', ...GLOBAL_CONSTANTS].join('\n'));
 
-    expect(parse).toHaveBeenCalledWith(mockGrammar, schema, 'root');
+    expect(parse).toHaveBeenCalledWith(mockGrammar, schema, ROOT_ID);
   });
 
 });
