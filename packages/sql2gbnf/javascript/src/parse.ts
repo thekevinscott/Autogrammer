@@ -27,6 +27,7 @@ const getSelectQuery = ({
   whereClauseKey,
   orderByClauseKey,
   limitClauseKey,
+  joinClauseKey,
 }: {
   distinctKey: string;
   selectColumnsKey: string;
@@ -36,6 +37,7 @@ const getSelectQuery = ({
   whereClauseKey: string;
   orderByClauseKey: string;
   limitClauseKey: string;
+  joinClauseKey: string;
 }) => {
   return join(
     selectKey,
@@ -46,6 +48,7 @@ const getSelectQuery = ({
     fromKey,
     WHITESPACE_KEY,
     tableNameKey,
+    `(${joinClauseKey})?`,
     `(${whereClauseKey})?`,
     `(${orderByClauseKey})?`,
     `(${limitClauseKey})?`,
@@ -126,26 +129,54 @@ const getLimitClause = ({
   NUMBER_KEY,
 );
 
+export const getJoinClause = ({
+  joinKey,
+  joinTypeKey,
+}: {
+  joinTypeKey: string,
+  joinKey: string;
+}) => join(
+  WHITESPACE_KEY,
+  `(${joinTypeKey})?`,
+  joinKey,
+  WHITESPACE_KEY,
+  // `(${joinPipe(innerKey, outerKey, leftKey, rightKey, fullKey)})`,
+  // WHITESPACE_KEY,
+  // STRING_KEY,
+  // WHITESPACE_KEY,
+  // `(${join(
+  //   WHITESPACE_KEY,
+  //   STRING_KEY,
+  //   WHITESPACE_KEY,
+  //   STRING_KEY,
+  //   WHITESPACE_KEY,
+  //   `(${join(
+  //     WHITESPACE_KEY,
+  //     STRING_KEY,
+  //   )})?`,
+  // )})?`,
+);
+
 export const SELECT_KEY = 'select';
 export const FROM_KEY = 'from';
-export const WHERE_KEY = 'where';
-export const ORDER_KEY = 'order';
-export const LIMIT_KEY = 'limit';
-export const AND_KEY = 'and';
-export const AS_KEY = 'as';
-export const OR_KEY = 'or';
-export const NOT_KEY = 'not';
-export const IS_KEY = 'is';
-export const IN_KEY = 'in';
+export const WHERE = 'where';
+export const ORDER = 'order';
+export const LIMIT = 'limit';
+export const AND = 'and';
+export const AS = 'as';
+export const OR = 'or';
+export const NOT = 'not';
+export const IS = 'is';
+export const IN = 'in';
 export const LIKE_KEY = 'like';
-export const BETWEEN_KEY = 'between';
+export const BETWEEN = 'between';
 export const ANY_OPERATOR_KEY = 'anyop';
 export const NUMERIC_OPERATORS_KEY = 'numop';
 export const STR_OPERATORS_KEY = 'strop';
 export const AGGREGATOR_FUNCTION_KEY = 'agg';
 export const SELECT_LIST_KEY = 'selectlist';
 export const SELECT_COLUMNS_KEY = 'selectcols';
-export const TABLE_KEY = 'table';
+export const TABLE = 'table';
 export const STRING_WITH_SINGLE_QUOTES_KEY = 'strsq';
 export const STRING_WITH_DOUBLE_QUOTES_KEY = 'strdq';
 export const STRING_WITH_QUOTES_KEY = 'strq';
@@ -162,35 +193,57 @@ export const WHERE_INNER = 'whereinner';
 export const AND_MORE = 'andmore';
 export const OR_MORE = 'ormore';
 export const WHERE_CLAUSE = 'whereclause';
-export const DIRECTION_KEY = 'dir';
+export const DIR = 'dir';
 export const ORDER_CLAUSE = 'orderclause';
 export const LIMIT_CLAUSE = 'limitclause';
-export const DISTINCT_KEY = 'dnct';
-export const SELECT_QUERY_KEY = 'selectquery';
+export const DISTINCT = 'dnct';
+export const JOIN = 'join';
+export const JOIN_TYPE = 'jointype';
+export const INNER = 'inner';
+export const OUTER = 'outer';
+export const FULL_OUTER_TYPE = 'outertype';
+export const LEFT = 'left';
+export const RIGHT = 'right';
+export const FULL = 'full';
+export const JOIN_CLAUSE = 'joinclause';
+export const SELECT_QUERY = 'selectquery';
 
 export const parse = (
   parser: GrammarBuilder,
   symbolName: string,
   // schema?: string,
 ) => {
-  const root = `${SELECT_QUERY_KEY}`;
+  const root = `${SELECT_QUERY}`;
   parser.addRule(root, symbolName);
-  const selectKey = parser.addRule(buildCase('select'), SELECT_KEY);
-  const fromKey = parser.addRule(buildCase('from'), FROM_KEY);
-  const whereKey = parser.addRule(buildCase('where'), WHERE_KEY);
-  const orderKey = parser.addRule(buildCase('order by'), ORDER_KEY);
-  const limitKey = parser.addRule(buildCase('limit'), LIMIT_KEY);
-  const andKey = parser.addRule(buildCase('AND'), AND_KEY);
-  const asKey = parser.addRule(buildCase('AS'), AS_KEY);
-  const orKey = parser.addRule(buildCase('OR'), OR_KEY);
-  const notKey = parser.addRule(buildCase('NOT'), NOT_KEY);
-  const isKey = parser.addRule(buildCase('IS'), IS_KEY);
-  const inKey = parser.addRule(buildCase('IN'), IN_KEY);
-  const likeKey = parser.addRule(buildCase('LIKE'), LIKE_KEY);
-  const betweenKey = parser.addRule(buildCase('between'), BETWEEN_KEY);
+  const KEYS = ([
+    [SELECT_KEY, ['select',],],
+    [FROM_KEY, ['from',],],
+    [WHERE, ['where',],],
+    [ORDER, ['order by',],],
+    [LIMIT, ['limit',],],
+    [AND, ['AND',],],
+    [AS, ['AS',],],
+    [OR, ['OR',],],
+    [NOT, ['NOT',],],
+    [IS, ['IS',],],
+    [IN, ['IN',],],
+    [LIKE_KEY, ['LIKE',],],
+    [BETWEEN, ['between',],],
+    [DIR, ['asc', 'desc',],],
+    [DISTINCT, ['distinct',],],
+    [JOIN, ['join',],],
+    [INNER, ['inner',],],
+    [OUTER, ['outer',],],
+    [LEFT, ['left',],],
+    [RIGHT, ['right',],],
+    [FULL, ['full',],],
+  ] as [string, string[]][]).reduce<Record<string, string>>((acc, [key, words,]) => ({
+    ...acc,
+    [key]: parser.addRule(buildCase(...words), key),
+  }), {});
   const anyOperatorKey = parser.addRule(joinPipe(
     `"="`,
-    isKey,
+    KEYS[IS],
   ), ANY_OPERATOR_KEY);
   const numericOperatorsKey = parser.addRule(joinPipe(
     '">"',
@@ -198,7 +251,7 @@ export const parse = (
     '">="',
     '"<="',
   ), NUMERIC_OPERATORS_KEY);
-  const strOperatorsKey = parser.addRule(`${likeKey}`, STR_OPERATORS_KEY);
+  const strOperatorsKey = parser.addRule(`${KEYS[LIKE_KEY]}`, STR_OPERATORS_KEY);
   const aggregatorFunctionKey = parser.addRule(buildCase(
     'MIN',
     'MAX',
@@ -206,9 +259,9 @@ export const parse = (
     'SUM',
     'COUNT',
   ), AGGREGATOR_FUNCTION_KEY);
-  const selectListKey = parser.addRule(getSelectList({ asKey, aggregatorFunctionKey, }), SELECT_LIST_KEY);
+  const selectListKey = parser.addRule(getSelectList({ asKey: KEYS[AS], aggregatorFunctionKey, }), SELECT_LIST_KEY);
   const selectColumnsKey = parser.addRule(getSelectSpecificColumns(selectListKey), SELECT_COLUMNS_KEY);
-  const tableNameKey = parser.addRule(getTableName(), TABLE_KEY);
+  const tableNameKey = parser.addRule(getTableName(), TABLE);
   const stringWithSingleQuotesKey = parser.addRule(join(
     SINGLE_QUOTE_KEY,
     STRING_KEY,
@@ -261,7 +314,7 @@ export const parse = (
     )})`,
   ), WILDCARD_WHERE_CLAUSE);
   const inClause = parser.addRule(join(
-    inKey,
+    KEYS[IN],
     WHITESPACE_KEY,
     LEFT_PAREN_KEY,
     stringWithQuotesKey,
@@ -269,11 +322,11 @@ export const parse = (
     RIGHT_PAREN_KEY,
   ), IN_WHERE_CLAUSE);
   const betweenClause = parser.addRule(join(
-    betweenKey,
+    KEYS[BETWEEN],
     WHITESPACE_KEY,
     NUMBER_KEY,
     WHITESPACE_KEY,
-    andKey,
+    KEYS[AND],
     WHITESPACE_KEY,
     NUMBER_KEY,
   ), BETWEEN_WHERE_CLAUSE);
@@ -289,32 +342,45 @@ export const parse = (
       betweenClause,
     )})`,
   ), WHERE_INNER);
-  const andMoreKey = parser.addRule(`${WHITESPACE_KEY} ${andKey} ${whereClauseInnerKey}`, AND_MORE);
-  const orMoreKey = parser.addRule(`${WHITESPACE_KEY} ${orKey} ${whereClauseInnerKey}`, OR_MORE);
+  const andMoreKey = parser.addRule(`${WHITESPACE_KEY} ${KEYS[AND]} ${whereClauseInnerKey}`, AND_MORE);
+  const orMoreKey = parser.addRule(`${WHITESPACE_KEY} ${KEYS[OR]} ${whereClauseInnerKey}`, OR_MORE);
   const whereClauseKey = parser.addRule(getWhereClause({
-    notKey,
+    notKey: KEYS[NOT],
     whereClauseInnerKey,
-    whereKey,
+    whereKey: KEYS[WHERE],
     andMoreKey,
     orMoreKey,
   }), WHERE_CLAUSE);
-  const directionKey = parser.addRule(buildCase('asc', 'desc'), DIRECTION_KEY);
   const orderByClauseKey = parser.addRule(getOrderByClause({
-    orderKey,
-    directionKey,
+    orderKey: KEYS[ORDER],
+    directionKey: KEYS[DIR],
   }), ORDER_CLAUSE);
   const limitClauseKey = parser.addRule(getLimitClause({
-    limitKey,
+    limitKey: KEYS[LIMIT],
   }), LIMIT_CLAUSE);
-  const distinctKey = parser.addRule(buildCase('distinct'), DISTINCT_KEY);
+  const fullOuterKey = parser.addRule(join(
+    `(${KEYS[FULL]} ${WHITESPACE_KEY})?`,
+    `(${KEYS[OUTER]} ${WHITESPACE_KEY})?`,
+  ), FULL_OUTER_TYPE);
+  const joinTypeKey = parser.addRule(joinPipe(
+    `(${KEYS[INNER]} ${WHITESPACE_KEY})`,
+    `(${KEYS[LEFT]} ${WHITESPACE_KEY})`,
+    `(${KEYS[RIGHT]} ${WHITESPACE_KEY})`,
+    `(${fullOuterKey})`,
+  ), JOIN_TYPE);
+  const joinClauseKey = parser.addRule(getJoinClause({
+    joinKey: KEYS[JOIN],
+    joinTypeKey,
+  }), JOIN_CLAUSE);
   parser.addRule(getSelectQuery({
-    distinctKey,
+    distinctKey: KEYS[DISTINCT],
+    joinClauseKey,
     limitClauseKey,
     orderByClauseKey,
     whereClauseKey,
     selectColumnsKey,
-    selectKey,
-    fromKey,
+    selectKey: KEYS[SELECT_KEY],
+    fromKey: KEYS[FROM_KEY],
     tableNameKey,
-  }), SELECT_QUERY_KEY);
+  }), SELECT_QUERY);
 };

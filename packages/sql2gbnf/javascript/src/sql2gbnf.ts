@@ -5,7 +5,7 @@ import {
 import { parse, } from "./parse.js";
 import { GLOBAL_CONSTANTS, } from "./constants/constants.js";
 
-const ROOT_ID = 'sql2gbnf';
+export const ROOT_ID = 'sqltogbnf';
 
 export function SQL2GBNF(
   // schema?: string,
@@ -21,8 +21,10 @@ export function SQL2GBNF(
   );
 
   return joinWith('\n',
-    `root ::= ${ROOT_ID}`,
-    ...parser.grammar,
+    ...[
+      `root ::= ${ROOT_ID}`,
+      ...parser.grammar,
+    ].sort(),
     ...GLOBAL_CONSTANTS,
   );
 };
