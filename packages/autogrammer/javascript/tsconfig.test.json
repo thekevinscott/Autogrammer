@@ -1,5 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "include": ["src/**/*.test.ts"],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "types": ["vite/client", "vitest/globals"]
+  },
   "exclude": ["node_modules", ".vscode-test", "out", ".wireit", "env"]
 }
