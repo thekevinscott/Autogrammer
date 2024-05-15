@@ -18,7 +18,7 @@ import { joinWith, } from 'gbnf';
 // false will always be invalid
 export const BLANK_GRAMMAR = `root ::= ""`;
 
-export const ROOT_ID = 'json2gbnf';
+export const ROOT_ID = 'jsontogbnf';
 
 export function JSON2GBNF<T extends JSONSchema>(
   // eslint-disable-next-line @typescript-eslint/ban-types
