@@ -4,7 +4,7 @@ import {
   LEFT_BRACKET_KEY,
   RIGHT_BRACKET_KEY,
 } from '../constants/grammar-keys.js';
-import { join, joinWith, } from 'gbnf';
+import { join, } from 'gbnf';
 import { KEYS, } from '../constants/grammar-keys.js';
 import type {
   JSONSchemaArray,

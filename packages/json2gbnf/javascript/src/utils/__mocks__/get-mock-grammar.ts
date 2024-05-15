@@ -1,5 +1,5 @@
 import { vi, } from 'vitest';
-import { AddRule, GetConst, } from '../../types.js';
+import type { AddRule, GetConst, } from 'gbnf';
 import { type Grammar, } from '../../grammar.js';
 export const getMockGrammar = ({
   getConst = vi.fn().mockImplementation((key: string) => key),
