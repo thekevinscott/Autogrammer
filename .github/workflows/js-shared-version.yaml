@@ -27,6 +27,7 @@ jobs:
         with:
           tag-prefix: ${{ inputs.tag_prefix }}
           # skip-commit:  'true'
+          skip-push:  'true'
           # skip-tag:  'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -37,4 +38,9 @@ jobs:
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
+
+      - name: 'Pull, rebase, and push'
+        run: |
+          git pull --rebase
+          git push origin HEAD:main
 
