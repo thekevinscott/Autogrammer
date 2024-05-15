@@ -7,6 +7,8 @@ import type * as _types from './types.js';
 import { VALUE_KEY } from './constants/grammar-keys.js';
 import { parse } from './utils/parse.js';
 import type * as _parse from './utils/parse.js';
+import { GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS } from 'gbnf';
+import { GLOBAL_CONSTANTS } from './constants/constants.js';
 
 vi.mock('./utils/parse.js', async () => {
   const actual = await vi.importActual('./utils/parse.js') as typeof _parse;
@@ -62,12 +64,12 @@ describe('JSON2GBNF', () => {
     vi.mocked(Grammar).mockImplementation(() => {
       class MockGrammar {
         addRule = addRule;
-        grammar = 'foo';
+        grammar = ['foo'];
       }
       return new MockGrammar() as any as Grammar;
     });
 
-    expect(JSON2GBNF(true)).toEqual('foo');
+    expect(JSON2GBNF(true)).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
     expect(addRule).toHaveBeenCalledWith(VALUE_KEY, 'root');
   });
 
@@ -76,18 +78,18 @@ describe('JSON2GBNF', () => {
     vi.mocked(Grammar).mockImplementation(() => {
       class MockGrammar {
         addRule = addRule;
-        grammar = 'foo';
+        grammar = ['foo'];
       }
       return new MockGrammar() as any as Grammar;
     });
 
-    expect(JSON2GBNF({})).toEqual('foo');
+    expect(JSON2GBNF({})).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
     expect(addRule).toHaveBeenCalledWith(VALUE_KEY, 'root');
   });
 
   test('it returns a string if schema is an object', () => {
     class MockGrammar {
-      grammar = 'foo';
+      grammar = ['foo'];
       addRule = vi.fn();
       getConst = vi.fn();
       opts = {};
@@ -102,7 +104,7 @@ describe('JSON2GBNF', () => {
       type: 'string',
     };
 
-    expect(JSON2GBNF(schema)).toEqual('foo');
+    expect(JSON2GBNF(schema)).toEqual(['foo', ...GLOBAL_CONSTANTS].join('\n'));
 
     expect(parse).toHaveBeenCalledWith(mockGrammar, schema, 'root');
   });
