@@ -18,6 +18,8 @@ import { joinWith, } from 'gbnf';
 // false will always be invalid
 export const BLANK_GRAMMAR = `root ::= ""`;
 
+const ROOT_ID = 'json2gbnf';
+
 export function JSON2GBNF<T extends JSONSchema>(
   // eslint-disable-next-line @typescript-eslint/ban-types
   schema?: {} | null | T | boolean,
@@ -35,12 +37,17 @@ export function JSON2GBNF<T extends JSONSchema>(
 
   const parser = new Grammar(opts);
   if (schema === true || isEmptyObject(schema)) {
-    parser.addRule(VALUE_KEY, 'root');
+    parser.addRule(VALUE_KEY, ROOT_ID);
   } else {
-    parse(parser, schema, 'root');
+    parse(
+      parser,
+      schema,
+      ROOT_ID,
+    );
   }
 
   return joinWith('\n',
+    `root ::= ${ROOT_ID}`,
     ...parser.grammar,
     ...GLOBAL_CONSTANTS,
   );

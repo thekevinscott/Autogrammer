@@ -10,7 +10,7 @@ import {
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
 } from "./constants/grammar-keys.js";
-import { Grammar, } from "./grammar.js";
+import { GrammarBuilder, } from "gbnf";
 import { buildCase, } from "./utils/build-case.js";
 import {
   WHITESPACE_KEY,
@@ -169,9 +169,9 @@ export const DISTINCT_KEY = 'dnct';
 export const SELECT_QUERY_KEY = 'selectquery';
 
 export const parse = (
-  parser: Grammar,
+  parser: GrammarBuilder,
   symbolName: string,
-  schema?: string,
+  // schema?: string,
 ) => {
   const root = `${SELECT_QUERY_KEY}`;
   parser.addRule(root, symbolName);
