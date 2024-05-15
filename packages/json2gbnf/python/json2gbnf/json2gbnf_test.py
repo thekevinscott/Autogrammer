@@ -24,7 +24,7 @@ WHITESPACE_REPEATING_KEY = "wss"
 @pytest.mark.parametrize(
     ("schema", "expected"),
     [
-        ({}, ["root ::= val"]),
+        ({}, ["root ::= json2gbnf", "json2gbnf ::= val"]),
         (
             {
                 "type": "object",
@@ -57,7 +57,8 @@ WHITESPACE_REPEATING_KEY = "wss"
                 f"""xs ::= xi {COMMA_KEY}ws xf {COMMA_KEY}ws xg""",
                 f"""xt ::= xi {COMMA_KEY}ws xg""",
                 f"""xu ::= xi {COMMA_KEY}ws xg {COMMA_KEY}ws xf""",
-                f"""root ::= {LEFT_BRACE_KEY}ws (xf | xj | xk | xl | xm | xg | xn | xo | xp | xq | xi | xr | xs | xt | xu)? ws{RIGHT_BRACE_KEY}""",
+                f"""json2gbnf ::= {LEFT_BRACE_KEY}ws (xf | xj | xk | xl | xm | xg | xn | xo | xp | xq | xi | xr | xs | xt | xu)? ws{RIGHT_BRACE_KEY}""",
+                f"""root ::= json2gbnf""",
             ],
         ),
     ],
@@ -84,7 +85,8 @@ def test_it_calls_json2gbnf_with_fixed_order():
         f"""xb ::= {QUOTE_KEY} "street_name" {QUOTE_KEY} {COLON_KEY} {STRING_KEY}""",
         f"""xc ::= {QUOTE_KEY} "Street" {QUOTE_KEY} | {QUOTE_KEY} "Avenue" {QUOTE_KEY} | {QUOTE_KEY} "Boulevard" {QUOTE_KEY}""",
         f"""xd ::= {QUOTE_KEY} "street_type" {QUOTE_KEY} {COLON_KEY} xc""",
-        f"""root ::= {LEFT_BRACE_KEY} (xa com xb com xd) {RIGHT_BRACE_KEY}""",
+        f"""json2gbnf ::= {LEFT_BRACE_KEY} (xa com xb com xd) {RIGHT_BRACE_KEY}""",
+        f"""root ::= json2gbnf""",
     ]
     assert result.split("\n")[: len(expected)] == expected
 
@@ -118,6 +120,7 @@ def test_it_calls_json2gbnf_without_whitespace():
         f"""xn ::= xd {COMMA_KEY} xa {COMMA_KEY} xb""",
         f"""xo ::= xd {COMMA_KEY} xb""",
         f"""xp ::= xd {COMMA_KEY} xb {COMMA_KEY} xa""",
-        f"""root ::= {LEFT_BRACE_KEY} (xa | xe | xf | xg | xh | xb | xi | xj | xk | xl | xd | xm | xn | xo | xp)? {RIGHT_BRACE_KEY}""",
+        f"""json2gbnf ::= {LEFT_BRACE_KEY} (xa | xe | xf | xg | xh | xb | xi | xj | xk | xl | xd | xm | xn | xo | xp)? {RIGHT_BRACE_KEY}""",
+        f"""root ::= json2gbnf""",
     ]
     assert result.split("\n")[: len(expected)] == expected
