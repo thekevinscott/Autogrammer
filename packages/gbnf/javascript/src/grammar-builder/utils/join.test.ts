@@ -1,4 +1,4 @@
-import { join, joinWith } from 'gbnf';
+import { join, joinWith } from './join.js';
 
 describe('join', () => {
   it('should join the values with a space', () => {
