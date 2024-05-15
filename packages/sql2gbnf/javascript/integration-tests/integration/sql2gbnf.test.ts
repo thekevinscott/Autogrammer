@@ -69,7 +69,8 @@ import {
 
 describe('no schema', () => {
   const NO_SCHEMA_GRAMMAR = [
-    `root ::= selectquery`,
+    `root ::= sql2gbnf`,
+    `sql2gbnf ::= selectquery`,
     `${SELECT_KEY} ::= "select" | "SELECT"`,
     `${FROM_KEY} ::= "from" | "FROM"`,
     `${WHERE_KEY} ::= "where" | "WHERE"`,
