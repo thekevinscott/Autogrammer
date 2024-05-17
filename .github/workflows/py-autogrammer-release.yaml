@@ -1,7 +1,6 @@
 name: "Cut Release for Autogrammer (Python)"
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "py/autogrammer-v*"

@@ -1,7 +1,6 @@
 name: "Cut Release for JSON2GBNF (Python)"
 
 on:
-  workflow_dispatch:
 
   push:
     tags:

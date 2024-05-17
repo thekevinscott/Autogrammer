@@ -1,7 +1,6 @@
 name: "Cut Release for gbnf (Python)"
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "py/gbnf-v*"
