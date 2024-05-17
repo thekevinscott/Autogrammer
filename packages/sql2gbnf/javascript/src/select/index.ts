@@ -37,7 +37,6 @@ import {
   NOT,
   NUMERIC_OPS,
   NUMERIC_WHERE_CLAUSE,
-  OPTIONAL_RECOMMENDED_WHITESPACE,
   OR,
   ORDER,
   ORDER_CLAUSE,
@@ -101,8 +100,6 @@ import {
   LEAD,
   DATE_DEFINITION,
   OFFSET,
-  WHITESPACE,
-  OPTIONAL_NON_RECOMMENDED_WHITESPACE,
 } from "../gbnf-keys.js";
 import { getJoinClause, } from "./get-join-clause.js";
 import { getLimitClause, } from "./get-limit-clause.js";

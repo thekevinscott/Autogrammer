@@ -3,7 +3,10 @@ import {
   GrammarBuilder,
 } from "gbnf";
 import { select, } from "./select/index.js";
-import { CaseKind, SchemaOpts, WhitespaceKind, } from "./types.js";
+import type {
+  CaseKind,
+  WhitespaceKind,
+} from "./types.js";
 
 export const parse = (
   parser: GrammarBuilder,
