@@ -1,6 +1,7 @@
 name: "Cut Release for SQL2GBNF (Javascript)"
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/sql2gbnf-v*"

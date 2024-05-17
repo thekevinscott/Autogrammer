@@ -1,6 +1,7 @@
 name: Publish JSON2GBNFjs to NPM
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/json2gbnf-v*"

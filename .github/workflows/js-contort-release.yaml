@@ -1,6 +1,7 @@
 name: "Cut Release for contort (Javascript)"
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/contort-v*"

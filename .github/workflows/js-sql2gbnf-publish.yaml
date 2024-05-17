@@ -1,6 +1,7 @@
 name: Publish SQL2GBNF (Javascript) to NPM
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/sql2gbnf-v*"

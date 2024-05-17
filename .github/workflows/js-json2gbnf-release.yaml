@@ -1,6 +1,7 @@
 name: "Cut Release for JSON2GBNF (Javascript)"
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/json2gbnf-v*"

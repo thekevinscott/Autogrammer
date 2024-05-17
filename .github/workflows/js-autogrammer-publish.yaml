@@ -1,6 +1,7 @@
 name: Publish Autogrammer (Javascript) to NPM
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "js/autogrammer-v*"

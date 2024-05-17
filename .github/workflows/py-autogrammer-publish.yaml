@@ -1,6 +1,7 @@
 name: Publish Autogrammer (Python) to PyPI
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "py/autogrammer-v*"
