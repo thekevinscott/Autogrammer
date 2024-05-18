@@ -13,7 +13,7 @@ import GBNF, {
 } from 'gbnf';
 import { GLOBAL_CONSTANTS } from '../../src/constants/constants.js';
 import { NO_SCHEMA_GRAMMAR } from './no-schema-grammar.js';
-import { noSchemaTests } from './no-schema-tests.js';
+import { noSchemaTests } from './no-schema-tests/index.js';
 
 describe('no schema', () => {
   // test('it parses schema to grammar', () => {
@@ -26,7 +26,9 @@ describe('no schema', () => {
   // });
 
   test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
-    const grammar = SQL2GBNF();
+    const grammar = SQL2GBNF({
+      whitespace: 'verbose',
+    });
     // console.log(grammar);
     let parser = GBNF(grammar);
     parser = parser.add(initial.split('\\n').join('\n'));
@@ -65,7 +67,7 @@ describe('no schema', () => {
         `SELECT order_id FROM orders HAVING SUM(oi.quantity * oi.unit_price)>500`,
         `SELECT order_id, COUNT(*) FROM orders GROUP BY order_id HAVING foo="foo";`,
         `SELECT employee_id, salary, SUM(salary) OVER() AS total_salary FROM salaries;`,
-      ])('it accepts any missing whitespace: %s', (initial) => {
+      ])('it accepts any amount of whitespace: %s', (initial) => {
         const grammar = SQL2GBNF({
           whitespace: 'verbose',
         });
@@ -144,6 +146,7 @@ describe('no schema', () => {
     ['select;', 6],
     ['select 1', 7],
     ['select .', 7],
+    [`SELECT INTO newtable column1, column2 INTO newtable FROM sourcetable;`, 38],
   ])('it rejects %s for a non-schema', (_initial, errorPos) => {
     const grammar = SQL2GBNF();
     let parser = GBNF(grammar);
@@ -157,7 +160,7 @@ describe('no schema', () => {
         whitespace: 'verbose',
         case: 'upper',
       });
-      test('it only accepts uppercase SQL keywords', () => {
+      test('it accepts uppercase SQL keywords', () => {
         const initial = `SELECT order_id FROM orders
         WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31'
         GROUP BY o.order_id, o.order_date, c.customer_name 
@@ -184,7 +187,7 @@ describe('no schema', () => {
         case: 'lower',
         whitespace: 'verbose',
       });
-      test('it only accepts uppercase SQL keywords', () => {
+      test('it accepts uppercase SQL keywords', () => {
         const initial = `select order_id from orders
         where o.order_date between '2023-01-01' and '2023-12-31'
         group by o.order_id, o.order_date, c.customer_name 

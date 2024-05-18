@@ -11,7 +11,9 @@ export const getOrderByClause = ({
   validColName,
   optionalWhitespace,
   whitespace: ws,
+  asAlias,
 }: {
+  asAlias: string;
   whitespace: string;
   optionalWhitespace: string;
   order: string;
@@ -22,6 +24,7 @@ export const getOrderByClause = ({
   order,
   ws,
   validColName,
+  opt(ws, asAlias),
   opt(ws, direction),
   star(
     COMMA_KEY,

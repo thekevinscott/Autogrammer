@@ -59,6 +59,8 @@ describe('getOverStatement', () => {
       whitespace: '" "',
       optionalRecommendedWhitespace: '(" ")?',
       optionalNonRecommendedWhitespace: '()',
+      leftparen: '"("',
+      rightparen: '")"',
     });
     let parser = GBNF([
       `root ::= ${grammar}`,

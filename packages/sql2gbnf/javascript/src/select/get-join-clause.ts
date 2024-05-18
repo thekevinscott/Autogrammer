@@ -7,18 +7,16 @@ export const getJoinClause = ({
   joinKey,
   joinType,
   tableWithOptionalAlias,
-  columnName,
   on,
-  optionalWhitespace,
   whitespace: ws,
+  joinCondition,
 }: {
   whitespace: string;
-  optionalWhitespace: string;
   joinType: string,
   joinKey: string;
   tableWithOptionalAlias: string;
-  columnName: string;
   on: string;
+  joinCondition: string;
 }) => join(
   ws,
   opt(joinType),
@@ -28,9 +26,5 @@ export const getJoinClause = ({
   ws,
   on,
   ws,
-  tableWithOptionalAlias,
-  optionalWhitespace,
-  '"="',
-  optionalWhitespace,
-  columnName,
+  joinCondition,
 );

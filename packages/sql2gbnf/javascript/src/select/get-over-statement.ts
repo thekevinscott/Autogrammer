@@ -1,11 +1,10 @@
 import {
   join,
-  joinPipe,
 } from "gbnf";
 import { rule, } from "./get-rule.js";
-import { LEFT_PAREN_KEY, RIGHT_PAREN_KEY, } from "../constants/grammar-keys.js";
 import { star, } from "./get-star.js";
 import { opt, } from "./get-optional.js";
+import { any, } from "../utils/any.js";
 
 export const getOverStatement = ({
   over,
@@ -33,6 +32,8 @@ export const getOverStatement = ({
   optionalRecommendedWhitespace: optionalRecommendedWS,
   whitespace: mandatoryWS,
   optionalNonRecommendedWhitespace: optionalNonRecommendedWS,
+  leftparen,
+  rightparen,
 }: {
   optionalRecommendedWhitespace: string;
   over: string;
@@ -59,19 +60,21 @@ export const getOverStatement = ({
   to: string;
   whitespace: string;
   optionalNonRecommendedWhitespace: string;
+  leftparen: string;
+  rightparen: string;
 }) => {
-  const unit = rule(joinPipe(
+  const unit = any(
     day,
     month,
     year,
     hour,
     minute,
     second,
-  ));
+  );
   const intervalRule = (post: string) => rule(
     interval,
     mandatoryWS,
-    rule(joinPipe(
+    any(
       rule(
         singleQuote,
         positiveInteger,
@@ -92,53 +95,53 @@ export const getOverStatement = ({
         mandatoryWS,
         unit,
       ),
-    )),
+    ),
     opt(mandatoryWS, post),
   );
   const rangeRule = rule(
     rangeBetween,
     mandatoryWS,
-    rule(joinPipe(
+    any(
       intervalRule(preceding),
       rule(unbounded, mandatoryWS, preceding),
       currentRow,
       rule(positiveInteger, mandatoryWS, preceding),
-    )),
+    ),
     mandatoryWS,
     and,
     mandatoryWS,
-    rule(joinPipe(
+    any(
       intervalRule(following),
       rule(unbounded, mandatoryWS, following),
       currentRow,
       rule(positiveInteger, mandatoryWS, following),
-    )),
+    ),
   );
 
   const betweenRule = rule(
     rowsBetween,
     mandatoryWS,
-    rule(joinPipe(
+    any(
       rule(unbounded, mandatoryWS, preceding),
       currentRow,
       rule(positiveInteger, mandatoryWS, preceding),
-    )),
+    ),
     mandatoryWS,
     and,
     mandatoryWS,
-    rule(joinPipe(
+    any(
       rule(unbounded, mandatoryWS, following),
       currentRow,
       rule(positiveInteger, mandatoryWS, following),
-    )),
+    ),
   );
   return join(
     over,
     optionalRecommendedWS,
-    LEFT_PAREN_KEY,
+    leftparen,
     optionalNonRecommendedWS,
     opt(
-      rule(joinPipe(
+      any(
         rule(
           order,
           mandatoryWS,
@@ -146,17 +149,17 @@ export const getOverStatement = ({
           opt(mandatoryWS, direction),
         ),
         rule(partition, mandatoryWS, validName),
-      )),
+      ),
       opt(
         mandatoryWS,
-        rule(joinPipe(
+        any(
           rangeRule,
           betweenRule,
-        )),
+        ),
       ),
       star(
         mandatoryWS,
-        rule(joinPipe(
+        any(
           rule(
             order,
             mandatoryWS,
@@ -164,17 +167,17 @@ export const getOverStatement = ({
             opt(mandatoryWS, direction),
           ),
           rule(partition, mandatoryWS, validName),
-        )),
+        ),
         opt(
           mandatoryWS,
-          rule(joinPipe(
+          any(
             rangeRule,
             betweenRule,
-          )),
+          ),
         ),
       ),
     ),
     optionalNonRecommendedWS,
-    RIGHT_PAREN_KEY,
+    rightparen,
   );
 };

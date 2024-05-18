@@ -8,6 +8,7 @@ import {
   LEFT_PAREN_KEY,
   RIGHT_PAREN_KEY,
   POSITIVE_INTEGER_KEY as POSITIVE_INTEGER,
+  SEMI_KEY,
 } from "../constants/grammar-keys.js";
 import {
   AGGREGATORS,
@@ -43,9 +44,9 @@ import {
   OR_MORE,
   OUTER,
   RIGHT,
-  SELECT_COLUMNS,
+  PROJECTION,
   SELECT,
-  COLUMN_NAMES_WITH_OVER_CAPABILITY,
+  COLUMN_NAMES,
   SELECT_QUERY,
   STRING_WITH_DOUBLE_QUOTES,
   STRING_WITH_QUOTES,
@@ -75,7 +76,6 @@ import {
   HAVING_CLAUSE,
   NULL,
   OVER,
-  COLUMN_NAMES_WITHOUT_OVER_CAPABILITY,
   PARTITION,
   OVER_CLAUSE,
   ROWS_BETWEEN,
@@ -100,20 +100,26 @@ import {
   LEAD,
   DATE_DEFINITION,
   OFFSET,
+  INTO,
+  JOIN_CONDITION,
+  EQUIJOIN_CONDITION,
+  PROJECTION_WITH_SPECIFIC_COLUMNS,
+  COUNT_AGGREGATOR_RULE,
+  OTHER_AGGREGATORS_RULE,
+  QUOTE,
 } from "../gbnf-keys.js";
 import { getJoinClause, } from "./get-join-clause.js";
 import { getLimitClause, } from "./get-limit-clause.js";
 import { getOrderByClause, } from "./get-order-by-clause.js";
-import { getColumnName, } from "./get-column-name.js";
+import { getColumnNames, } from "./get-column-names.js";
 import { getSelectQuery, } from "./get-select-query.js";
-import { getSelectColumns, } from "./get-select-columns.js";
+import { getProjection, getProjectionWithSpecificColumns, } from "./get-projection.js";
 import { getTableName, } from "./get-table-name.js";
 import { getWhereClause, } from "./get-where-clause.js";
 import { buildCase, } from "../utils/build-case.js";
 import {
   GrammarBuilder,
   join,
-  joinPipe,
 } from "gbnf";
 import { getTables, } from "./get-tables.js";
 import { rule, } from "./get-rule.js";
@@ -125,6 +131,10 @@ import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
 import { getWhitespaceDefs, } from "./get-whitespace-def.js";
 import { CaseKind, WhitespaceKind, } from "../types.js";
+import { getEquijoinCondition, getJoinCondition, } from "./get-join-condition.js";
+import { any, } from "../utils/any.js";
+import { getCountAggregator, } from "./get-column-count-aggregator.js";
+import { getOtherAggregators, } from "./get-other-aggregators.js";
 
 export const VALID_COL_NAME_GBNF = `[a-zA-Z_] [A-Za-z0-9_.]*`;
 export const VALID_TABLE_NAME_GBNF = `[a-zA-Z_] [a-zA-Z0-9_.]*`;
@@ -145,19 +155,20 @@ export const select = (
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   } = getWhitespaceDefs(parser, whitespaceKind);
-  const equalOps = parser.addRule(joinPipe(
+  const quote = parser.addRule(any(SINGLE_QUOTE_KEY, DOUBLE_QUOTE_KEY), QUOTE);
+  const equalOps = parser.addRule(any(
     `"="`,
     `"!="`,
     KEYS[IS],
     rule(join(KEYS[IS], mandatoryWhitespace, KEYS[NOT]))
   ), EQUAL_OPS);
-  const arithmeticOps = parser.addRule(joinPipe(
+  const arithmeticOps = parser.addRule(any(
     '"+"',
     '"-"',
     '"*"',
     '"-"',
   ), ARITHMETIC_OPS);
-  const numericOps = parser.addRule(joinPipe(
+  const numericOps = parser.addRule(any(
     '">"',
     '"<"',
     '">="',
@@ -173,26 +184,42 @@ export const select = (
   ), AGGREGATORS);
   const validColName = parser.addRule(VALID_COL_NAME_GBNF, VALID_COL_NAME);
   const validTableName = parser.addRule(VALID_TABLE_NAME_GBNF, VALID_TABLE_NAME);
-  const asColAlias = parser.addRule(opt(
-    mandatoryWhitespace,
+  const asColAlias = parser.addRule(join(
     KEYS[AS],
     mandatoryWhitespace,
     validColName
   ), AS_COL_ALIAS);
-  const asTableAlias = parser.addRule(opt(
-    mandatoryWhitespace,
+  const asTableAlias = parser.addRule(join(
+    '',
     validTableName
   ), AS_TABLE_ALIAS);
-  const columnNamesWithoutOverCapability = parser.addRule(getColumnName({
-    asAlias: asColAlias,
-    aggregatorOps,
+  const countAggregatorRule = parser.addRule(getCountAggregator({
     countAggregator: KEYS[COUNT_AGGREGATOR],
     validName: validColName,
     arithmeticOps,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
-  }), COLUMN_NAMES_WITH_OVER_CAPABILITY);
+    leftParen: LEFT_PAREN_KEY,
+    rightParen: RIGHT_PAREN_KEY,
+    distinct: KEYS[DISTINCT],
+  }), COUNT_AGGREGATOR_RULE);
+  const otherAggregatorsRule = parser.addRule(getOtherAggregators({
+    leftParen: LEFT_PAREN_KEY,
+    rightParen: RIGHT_PAREN_KEY,
+    aggregatorOps,
+    validName: validColName,
+    arithmeticOps,
+    optionalRecommendedWhitespace,
+    optionalNonRecommendedWhitespace,
+    whitespace: mandatoryWhitespace,
+    distinct: KEYS[DISTINCT],
+  }), OTHER_AGGREGATORS_RULE);
+  const columnNames = parser.addRule(getColumnNames({
+    otherAggregatorsRule,
+    countAggregatorRule,
+    validName: validColName,
+  }), COLUMN_NAMES);
   const overStatement = parser.addRule(getOverStatement({
     over: KEYS[OVER],
     partition: KEYS[PARTITION],
@@ -219,25 +246,14 @@ export const select = (
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
+    leftparen: LEFT_PAREN_KEY,
+    rightparen: RIGHT_PAREN_KEY,
   }), OVER_CLAUSE);
 
-  const columnNamesWithOverCapability = parser.addRule(getColumnName({
-    asAlias: asColAlias,
-    aggregatorOps,
-    countAggregator: KEYS[COUNT_AGGREGATOR],
-    validName: validColName,
-    arithmeticOps,
-    overStatement,
-    optionalRecommendedWhitespace,
-    optionalNonRecommendedWhitespace,
-    whitespace: mandatoryWhitespace,
-  }), COLUMN_NAMES_WITHOUT_OVER_CAPABILITY);
-  const rankStatement = parser.addRule(getWindowStatement({
+  const windowStatement = parser.addRule(getWindowStatement({
     rank: KEYS[RANK],
     denserank: KEYS[DENSE_RANK],
     rownumber: KEYS[ROW_NUMBER],
-    overStatement,
-    alias: asColAlias,
     colName: validColName,
     comma: COMMA_KEY,
     positiveInteger: POSITIVE_INTEGER,
@@ -246,15 +262,24 @@ export const select = (
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
+    leftparen: LEFT_PAREN_KEY,
+    rightparen: RIGHT_PAREN_KEY,
   }), WINDOW_STATEMENT);
-  const selectColumns = parser.addRule(getSelectColumns(parser, {
+  const projectionWithSpecificColumns = parser.addRule(getProjectionWithSpecificColumns({
     optionalRecommendedWhitespace: optionalRecommendedWhitespace,
-    columnNames: columnNamesWithOverCapability,
-    leadStatement: rankStatement,
-  }), SELECT_COLUMNS);
+    columnNames,
+    overStatement,
+    asAlias: asColAlias,
+    windowStatement,
+    whitespace: mandatoryWhitespace,
+  }), PROJECTION_WITH_SPECIFIC_COLUMNS);
+  const projection = parser.addRule(getProjection({
+    projectionWithSpecificColumns,
+  }), PROJECTION);
   const tableName = parser.addRule(getTableName({
     validName: validTableName,
     asAlias: asTableAlias,
+    whitespace: mandatoryWhitespace,
   }), TABLE);
   const selectTables = parser.addRule(getTables({
     optionalWhitespace: optionalRecommendedWhitespace,
@@ -271,17 +296,17 @@ export const select = (
     anyValidStringValueInQuotes,
     DOUBLE_QUOTE_KEY,
   ), STRING_WITH_DOUBLE_QUOTES);
-  const stringWithQuotes = parser.addRule(`(${joinPipe(
+  const stringWithQuotes = parser.addRule(`(${any(
     stringWithSingleQuotesKey,
     stringWithDoubleQuotesKey,
   )})`, STRING_WITH_QUOTES);
   const stringWildcard = stringWithQuotes;
-  const valueKey = parser.addRule(rule(joinPipe(
+  const valueKey = parser.addRule(any(
     NUMBER,
     NULL_KEY,
     BOOLEAN,
     stringWithQuotes,
-  )), VALUE);
+  ), VALUE);
   const anyWhereClause = parser.addRule(join(
     equalOps,
     optionalRecommendedWhitespace,
@@ -306,10 +331,10 @@ export const select = (
   const numericClause = parser.addRule(join(
     numericOps,
     optionalRecommendedWhitespace,
-    rule(joinPipe(
+    any(
       rule(NUMBER),
       dateDef,
-    )),
+    ),
   ), NUMERIC_WHERE_CLAUSE);
   const wildcardClause = parser.addRule(join(
     stringOps,
@@ -329,7 +354,7 @@ export const select = (
   const betweenClause = parser.addRule(join(
     KEYS[BETWEEN],
     mandatoryWhitespace,
-    rule(joinPipe(
+    any(
       rule(
         NUMBER,
         mandatoryWhitespace,
@@ -344,17 +369,17 @@ export const select = (
         mandatoryWhitespace,
         stringWithQuotes,
       )
-    )),
+    ),
   ), BETWEEN_WHERE_CLAUSE);
   const whereClauseInner = parser.addRule(join(
     validColName,
-    rule(joinPipe(
+    any(
       rule(optionalRecommendedWhitespace, anyWhereClause),
       rule(optionalRecommendedWhitespace, numericClause),
       rule(optionalRecommendedWhitespace, wildcardClause),
       rule(optionalRecommendedWhitespace, betweenClause),
       rule(mandatoryWhitespace, inClause),
-    )),
+    ),
   ), WHERE_INNER);
   const andMore = parser.addRule(join(
     mandatoryWhitespace,
@@ -379,7 +404,8 @@ export const select = (
   const orderByClause = parser.addRule(getOrderByClause({
     order: KEYS[ORDER],
     direction: KEYS[DIR],
-    validColName: columnNamesWithoutOverCapability,
+    validColName: columnNames,
+    asAlias: asColAlias,
     optionalWhitespace: optionalRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   }), ORDER_CLAUSE);
@@ -395,25 +421,42 @@ export const select = (
     opt(KEYS[FULL], mandatoryWhitespace),
     opt(KEYS[OUTER], mandatoryWhitespace),
   ), FULL_OUTER_TYPE);
-  const joinType = parser.addRule(joinPipe(
+  const joinType = parser.addRule(any(
     rule(KEYS[INNER], mandatoryWhitespace),
     rule(KEYS[LEFT], mandatoryWhitespace),
     rule(KEYS[RIGHT], mandatoryWhitespace),
     rule(fullOuter),
   ), JOIN_TYPE);
+  const equijoinCondition = parser.addRule(getEquijoinCondition({
+    tableName,
+    optionalRecommendedWhitespace,
+    validColName,
+    quote,
+  }), EQUIJOIN_CONDITION);
+  const joinCondition = parser.addRule(getJoinCondition({
+    optionalRecommendedWhitespace,
+    optionalNonRecommendedWhitespace,
+    leftParen: LEFT_PAREN_KEY,
+    rightParen: RIGHT_PAREN_KEY,
+    equijoinCondition,
+    whitespace: mandatoryWhitespace,
+    and: KEYS[AND],
+    or: KEYS[OR],
+  }), JOIN_CONDITION);
+
   const joinClause = parser.addRule(getJoinClause({
     joinKey: KEYS[JOIN],
     joinType,
     on: KEYS[ON],
-    columnName: validColName,
     tableWithOptionalAlias: tableName,
-    optionalWhitespace: optionalRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
+    joinCondition,
   }), JOIN_CLAUSE);
   const groupByClause = parser.addRule(getGroupByClause({
     comma: COMMA_KEY,
     group: KEYS[GROUP],
-    validColName: columnNamesWithoutOverCapability,
+    validColName: columnNames,
+    asAlias: asColAlias,
     optionalWhitespace: optionalRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   }), GROUP_CLAUSE);
@@ -421,7 +464,8 @@ export const select = (
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     having: KEYS[HAVING],
-    validColName: columnNamesWithoutOverCapability,
+    validColName: columnNames,
+    asAlias: asColAlias,
     number: NUMBER,
     string: stringWithQuotes,
     is: KEYS[IS],
@@ -441,12 +485,14 @@ export const select = (
     orderByClause,
     groupByClause,
     whereClause,
-    selectColumns,
+    projection,
     havingClause,
     select: KEYS[SELECT],
     from: KEYS[FROM],
     selectTables,
     whitespace: mandatoryWhitespace,
+    validTableName,
+    into: KEYS[INTO],
   }), SELECT_QUERY);
   parser.addRule(getSelectQueryWithUnion({
     whitespace: mandatoryWhitespace,
@@ -454,6 +500,8 @@ export const select = (
     union: KEYS[UNION],
     all: KEYS[ALL],
   }), SELECT_QUERY_WITH_UNION);
-  return SELECT_QUERY_WITH_UNION;
+  return join(SELECT_QUERY_WITH_UNION,
+    opt(opt(mandatoryWhitespace), SEMI_KEY),
+  );
 };
 

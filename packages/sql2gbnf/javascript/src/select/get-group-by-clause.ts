@@ -2,6 +2,7 @@ import {
   join,
 } from "gbnf";
 import { star, } from "./get-star.js";
+import { opt, } from "./get-optional.js";
 
 export const getGroupByClause = ({
   comma,
@@ -9,7 +10,9 @@ export const getGroupByClause = ({
   validColName,
   optionalWhitespace,
   whitespace: ws,
+  asAlias,
 }: {
+  asAlias: string,
   whitespace: string;
   comma: string;
   group: string;
@@ -20,6 +23,7 @@ export const getGroupByClause = ({
   group,
   ws,
   validColName,
+  opt(ws, asAlias),
   star(
     comma,
     optionalWhitespace,

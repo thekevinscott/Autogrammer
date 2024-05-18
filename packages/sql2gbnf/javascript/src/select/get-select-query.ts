@@ -1,15 +1,18 @@
 import {
   join,
+  joinPipe,
 } from "gbnf";
 import {
   SEMI_KEY,
 } from "../constants/grammar-keys.js";
 import { opt, } from "./get-optional.js";
 import { star, } from "./get-star.js";
+import { rule, } from "./get-rule.js";
+import { any, } from "../utils/any.js";
 
 export const getSelectQuery = ({
   distinct,
-  selectColumns,
+  projection,
   select,
   from,
   selectTables,
@@ -20,9 +23,11 @@ export const getSelectQuery = ({
   groupByClause,
   havingClause,
   whitespace,
+  validTableName,
+  into,
 }: {
   distinct: string;
-  selectColumns: string;
+  projection: string;
   select: string;
   from: string;
   selectTables: string,
@@ -33,12 +38,26 @@ export const getSelectQuery = ({
   groupByClause: string;
   havingClause: string;
   whitespace: string;
+  validTableName: string;
+  into: string;
 }) => join(
   select,
+  opt(whitespace, distinct),
   whitespace,
-  opt(distinct, whitespace),
-  selectColumns,
-  whitespace,
+  any(
+    rule(
+      projection,
+      whitespace,
+      opt(into, whitespace, validTableName, whitespace),
+    ),
+    rule(
+      opt(into, whitespace, validTableName, whitespace),
+      projection,
+      whitespace,
+    ),
+  ),
+
+
   from,
   whitespace,
   selectTables,
@@ -48,5 +67,4 @@ export const getSelectQuery = ({
   opt(havingClause),
   opt(orderByClause),
   opt(limitClause),
-  opt(opt(whitespace), SEMI_KEY),
 );

@@ -4,6 +4,7 @@ import {
 } from "gbnf";
 import { rule, } from "./get-rule.js";
 import { opt, } from "./get-optional.js";
+import { any, } from "../utils/any.js";
 
 export const getHavingClause = ({
   numericOps,
@@ -21,6 +22,7 @@ export const getHavingClause = ({
   optionalRecommendedWhitespace,
   // optionalNonRecommendedWhitespace,
   whitespace: ws,
+  asAlias,
 }: {
   whitespace: string;
   optionalRecommendedWhitespace: string;
@@ -37,12 +39,14 @@ export const getHavingClause = ({
   nullKey: string;
   stringWildcard: string;
   boolean: string;
+  asAlias: string;
 }) => join(
   ws,
   having,
   ws,
   validColName,
-  rule(joinPipe(
+  opt(ws, asAlias),
+  any(
     rule(
       ws,
       is,
@@ -54,10 +58,10 @@ export const getHavingClause = ({
       optionalRecommendedWhitespace,
       numericOps,
       optionalRecommendedWhitespace,
-      rule(joinPipe(
+      any(
         number,
         string,
-      ))
+      )
     ),
     rule(
       ws,
@@ -69,7 +73,7 @@ export const getHavingClause = ({
       optionalRecommendedWhitespace,
       equalOps,
       optionalRecommendedWhitespace,
-      rule(joinPipe(string, boolean, number)),
+      any(string, boolean, number),
     ),
-  ))
+  )
 );
