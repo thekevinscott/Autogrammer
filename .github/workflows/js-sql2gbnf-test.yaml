@@ -27,6 +27,12 @@ jobs:
     with:
       package: "./packages/sql2gbnf/javascript"
 
+  integration-test:
+    name: "Javascript / sql2gbnf / Integration Test"
+    uses: ./.github/workflows/js-shared-integration-test.yaml
+    with:
+      package: "./packages/sql2gbnf/javascript"
+
   build:
     name: "Javascript / SQL2GBNF / Build"
     uses: ./.github/workflows/js-shared-build.yaml
