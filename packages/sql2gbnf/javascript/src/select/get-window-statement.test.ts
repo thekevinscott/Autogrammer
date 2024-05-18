@@ -23,7 +23,7 @@ describe('getWindowStatement', () => {
     rightparen: '")"',
   });
 
-  test.only.each([
+  test.each([
     `RANK()`,
     `DENSE_RANK()`,
     `ROW_NUMBER()`,
