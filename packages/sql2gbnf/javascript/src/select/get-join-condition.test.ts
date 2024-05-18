@@ -56,16 +56,16 @@ describe('getJoinClause', () => {
     equijoinCondition,
   });
   test.each([
-    // 'table1.col1 = table2.col2',
-    // 'table1.col1 = table2.col2',
-    // 'table1.col1 = table2.col2',
-    // '(table1.col1 = table2.col2)',
-    // '( table1.col1 = table2.col2 )',
-    `wc.id = hwc.parentid AND hwc.primarytype = 'workTermGroup'`,
-    `(wc.id = hwc.parentid AND hwc.primarytype = 'workTermGroup')`,
-    // `wc.id = hwc.parentid OR hwc.primarytype = 'workTermGroup'`,
-    // `wc.id = hwc.parentid\\n\\tAND hwc.primarytype = 'workTermGroup'`,
-    // `wc.id = hwc.parentid\\n\\tOR hwc.primarytype = 'workTermGroup'`,
+    'table1.col1 = table2.col2',
+    'table1.col1 = table2.col2',
+    'table1.col1 = table2.col2',
+    '(table1.col1 = table2.col2)',
+    '( table1.col1 = table2.col2 )',
+    `wc.id = hwa.parentid AND hwb.primarytype = 'workTermGroup'`,
+    `(wc.id = hwc.parentid AND hwd.primarytype = 'workTermGroup')`,
+    `wc.id = hwc.parentid OR hwc.primarytype = 'workTermGroup'`,
+    `wc.id = hwc.parentid\\n\\tAND hwc.primarytype = 'workTermGroup'`,
+    `wc.id = hwc.parentid\\n\\tOR hwc.primarytype = 'workTermGroup'`,
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const fullGrammar = [
       `root ::= ${grammar}`,

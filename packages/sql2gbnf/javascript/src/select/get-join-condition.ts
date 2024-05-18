@@ -1,4 +1,4 @@
-import { join, joinPipe, } from "gbnf";
+import { join, } from "gbnf";
 import { rule, } from "./get-rule.js";
 import { star, } from "./get-star.js";
 import { any, } from "../utils/any.js";
@@ -33,7 +33,7 @@ export const getJoinCondition = ({
   whitespace,
   and,
   or,
-  optionalRecommendedWhitespace,
+  // optionalRecommendedWhitespace,
   optionalNonRecommendedWhitespace,
   leftParen,
   rightParen,
@@ -54,7 +54,6 @@ export const getJoinCondition = ({
       whitespace,
       any(and, or),
       whitespace,
-      '"hwc"',
       equijoinCondition,
     ),
   );

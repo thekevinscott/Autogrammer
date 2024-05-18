@@ -1,6 +1,5 @@
 import {
   join,
-  joinPipe,
 } from "gbnf";
 import { rule, } from "./get-rule.js";
 import { opt, } from "./get-optional.js";

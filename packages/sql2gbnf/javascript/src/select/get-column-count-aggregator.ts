@@ -1,6 +1,5 @@
 import {
   join,
-  joinPipe,
 } from "gbnf";
 import { rule, } from "./get-rule.js";
 import { star, } from "./get-star.js";

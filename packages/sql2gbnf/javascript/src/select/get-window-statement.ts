@@ -15,7 +15,7 @@ export const getWindowStatement = ({
   lead,
   lag,
   optionalRecommendedWhitespace,
-  whitespace: ws,
+  // whitespace: ws,
   optionalNonRecommendedWhitespace,
   leftparen,
   rightparen,
