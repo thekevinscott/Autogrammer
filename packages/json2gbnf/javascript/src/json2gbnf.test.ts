@@ -1,4 +1,10 @@
-import { vi, } from 'vitest';
+import {
+  vi,
+  describe,
+  expect,
+  test,
+  afterEach,
+} from 'vitest';
 import { BLANK_GRAMMAR, JSON2GBNF, ROOT_ID } from "./json2gbnf.js";
 import { Grammar } from "./grammar.js";
 import type * as _Grammar from './grammar.js';

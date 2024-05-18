@@ -1,6 +1,16 @@
-import { GLOBAL_CONSTANTS } from "../../src/constants/constants.js";
+import {
+  describe,
+  expect,
+  test,
+} from 'vitest';
+import {
+  GLOBAL_CONSTANTS,
+} from "../../src/constants/constants.js";
 import JSON2GBNF from "json2gbnf";
-import GBNF, { InputParseError, } from 'gbnf';
+import GBNF, {
+  InputParseError,
+  GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
+} from 'gbnf';
 import type { TopLevelJSONSchema } from "../../src/types.js";
 import {
   ARRAY_KEY,
@@ -22,7 +32,7 @@ import {
 } from "../../src/constants/grammar-keys.js";
 import { OBJECT_KEY_DEF } from "../../src/utils/get-property-definition.js";
 
-const OBJECT_GRAMMAR = [`root ::= json2gbnf\njson2gbnf ::= ${OBJECT_KEY}`,];
+const OBJECT_GRAMMAR = [`jsontogbnf ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -49,7 +59,7 @@ const STREET_GRAMMAR = [
   `xn ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
   `xo ::= xd ${COMMA_KEY} xb`,
   `xp ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
-  `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xa | xe | xf | xg | xh | xb | xi | xj | xk | xl | xd | xm | xn | xo | xp)? ${RIGHT_BRACE_KEY}`,
+  `jsontogbnf ::= ${LEFT_BRACE_KEY} (xa | xe | xf | xg | xh | xb | xi | xj | xk | xl | xd | xm | xn | xo | xp)? ${RIGHT_BRACE_KEY}`,
 ];
 
 describe('schema', () => {
@@ -58,52 +68,52 @@ describe('schema', () => {
     any,
     string[],
   ][] = [
-      [{}, '42', [`root ::= json2gbnf\njson2gbnf ::= ${VALUE_KEY}`],],
-      [{}, '"42"', [`root ::= json2gbnf\njson2gbnf ::= ${VALUE_KEY}`],],
-      [{}, '"string town"', [`root ::= json2gbnf\njson2gbnf ::= ${VALUE_KEY}`],],
-      [{}, JSON.stringify({ "an": ["arbitrary", "object"], data: "foo" }), [`root ::= json2gbnf\njson2gbnf ::= ${VALUE_KEY}`],],
-      [true, '42', [`root ::= json2gbnf\njson2gbnf ::= ${VALUE_KEY}`],],
-      [{ type: 'string' }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY}`,],],
+      [{}, '42', [`jsontogbnf ::= ${VALUE_KEY}`],],
+      [{}, '"42"', [`jsontogbnf ::= ${VALUE_KEY}`],],
+      [{}, '"string town"', [`jsontogbnf ::= ${VALUE_KEY}`],],
+      [{}, JSON.stringify({ "an": ["arbitrary", "object"], data: "foo" }), [`jsontogbnf ::= ${VALUE_KEY}`],],
+      [true, '42', [`jsontogbnf ::= ${VALUE_KEY}`],],
+      [{ type: 'string' }, '"foo"', [`jsontogbnf ::= ${STRING_KEY}`,],],
       [{
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         type: 'string'
-      }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY}`,],],
-      [{ type: 'number' }, "123", [`root ::= json2gbnf\njson2gbnf ::= ${NUMBER_KEY}`,],],
-      [{ type: 'number' }, '-123.001', [`root ::= json2gbnf\njson2gbnf ::= ${NUMBER_KEY}`,],],
-      [{ type: 'boolean' }, 'true', [`root ::= json2gbnf\njson2gbnf ::= ${BOOLEAN_KEY}`,],],
-      [{ type: 'null' }, 'null', [`root ::= json2gbnf\njson2gbnf ::= ${NULL_KEY}`,],],
-      [{ type: 'string', minLength: 2 }, '"fo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
-      [{ type: 'string', minLength: 2 }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
-      [{ type: 'string', maxLength: 3 }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
-      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      }, '"foo"', [`jsontogbnf ::= ${STRING_KEY}`,],],
+      [{ type: 'number' }, "123", [`jsontogbnf ::= ${NUMBER_KEY}`,],],
+      [{ type: 'number' }, '-123.001', [`jsontogbnf ::= ${NUMBER_KEY}`,],],
+      [{ type: 'boolean' }, 'true', [`jsontogbnf ::= ${BOOLEAN_KEY}`,],],
+      [{ type: 'null' }, 'null', [`jsontogbnf ::= ${NULL_KEY}`,],],
+      [{ type: 'string', minLength: 2 }, '"fo"', [`jsontogbnf ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2 }, '"foo"', [`jsontogbnf ::= ${QUOTE_KEY} ${CHAR_KEY} (${CHAR_KEY})+ ${QUOTE_KEY}`],],
+      [{ type: 'string', maxLength: 3 }, '"foo"', [`jsontogbnf ::= ${QUOTE_KEY} (${CHAR_KEY})? (${CHAR_KEY})? (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"fo"', [`jsontogbnf ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
+      [{ type: 'string', minLength: 2, maxLength: 3 }, '"foo"', [`jsontogbnf ::= ${QUOTE_KEY} ${CHAR_KEY} ${CHAR_KEY} (${CHAR_KEY})? ${QUOTE_KEY}`],],
       // top-level const
-      [{ type: 'string', const: "foo" }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${QUOTE_KEY} "foo" ${QUOTE_KEY}`],],
-      [{ type: 'integer' }, "123", [`root ::= json2gbnf\njson2gbnf ::= ${INTEGER_KEY}`,],],
-      [{ type: 'integer' }, "123.0", [`root ::= json2gbnf\njson2gbnf ::= ${INTEGER_KEY}`,],],
-      [{ enum: ['red', null, 42] }, `"red"`, [`root ::= json2gbnf\njson2gbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
-      [{ enum: ['red', null, 42] }, `null`, [`root ::= json2gbnf\njson2gbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
-      [{ enum: ['red', null, 42] }, `42`, [`root ::= json2gbnf\njson2gbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
-      [{ enum: ['red', null, 42] }, `42`, [`root ::= json2gbnf\njson2gbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
-      [{ type: ['string'] }, '"foo"', [`root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY}`,],],
+      [{ type: 'string', const: "foo" }, '"foo"', [`jsontogbnf ::= ${QUOTE_KEY} "foo" ${QUOTE_KEY}`],],
+      [{ type: 'integer' }, "123", [`jsontogbnf ::= ${INTEGER_KEY}`,],],
+      [{ type: 'integer' }, "123.0", [`jsontogbnf ::= ${INTEGER_KEY}`,],],
+      [{ enum: ['red', null, 42] }, `"red"`, [`jsontogbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `null`, [`jsontogbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `42`, [`jsontogbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ enum: ['red', null, 42] }, `42`, [`jsontogbnf ::= "\\"red\\"" | ${NULL_KEY} | "42"`,],],
+      [{ type: ['string'] }, '"foo"', [`jsontogbnf ::= ${STRING_KEY}`,],],
       [
         { type: ['string', 'number'] },
         '"foo"',
         [
-          `root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY} | ${NUMBER_KEY}`,
+          `jsontogbnf ::= ${STRING_KEY} | ${NUMBER_KEY}`,
         ]],
       [
         { type: ['string', 'number', 'boolean', 'null'] },
         '"foo"',
         [
-          `root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY}`,
+          `jsontogbnf ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY}`,
         ],
       ],
       [
         { type: ['string', 'number', 'boolean', 'null', 'array', 'object'] },
         '"foo"',
         [
-          `root ::= json2gbnf\njson2gbnf ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY} | ${ARRAY_KEY} | ${OBJECT_KEY}`,
+          `jsontogbnf ::= ${STRING_KEY} | ${NUMBER_KEY} | ${BOOLEAN_KEY} | ${NULL_KEY} | ${ARRAY_KEY} | ${OBJECT_KEY}`,
         ],
       ],
       [{ type: 'object' }, JSON.stringify({ foo: 'foo', bar: 1, baz: [1,] }), OBJECT_GRAMMAR,],
@@ -152,7 +162,7 @@ describe('schema', () => {
           `xj ::= xd ${COMMA_KEY} xa`,
           `xk ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
           `xl ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -174,7 +184,7 @@ describe('schema', () => {
           `xj ::= xd ${COMMA_KEY} xa`,
           `xk ::= xd ${COMMA_KEY} xa ${COMMA_KEY} xb`,
           `xl ::= xd ${COMMA_KEY} xb ${COMMA_KEY} xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xe | xf | xg | xh | xi | xj | xk | xl) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       // additionalProperties being true
@@ -202,7 +212,7 @@ describe('schema', () => {
           `xo ::= xe xa ${COMMA_KEY} xb xa ${COMMA_KEY} xc xa`,
           `xp ::= xe xa ${COMMA_KEY} xc xa`,
           `xq ::= xe xa ${COMMA_KEY} xc xa ${COMMA_KEY} xb xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xb xa | xf | xg | xh | xi | xc xa | xj | xk | xl | xm | xe xa | xn | xo | xp | xq)? ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xb xa | xf | xg | xh | xi | xc xa | xj | xk | xl | xm | xe xa | xn | xo | xp | xq)? ${RIGHT_BRACE_KEY}`,
         ],
       ],
       // additionalProperties being true and requirements being true
@@ -227,7 +237,7 @@ describe('schema', () => {
           `xk ::= xe xa ${COMMA_KEY} xb xa`,
           `xl ::= xe xa ${COMMA_KEY} xb xa ${COMMA_KEY} xc xa`,
           `xm ::= xe xa ${COMMA_KEY} xc xa ${COMMA_KEY} xb xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xf | xg | xh | xi | xj | xk | xl | xm) ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xf | xg | xh | xi | xj | xk | xl | xm) ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -248,7 +258,7 @@ describe('schema', () => {
           `xb ::= ${QUOTE_KEY} "country" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "USA" ${QUOTE_KEY}`,
           `xc ::= xa ${COMMA_KEY} xb`,
           `xd ::= xb ${COMMA_KEY} xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
         ],
       ],
       [
@@ -269,22 +279,22 @@ describe('schema', () => {
           `xb ::= ${QUOTE_KEY} "country" ${QUOTE_KEY} ${COLON_KEY} ${QUOTE_KEY} "USA" ${QUOTE_KEY}`,
           `xc ::= xa ${COMMA_KEY} xb`,
           `xd ::= xb ${COMMA_KEY} xa`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACE_KEY} (xa | xc | xb | xd)? ${RIGHT_BRACE_KEY}`,
         ],
       ],
-      [{ type: 'array' }, JSON.stringify([1, 'a', {}]), [`root ::= json2gbnf\njson2gbnf ::= ${ARRAY_KEY}`,],],
+      [{ type: 'array' }, JSON.stringify([1, 'a', {}]), [`jsontogbnf ::= ${ARRAY_KEY}`,],],
       [
         { type: 'array', items: { type: 'number' } },
         JSON.stringify([1, 2, 3]),
         [
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
       [
         { type: 'array', items: { type: 'number' } },
         JSON.stringify([]),
         [
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACKET_KEY} (${NUMBER_KEY} (${COMMA_KEY} ${NUMBER_KEY})*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
       [
@@ -292,7 +302,7 @@ describe('schema', () => {
         JSON.stringify([1, "foo", 3]),
         [
           `xa ::= ${NUMBER_KEY} | ${STRING_KEY}`,
-          `root ::= json2gbnf\njson2gbnf ::= ${LEFT_BRACKET_KEY} (xa (${COMMA_KEY} xa)*)? ${RIGHT_BRACKET_KEY}`,
+          `jsontogbnf ::= ${LEFT_BRACKET_KEY} (xa (${COMMA_KEY} xa)*)? ${RIGHT_BRACKET_KEY}`,
         ],
       ],
     ];
@@ -300,7 +310,12 @@ describe('schema', () => {
     const grammar = JSON2GBNF(schema, {
       whitespace: 0,
     });
-    expect(grammar).toEqual([...expected, ...GLOBAL_CONSTANTS].join('\n'));
+    expect(grammar).toEqual([
+      `root ::= jsontogbnf`,
+      ...expected,
+      ...GBNF_GLOBAL_CONSTANTS,
+      ...GLOBAL_CONSTANTS,
+    ].join('\n'));
     let parser = GBNF(grammar);
     parser = parser.add(initial);
     expect(parser.size).toBeGreaterThan(0);
