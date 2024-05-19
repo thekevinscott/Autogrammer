@@ -99,7 +99,5 @@ export const SELECT_QUERY_WITH_UNION = 'selectquerywithunion';
 export const SELECT_LIST = 'selectlist';
 export const VALID_NAME = 'validname';
 export const VALID_FULL_NAME = 'validfullname';
-// export const VALID_COL_NAME = 'validcolname';
-// export const VALID_TABLE_NAME = 'validtablename';
 export const AS_COL_ALIAS = 'ascolalias';
 export const AS_TABLE_ALIAS = 'astablealias';
