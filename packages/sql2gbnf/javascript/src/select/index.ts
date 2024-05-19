@@ -136,11 +136,7 @@ import { any, } from "../utils/any.js";
 import { getCountAggregator, } from "./get-column-count-aggregator.js";
 import { getOtherAggregators, } from "./get-other-aggregators.js";
 import { star, } from "./get-star.js";
-
-export const VALID_NAME_DEF = `[a-zA-Z_] [a-zA-Z0-9_]*`;
-export const VALID_COL_NAME_GBNF = `[a-zA-Z_] [A-Za-z0-9_.]*`;
-export const VALID_TABLE_NAME_GBNF = `[a-zA-Z_] [a-zA-Z0-9_.]*`;
-
+import { validNameDef, } from "../constants/grammar-definitions.js";
 
 export const select = (
   parser: GrammarBuilder,
@@ -153,7 +149,7 @@ export const select = (
     case: CaseKind,
   }
 ): string => {
-  const validName = parser.addRule(VALID_NAME_DEF, VALID_NAME);
+  const validName = parser.addRule(validNameDef, VALID_NAME);
   const validFullName = parser.addRule(join(
     validName,
     star(
