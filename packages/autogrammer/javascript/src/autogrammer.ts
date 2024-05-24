@@ -14,7 +14,7 @@ import {
 import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
-import JSON2GBNF, { JSONSchema, } from 'json2gbnf';
+import { JSONSchema, } from 'json2gbnf';
 import SQL2GBNF from 'sql2gbnf';
 // import * as webllm from "@mlc-ai/web-llm";
 
