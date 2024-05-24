@@ -23,6 +23,9 @@ jobs:
             const EXCLUDED_JOBS = [
                // important we exclude this specific job
               'Check Commit Status',
+              "Redirect rules",
+              "Header rules",
+              "Pages changed"
             ];
 
             console.log(`Sleeping ${Math.round(PRE_SLEEP / 1000)}s to give other workflows a chance to start`);
