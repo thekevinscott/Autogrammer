@@ -90,7 +90,7 @@ export class Autogrammer {
     }: {
       languageOptions?: JSONSchema,
       modelOptions?: ExternalExecuteOptions<ModelProtocol, boolean>,
-    },
+    } = {},
   ): Promise<string> {
     const contortionist = this.model;
     contortionist.grammar = SQL2GBNF({

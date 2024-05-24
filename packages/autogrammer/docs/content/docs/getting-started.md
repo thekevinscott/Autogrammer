@@ -15,15 +15,17 @@ npm install
 ## Quick Start
 
 ```javascript
-import Autogrammer from 'autogrammer';
+import { pipeline, } from '@xenova/transformers'
+import Autogrammer from 'autogrammer'
 
-const grammer = new Autogrammer({
+const autogrammer = new Autogrammer({
   language: 'json',
-});
+  model: pipeline('text-generation', 'Xenova/gpt2'),
+})
 
-const prompt = `Return the following address in a JSON object:
+const prompt = `Return the following address in a JSON object: 
 
-1600 Pennsylvania Avenue NW, Washington, DC 20500`;
+"1600 Pennsylvania Avenue NW, Washington, DC 20500"`;
 
-const result = await grammar.prompt(prompt);
+const result = await autogrammer.execute(prompt, {})
 ```

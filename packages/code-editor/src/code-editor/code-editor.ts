@@ -1,31 +1,10 @@
-import { LitElement, PropertyValueMap, css, html } from 'lit';
-import 'playground-elements/playground-ide.js';
+import { LitElement, css, html } from 'lit';
 import 'playground-elements/playground-project.js';
 import 'playground-elements/playground-file-editor.js';
 import 'playground-elements/playground-preview.js';
 import { Ref, createRef, ref } from 'lit/directives/ref.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { state } from 'lit/decorators.js';
-// import '@vanillawc/wc-codemirror';
-// import * as webllm from "@mlc-ai/web-llm";
-// import {
-//   pipeline,
-//   env,
-// } from '@xenova/transformers';
-// env.allowRemoteModels = true;
-// env.allowLocalModels = false;
-// import Autogrammer from 'autogrammer';
-// const model = webllm.CreateEngine("phi-2-q4f32_1-MLC", {
-// const model = webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-// const model = webllm.CreateEngine("Llama-3-8B-Instruct-q4f32_1", {
-//   initProgressCallback: console.log,
-// });
-// const model = pipeline('text-generation', 'Xenova/gpt2');
-// (window as any)['autogrammer'] = new Autogrammer({
-//   language: 'json',
-//   // model: webllm.CreateEngine("Phi1.5-q4f32_1-1k", {
-//   // model,
-// });
 
 export const TAG_NAME = 'code-editor';
 
@@ -67,7 +46,7 @@ export class CodeEditor extends LitElement {
     return script;
   }
 
-  @state()
+  // @state()
   lineNumbers = 5;
 
   set script(textContent: string) {

@@ -1,75 +1,44 @@
 {
-  "name": "codecell",
+  "name": "code-editor",
   "version": "0.0.1",
   "type": "module",
-  "description": "Render code in a notebook cell in the browser",
+  "description": "Render editable and runnable code snippets",
   "repository": {
     "type": "git",
     "url": "https://github.com/thekevinscott/autogrammer.git",
     "directory": "packages/codecell"
   },
   "main": "./dist/index.umd.cjs",
-  "module": "./dist/index.js",
+  "module": "./dist/index.umd.cjs",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./dist/index.umd.cjs",
       "require": "./dist/index.umd.cjs"
     }
   },
   "scripts": {
     "lint": "wireit",
-    "test:unit": "wireit",
-    "test": "wireit",
-    "test:integration": "wireit",
     "clean": "wireit",
     "build": "wireit",
-    "build:esm": "wireit",
     "build:umd": "wireit",
-    "build:check": "wireit"
+    "build:check": "wireit",
+    "dev": "vite --host --config ./dev/vite.config.ts --port 5159"
   },
   "wireit": {
     "clean": {
       "command": "rimraf ./dist"
     },
     "lint": {
-      "command": "eslint -c ./.eslintrc.cjs src --ext .ts",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ]
-    },
-    "test:unit": {
-      "command": "vitest --config ./vitest.config.unit.ts run",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ]
-    },
-    "test": {
-      "command": "pnpm test:unit && pnpm test:integration "
-    },
-    "test:integration": {
-      "command": "vitest --config ./vitest.config.integration.ts --pool=forks --bail 1 run",
-      "dependencies": [
-        "../mock-llm-api:build",
-        "../gbnf/javascript:build"
-      ]
+      "command": "eslint -c ./.eslintrc.cjs src --ext .ts"
     },
     "build:check": {
-      "command": "ls ./dist && path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts"
-    },
-    "build:esm": {
-      "command": "vite build -c vite.config.esm.ts"
+      "command": "path-exists ./dist/index.umd.cjs "
     },
     "build:umd": {
       "command": "vite build -c vite.config.umd.ts"
     },
-    "copy:package-files": {
-      "command": "cp ../../LICENSE ./LICENSE"
-    },
     "build": {
-      "command": "pnpm clean && pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ],
+      "command": "pnpm clean && pnpm build:umd && pnpm build:check",
       "files": [
         "../../README.md",
         "../../LICENSE",
@@ -94,8 +63,8 @@
     "code sandbox"
   ],
   "dependencies": {
-    "@vanillawc/wc-codemirror": "^2.1.0",
-    "lit": "^3.1.3"
+    "lit": "^3.1.3",
+    "playground-elements": "^0.18.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.3.1",
