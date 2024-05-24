@@ -35,7 +35,7 @@
   },
   "wireit": {
     "test:coverage": {
-      "command": "vitest --config ./vitest.config.coverage.ts run",
+      "command": "node ./tests/setup/run.js",
       "dependencies": [
         "../../gbnf/javascript:build"
       ]
