@@ -84,7 +84,6 @@ export const DISTINCT = 'dnct';
 export const JOIN = 'join';
 export const JOIN_TYPE = 'jointype';
 export const JOIN_CONDITION = 'joincondition';
-export const EQUIJOIN_CONDITION = 'equijoincondition';
 export const INNER = 'inner';
 export const OUTER = 'outer';
 export const FULL_OUTER_TYPE = 'outertype';
