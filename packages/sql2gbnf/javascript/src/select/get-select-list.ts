@@ -17,7 +17,7 @@ export const getSelectList = ({
   // selectTables,
   table,
   comma,
-  database,
+  // database,
 }: {
   projection: string;
   into: string;

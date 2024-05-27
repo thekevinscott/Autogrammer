@@ -43,7 +43,7 @@ import {
   OR_MORE,
   OUTER,
   RIGHT,
-  PROJECTION,
+  // PROJECTION,
   SELECT,
   COLUMN_NAMES,
   SELECT_QUERY,
@@ -58,7 +58,7 @@ import {
   WILDCARD_WHERE_CLAUSE,
   AS_COL_ALIAS,
   AS_TABLE_ALIAS,
-  SELECT_TABLES,
+  // SELECT_TABLES,
   SELECT_QUERY_WITH_UNION,
   UNION,
   ALL,
@@ -111,7 +111,7 @@ import { getLimitClause, } from "./get-limit-clause.js";
 import { getOrderByClause, } from "./get-order-by-clause.js";
 import { getColumnNames, } from "./get-column-names.js";
 import { getSelectQuery, } from "./get-select-query.js";
-import { getProjection, getProjectionWithSpecificColumns, } from "./get-projection.js";
+import { getProjectionWithSpecificColumns, } from "./get-projection.js";
 import { getTableName, } from "./get-table-name.js";
 import { getWhereClause, } from "./get-where-clause.js";
 import { buildCase, } from "../utils/build-case.js";
@@ -119,7 +119,7 @@ import {
   GrammarBuilder,
   join,
 } from "gbnf";
-import { getTables, } from "./get-tables.js";
+// import { getTables, } from "./get-tables.js";
 import { rule, } from "./get-rule.js";
 import { opt, } from "./get-optional.js";
 import { getSelectQueryWithUnion, } from "./get-select-query-with-union.js";

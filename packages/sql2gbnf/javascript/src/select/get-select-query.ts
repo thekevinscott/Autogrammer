@@ -3,8 +3,6 @@ import {
 } from "gbnf";
 import { opt, } from "./get-optional.js";
 import { star, } from "./get-star.js";
-import { rule, } from "./get-rule.js";
-import { any, } from "../utils/any.js";
 
 export const getSelectQuery = ({
   distinct,
