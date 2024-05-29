@@ -15,10 +15,6 @@ import {
 import {
   SUPPORTED_LANGUAGES,
 } from './constants.js';
-import {
-  JSONSchema,
-  SchemaOpts as JSONSchemaOpts,
-} from 'json2gbnf';
 import { getGrammar, } from './get-grammar.js';
 // import * as webllm from "@mlc-ai/web-llm";
 
