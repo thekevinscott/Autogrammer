@@ -12,12 +12,12 @@ import GBNF, {
 
 describe('Rejections, no schema', () => {
   test.only.each([
-    // ['1', 0],
-    // ['select;', 6],
-    // ['select 1', 7],
-    // ['select .', 7],
-    // [`SELECT INTO newtable column1, column2 INTO newtable FROM sourcetable;`, 38],
-    [`INSERT INTO foooo (foo) VALUES (SELECT foo, bar FROM)`, 38],
+    ['1', 0],
+    ['select;', 6],
+    ['select 1', 7],
+    ['select .', 7],
+    [`SELECT INTO newtable column1, column2 INTO newtable FROM sourcetable;`, 38],
+    // [`INSERT INTO foooo (foo) VALUES (SELECT foo, bar FROM)`, 38],
   ])('it rejects %s for a non-schema', (_initial, errorPos) => {
     const grammar = SQL2GBNF();
     let parser = GBNF(grammar);
