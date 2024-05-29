@@ -12,7 +12,7 @@ import GBNF, {
 
 describe('Cases, no schema', () => {
   describe('Upper case', () => {
-    const grammar = SQL2GBNF({
+    const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
       case: 'upper',
     });
@@ -39,7 +39,7 @@ describe('Cases, no schema', () => {
   });
 
   describe('Lower case', () => {
-    const grammar = SQL2GBNF({
+    const grammar = SQL2GBNF(undefined, {
       case: 'lower',
       whitespace: 'verbose',
     });

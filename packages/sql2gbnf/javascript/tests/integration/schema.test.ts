@@ -50,7 +50,7 @@ describe('Schema Tests', () => {
   test.each([
     'SELECT id, user_id, title, body, created_at FROM posts;',
   ])('it renders for a schema: %s', (initial) => {
-    const grammar = SQL2GBNF({
+    const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
       schema,
       schemaFormat: 'postgres',
@@ -64,7 +64,7 @@ describe('Schema Tests', () => {
   // test.each([
   //   ['SELECT foo FROM posts;', 7],
   // ])('it throws if invalid for a schema: %s', (initial, errorPos) => {
-  //   const grammar = SQL2GBNF({
+  //   const grammar = SQL2GBNF(undefined, {
   //     whitespace: 'verbose',
   //     schema,
   //     schemaFormat: 'postgres',

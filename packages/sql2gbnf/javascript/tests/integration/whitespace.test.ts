@@ -15,7 +15,7 @@ describe('Whitespace, no schema', () => {
   describe('verbose', () => {
 
     test('it accepts a SQL query with any whitespace', () => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'verbose',
       });
       let parser = GBNF(grammar);
@@ -46,7 +46,7 @@ describe('Whitespace, no schema', () => {
       `SELECT order_id, COUNT(*) FROM orders GROUP BY order_id HAVING foo="foo";`,
       `SELECT employee_id, salary, SUM(salary) OVER() AS total_salary FROM salaries;`,
     ])('it accepts any amount of whitespace: %s', (initial) => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'verbose',
       });
       // console.log(grammar);
@@ -61,7 +61,7 @@ describe('Whitespace, no schema', () => {
       `SELECT first_name, last_name FROM employees WHERE department = 'Sales';`,
       `SELECT first_name, COUNT(age) FROM employees WHERE department = 'Sales';`,
     ])('it accepts a SQL query with singular whitespace', (initial) => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'default',
       });
       let parser = GBNF(grammar);
@@ -76,7 +76,7 @@ describe('Whitespace, no schema', () => {
       [`SELECT first_name, last_name FROM f f1 WHERE x >1`, 48],
       [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,1`, 59],
     ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'default',
       });
       let parser = GBNF(grammar);
@@ -94,7 +94,7 @@ describe('Whitespace, no schema', () => {
       `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary`,
       `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary,LAG(salary,1) OVER(ORDER BY employee_id) AS previous_salary FROM salaries;`,
     ])('it accepts a SQL query without whitespace', (initial) => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'succinct',
       });
       // console.log(grammar)
@@ -110,7 +110,7 @@ describe('Whitespace, no schema', () => {
       [`SELECT first_name,last_name FROM f f1 WHERE x> `, 46],
       [`SELECT first_name,last_name FROM f f1 WHERE x>1 LIMIT 0, `, 54],
     ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
-      const grammar = SQL2GBNF({
+      const grammar = SQL2GBNF(undefined, {
         whitespace: 'succinct',
       });
       let parser = GBNF(grammar);
