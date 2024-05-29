@@ -1,5 +1,9 @@
-import { GLOBAL_CONSTANTS, } from './constants/constants.js';
-import { VALUE_KEY, } from './constants/grammar-keys.js';
+import {
+  GLOBAL_CONSTANTS,
+} from './constants/constants.js';
+import {
+  VALUE_KEY,
+} from './constants/grammar-keys.js';
 import {
   Grammar as Grammar,
 } from './grammar.js';
@@ -11,8 +15,12 @@ import {
   type JSONSchema,
   type SchemaOpts,
 } from './types.js';
-import { parse, } from './utils/parse.js';
-import { joinWith, } from 'gbnf';
+import {
+  parse,
+} from './utils/parse.js';
+import {
+  joinWith,
+} from 'gbnf/builder';
 
 // https://json-schema.org/understanding-json-schema/basics
 // false will always be invalid

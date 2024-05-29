@@ -4,7 +4,10 @@ import {
   LEFT_BRACKET_KEY,
   RIGHT_BRACKET_KEY,
 } from '../constants/grammar-keys.js';
-import { join, } from 'gbnf';
+import {
+  join,
+  joinPipe,
+} from 'gbnf/builder';
 import { KEYS, } from '../constants/grammar-keys.js';
 import type {
   JSONSchemaArray,
@@ -17,7 +20,6 @@ import {
   isSchemaArrayWithBooleanItemsType,
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
-import { joinPipe, } from 'gbnf';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
   'prefixItems',

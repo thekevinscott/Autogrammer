@@ -1,4 +1,10 @@
-import { vi, } from 'vitest';
+import {
+  describe,
+  afterEach,
+  it,
+  expect,
+  vi,
+} from 'vitest';
 import {
   parseObject,
 } from './parse-object.js';
@@ -19,7 +25,7 @@ import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
-import { join, joinPipe } from 'gbnf';
+import { join, joinPipe } from 'gbnf/builder';
 import { OBJECT_KEY_DEF } from './get-property-definition.js';
 
 vi.mock('./parse-type.js', async () => {

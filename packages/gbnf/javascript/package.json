@@ -17,6 +17,10 @@
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.umd.cjs"
+    },
+    "./builder": {
+      "import": "./dist/builder/index.js",
+      "require": "./dist/builder/index.umd.cjs"
     }
   },
   "scripts": {
@@ -47,7 +51,7 @@
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
     "build:check": {
-      "command": "ls ./dist && path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./LICENSE"
+      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./dist/builder/index.js && path-exists ./dist/builder/index.umd.cjs && path-exists ./dist/builder/index.d.ts && path-exists ./LICENSE"
     },
     "build:esm": {
       "command": "vite build -c ./vite.config.esm.ts"
@@ -62,6 +66,7 @@
         "dist/**"
       ],
       "files": [
+        "dist/**",
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",

@@ -9,9 +9,13 @@ import {
 import JSON2GBNF from "json2gbnf";
 import GBNF, {
   InputParseError,
-  GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
 } from 'gbnf';
-import type { TopLevelJSONSchema } from "../../src/types.js";
+import {
+  GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS,
+} from 'gbnf/builder';
+import type {
+  TopLevelJSONSchema
+} from "../../src/types.js";
 import {
   ARRAY_KEY,
   BOOLEAN_KEY,
@@ -30,7 +34,9 @@ import {
   STRING_KEY,
   VALUE_KEY,
 } from "../../src/constants/grammar-keys.js";
-import { OBJECT_KEY_DEF } from "../../src/utils/get-property-definition.js";
+import {
+  OBJECT_KEY_DEF
+} from "../../src/utils/get-property-definition.js";
 
 const OBJECT_GRAMMAR = [`jsontogbnf ::= ${OBJECT_KEY}`,];
 const STREET_SCHEMA = {

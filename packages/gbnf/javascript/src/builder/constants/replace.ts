@@ -1,4 +1,4 @@
-import { KEYS, } from '../constants/grammar-keys.js';
+import { KEYS, } from './grammar-keys.js';
 
 const GBNF_KEY_REPLACEMENT_PATTERN = /{{(.*?)}}/g;
 

@@ -4,11 +4,18 @@ import { mergeConfig, } from 'vitest/config';
 
 export default mergeConfig(config, {
   build: {
+    emptyOutDir: false,
     lib: {
+      formats: ['es'],
       entry: 'src/umd.ts',
-      formats: ['umd',],
-      fileName: 'index',
+      fileName: (_format, entryName) => `${entryName}.umd.cjs`,
       name: 'GBNF',
+    },
+    rollupOptions: {
+      input: {
+        index: 'src/umd.ts',
+        'builder/index': 'src/builder/umd.ts',
+      },
     },
     sourcemap: true,
     target: 'esnext',

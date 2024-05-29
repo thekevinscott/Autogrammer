@@ -1,18 +1,16 @@
 import {
   type GrammarBuilder,
+  type GBNFRule,
   joinWith,
-} from "gbnf";
+  buildGBNF as _buildGBNF,
+} from "gbnf/builder";
 import {
   GLOBAL_CONSTANTS,
 } from "../constants/constants.js";
-import {
-  GBNFRule,
-} from "./rule.js";
 
 export const buildGBNF = (parser: GrammarBuilder, gbnf: GBNFRule) => {
-  parser.addRule(gbnf.toString(), 'root');
   return joinWith('\n',
-    ...[...parser.grammar,].sort(),
+    _buildGBNF(parser, gbnf),
     ...GLOBAL_CONSTANTS,
   );
 };

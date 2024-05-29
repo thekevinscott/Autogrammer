@@ -18,7 +18,7 @@ import {
   join,
   joinWith,
   joinPipe,
-} from 'gbnf';
+} from 'gbnf/builder';
 import {
   isSchemaConst,
   isSchemaEnum,

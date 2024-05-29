@@ -1,5 +1,8 @@
 // parse.ts
-import { KEYS, NULL_KEY, } from "../constants/grammar-keys.js";
+import {
+  KEYS,
+  NULL_KEY,
+} from "../constants/grammar-keys.js";
 import {
   type Grammar,
 } from "../grammar.js";
@@ -12,7 +15,10 @@ import type {
   JSONSchema,
 } from "../types.js";
 import { getConstDefinition, } from "./get-const-definition.js";
-import { join, joinWith, } from "gbnf";
+import {
+  join,
+  joinWith,
+} from "gbnf/builder";
 import { parseType, } from "./parse-type.js";
 
 export const parse = (

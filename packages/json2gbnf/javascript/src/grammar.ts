@@ -1,7 +1,7 @@
 import type {
   SchemaOpts,
 } from './types.js';
-import { GrammarBuilder, } from 'gbnf';
+import { GrammarBuilder, } from 'gbnf/builder';
 
 export class Grammar extends GrammarBuilder {
   fixedOrder: boolean;

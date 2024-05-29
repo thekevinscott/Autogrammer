@@ -5,7 +5,11 @@ import {
   test,
   afterEach,
 } from 'vitest';
-import { BLANK_GRAMMAR, JSON2GBNF, ROOT_ID } from "./json2gbnf.js";
+import {
+  BLANK_GRAMMAR,
+  JSON2GBNF,
+  ROOT_ID
+} from "./json2gbnf.js";
 import { Grammar } from "./grammar.js";
 import type * as _Grammar from './grammar.js';
 import { hasDollarSchemaProp } from './type-guards.js';
@@ -13,8 +17,9 @@ import type * as _types from './types.js';
 import { VALUE_KEY } from './constants/grammar-keys.js';
 import { parse } from './utils/parse.js';
 import type * as _parse from './utils/parse.js';
-import { GLOBAL_CONSTANTS as GBNF_GLOBAL_CONSTANTS } from 'gbnf';
-import { GLOBAL_CONSTANTS } from './constants/constants.js';
+import {
+  GLOBAL_CONSTANTS
+} from './constants/constants.js';
 
 vi.mock('./utils/parse.js', async () => {
   const actual = await vi.importActual('./utils/parse.js') as typeof _parse;

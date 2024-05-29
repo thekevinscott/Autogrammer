@@ -1,6 +1,6 @@
 import {
   join,
-} from "gbnf";
+} from "gbnf/builder";
 import { rule, } from "../utils/get-rule.js";
 
 export const getInsertQuery = ({

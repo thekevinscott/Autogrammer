@@ -2,7 +2,7 @@ import { QUOTE_KEY, } from "../constants/grammar-keys.js";
 import {
   AddRule,
   join,
-} from "gbnf";
+} from "gbnf/builder";
 import {
   JSONSchemaObjectValueEnum,
 } from "../types.js";

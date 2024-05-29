@@ -41,7 +41,7 @@ export class GrammarBuilder {
     return symbolId;
   };
 
-  public get grammar(): string[] {
+  public get grammar() {
     return buildGrammar(this.#rules.entries());
   }
 }

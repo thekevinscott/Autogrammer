@@ -2,7 +2,11 @@ import { addCasedWords, } from "./utils/add-cased-words.js";
 import {
   GrammarBuilder,
   join,
-} from "gbnf";
+  $,
+  $o,
+  $r,
+  GBNFRule,
+} from "gbnf/builder";
 import {
   select as getSelectRule,
 } from "./select/index.js";
@@ -32,12 +36,6 @@ import {
 import { getWhitespaceDefs, } from "./utils/get-whitespace-def.js";
 import { star, } from "./utils/get-star.js";
 import { validNameDef, } from "./constants/grammar-definitions.js";
-import {
-  $,
-  $o,
-  $r,
-  GBNFRule,
-} from "./utils/rule.js";
 
 export const parse = (
   parser: GrammarBuilder,

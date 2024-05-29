@@ -1,6 +1,6 @@
 import {
   GrammarBuilder,
-} from "gbnf";
+} from "gbnf/builder";
 import {
   parse,
 } from "./parse.js";

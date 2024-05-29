@@ -107,7 +107,7 @@ import { buildCase, } from "../utils/build-case.js";
 import {
   GrammarBuilder,
   join,
-} from "gbnf";
+} from "gbnf/builder";
 import { rule, } from "../utils/get-rule.js";
 import { opt, } from "../utils/get-optional.js";
 import { getSelectQueryWithUnion, } from "./get-select-query-with-union.js";

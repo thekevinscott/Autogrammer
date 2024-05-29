@@ -1,7 +1,7 @@
 import {
   type GrammarBuilder,
   WHITESPACE_KEY as WS,
-} from "gbnf";
+} from "gbnf/builder";
 import { WhitespaceKind, } from "../types.js";
 import { OPTIONAL_NON_RECOMMENDED_WHITESPACE, OPTIONAL_RECOMMENDED_WHITESPACE, WHITESPACE, } from "../gbnf-keys.js";
 
