@@ -21,7 +21,7 @@ describe('synthetic, no schema', () => {
   // });
 
   test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
-    const grammar = SQL2GBNF({
+    const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
     });
     // console.log(grammar);
