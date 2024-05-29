@@ -12,7 +12,7 @@ import { noSchemaTests } from './no-schema-tests/index.js';
 
 describe('No schema', () => {
   test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial: string, config: any) => {
-    const grammar = SQL2GBNF({
+    const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
     });
     // console.log(grammar);
