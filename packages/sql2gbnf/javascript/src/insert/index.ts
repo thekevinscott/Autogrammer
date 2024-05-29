@@ -66,7 +66,6 @@ export const insert = (
     withUnion: false,
     singleColumn: true,
   }));
-  console.log('selectRule', selectRule);
 
   const value = parser.addRule(any(
     stringWithQuotes,

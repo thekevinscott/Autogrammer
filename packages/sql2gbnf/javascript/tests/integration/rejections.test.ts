@@ -11,7 +11,7 @@ import GBNF, {
 } from 'gbnf';
 
 describe('Rejections, no schema', () => {
-  test.only.each([
+  test.each([
     ['1', 0],
     ['select;', 6],
     ['select 1', 7],
