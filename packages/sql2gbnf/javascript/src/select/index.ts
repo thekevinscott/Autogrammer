@@ -43,7 +43,6 @@ import {
   RIGHT,
   SELECT,
   COLUMN_NAMES,
-  SELECT_QUERY,
   STRING_OPS,
   TABLE,
   WHERE,
@@ -89,10 +88,8 @@ import {
   OFFSET,
   INTO,
   JOIN_CONDITION,
-  PROJECTION_WITH_SPECIFIC_COLUMNS,
   COUNT_AGGREGATOR_RULE,
   OTHER_AGGREGATORS_RULE,
-  SELECT_LIST,
   POSSIBLE_COLUMNS_WITH_ALIAS,
 } from "../gbnf-keys.js";
 import { getJoinClause, } from "./get-join-clause.js";

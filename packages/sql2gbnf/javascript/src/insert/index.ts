@@ -1,6 +1,5 @@
 import {
   GrammarBuilder,
-  join,
 } from "gbnf";
 import type {
   CaseKind,
