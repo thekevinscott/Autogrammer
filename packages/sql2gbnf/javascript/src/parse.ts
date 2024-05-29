@@ -27,24 +27,27 @@ import {
 } from "./gbnf-keys.js";
 import {
   DOUBLE_QUOTE_KEY,
-  SEMI_KEY,
   SINGLE_QUOTE_KEY,
 } from "./constants/grammar-keys.js";
-import { opt, } from "./utils/get-optional.js";
 import { getWhitespaceDefs, } from "./utils/get-whitespace-def.js";
 import { star, } from "./utils/get-star.js";
 import { validNameDef, } from "./constants/grammar-definitions.js";
+import {
+  $,
+  $o,
+  $r,
+  GBNFRule,
+} from "./utils/rule.js";
 
 export const parse = (
   parser: GrammarBuilder,
-  symbolName: string,
   opts: {
     whitespace: WhitespaceKind;
     case: CaseKind,
   },
   database: void | Database,
   // schema?: string,
-) => {
+): GBNFRule => {
   const KEYS = addCasedWords(parser, opts.case);
   const anyValidStringValueInQuotes = parser.addRule('[^\'\\"]+', ANY_VALID_STRING_VALUE_IN_QUOTES);
   const stringWithSingleQuotesKey = parser.addRule(join(
@@ -92,12 +95,23 @@ export const parse = (
     optionalNonRecommendedWhitespace,
     mandatoryWhitespace,
   }), INSERT_RULE);
-  const root = join(
-    any(
-      selectRule,
-      insertRule,
-    ),
-    opt(optionalNonRecommendedWhitespace, SEMI_KEY),
-  );
-  parser.addRule(root, symbolName);
+  // const _optionalNonRecommendedWhitespace = opts.whitespace === 'verbose' ? $o`${$r`" "`}` : undefined;
+  const _optionalNonRecommendedWhitespace = opts.whitespace === 'verbose' ? $o`
+  ---
+  raw: true
+  ---
+  ws` : undefined;
+  // "\\\\x20" | "\\\\x0A" | "\\\\x09"` : undefined;
+  //   '\r'   // carriage return - \x0D
+  // '\v'   // vertical tab    - \x0B 
+  // '\f'   // form feed       - \x0C
+  // '\u2028' // line separator
+  // '\u2029' // paragraph separator
+  return $`
+    ${$r`${selectRule} | ${insertRule}`}
+    ${$o`${_optionalNonRecommendedWhitespace};`}
+  `;
 };
+
+// if a raw string, whitespace is thrown away (not treated as special)
+// if _not_ a raw string, whitespace is stringified

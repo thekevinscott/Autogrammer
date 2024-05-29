@@ -50,10 +50,11 @@ describe('Schema Tests', () => {
   test.each([
     'SELECT id, user_id, title, body, created_at FROM posts;',
   ])('it renders for a schema: %s', (initial) => {
-    const grammar = SQL2GBNF(undefined, {
-      whitespace: 'verbose',
+    const grammar = SQL2GBNF({
       schema,
       schemaFormat: 'postgres',
+    }, {
+      whitespace: 'verbose',
     });
     // console.log(grammar);
     let parser = GBNF(grammar);

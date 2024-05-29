@@ -1,13 +1,9 @@
 import {
   GrammarBuilder,
-  joinWith,
 } from "gbnf";
 import {
   parse,
 } from "./parse.js";
-import {
-  GLOBAL_CONSTANTS,
-} from "./constants/constants.js";
 import type {
   DBMLSchemaOpts,
   SchemaOpts,
@@ -15,8 +11,9 @@ import type {
 import {
   getDBML,
 } from "./get-dbml.js";
-
-export const ROOT_ID = 'sqltogbnf';
+import {
+  buildGBNF,
+} from "./utils/build-gbnf.js";
 
 export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
   whitespace = 'default',
@@ -25,9 +22,8 @@ export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
   const database = getDBML(schemaDef);
   const parser = new GrammarBuilder();
 
-  parse(
+  const gbnf = parse(
     parser,
-    ROOT_ID,
     {
       whitespace,
       case: caseKind,
@@ -35,11 +31,6 @@ export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
     database,
   );
 
-  return joinWith('\n',
-    ...[
-      `root ::= ${ROOT_ID}`,
-      ...parser.grammar,
-    ].sort(),
-    ...GLOBAL_CONSTANTS,
-  );
+
+  return buildGBNF(parser, gbnf);
 };
