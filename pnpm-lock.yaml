@@ -14,9 +14,6 @@ importers:
       '@mlc-ai/web-llm':
         specifier: ^0.2.35
         version: 0.2.35
-      '@vanillawc/wc-codemirror':
-        specifier: ^2.1.0
-        version: 2.1.0
       '@xenova/transformers':
         specifier: ^2.17.1
         version: 2.17.1
@@ -1443,9 +1440,6 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
-
-  '@vanillawc/wc-codemirror@2.1.0':
-    resolution: {integrity: sha512-nbmUhfEZpbKx72R6Tm4IEMNXh4r2Mw1uGPZ3eObv2FUyiH3EVIFFenJV1dptAUapamHn+5cmqQnlypOgr6bGCw==}
 
   '@vanillawc/wc-monaco-editor@1.10.15':
     resolution: {integrity: sha512-A0PgAPoFxe1JqRyKHKyVdYYJLE8vivxC3EAQ5o4vV429AHeJNl0qRdC0U/8IUL3OwGBqAgQT32lUxT4iCIY29A==}
@@ -5370,8 +5364,6 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@ungap/structured-clone@1.2.0': {}
-
-  '@vanillawc/wc-codemirror@2.1.0': {}
 
   '@vanillawc/wc-monaco-editor@1.10.15': {}
 
