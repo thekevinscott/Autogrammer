@@ -1,10 +1,14 @@
 import {
   join,
 } from "gbnf/builder-v1";
+import {
+  $,
+  GrammarBuilder,
+} from "gbnf/builder-v2";
 import { rule, } from "../utils/get-rule.js";
+import { addShorthand, } from "../add-shorthand.js";
 
-export const getInsertQuery = ({
-  insert,
+export const getInsertQuery = (parser: GrammarBuilder, {
   optionalRecommendedWhitespace,
   optionalNonRecommendedWhitespace,
   tableName,
@@ -14,7 +18,6 @@ export const getInsertQuery = ({
   values,
   valuesList,
 }: {
-  insert: string;
   optionalRecommendedWhitespace: string;
   optionalNonRecommendedWhitespace: string;
   tableName: string;
@@ -24,6 +27,8 @@ export const getInsertQuery = ({
   values: string;
   valuesList: string;
 }) => {
+  const INSERT = 'insert';
+  addShorthand($.key(INSERT)`INSERT INTO `, parser);
   const columnInsertList = rule(
     optionalRecommendedWhitespace,
     lparen,
@@ -43,7 +48,7 @@ export const getInsertQuery = ({
     optionalRecommendedWhitespace,
   );
   return join(
-    insert,
+    INSERT,
     tableName,
     columnInsertList,
     values,

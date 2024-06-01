@@ -106,6 +106,7 @@ import { buildCase, } from "../utils/build-case.js";
 import {
   $,
   GrammarBuilder,
+  _,
 } from "gbnf/builder-v2";
 import {
   join,
@@ -157,26 +158,32 @@ export const select = (
     singleColumn?: boolean;
   }
 ): string => {
-  // const quote = parser.addRule(any(SINGLE_QUOTE_KEY, DOUBLE_QUOTE_KEY), QUOTE);
-  const equalOps = parser.addRule(any(
-    `"="`,
-    `"!="`,
-    KEYS[IS],
-    rule(join(KEYS[IS], mandatoryWhitespace, KEYS[NOT]))
-  ), EQUAL_OPS);
-  const arithmeticOps = parser.addRule(any(
-    '"+"',
-    '"-"',
-    '"*"',
-    '"-"',
-  ), ARITHMETIC_OPS);
-  const numericOps = parser.addRule(any(
-    '">"',
-    '"<"',
-    '">="',
-    '"<="',
-  ), NUMERIC_OPS);
-  const stringOps = parser.addRule(`${KEYS[LIKE]}`, STRING_OPS);
+  addShorthand(_.key(EQUAL_OPS)`
+  (
+    "="
+    | "!="
+    | ${$`IS`} 
+    | ${$`IS NOT`} 
+  )
+  `, parser);
+  addShorthand(_.key(ARITHMETIC_OPS)`
+  (
+    "+"
+    | "-"
+    | "*"
+    | "/"
+  )
+  `, parser);
+  addShorthand(_.key(NUMERIC_OPS)`
+  (
+    ">"
+    | "<"
+    | ">="
+    | "<="
+  )
+  `, parser);
+
+  addShorthand($.key(STRING_OPS)`LIKE`, parser);
   const aggregatorOps = parser.addRule(buildCase(
     caseKind,
     'MIN',
@@ -196,7 +203,7 @@ export const select = (
   const countAggregatorRule = parser.addRule(getCountAggregator({
     countAggregator: KEYS[COUNT_AGGREGATOR],
     validName: validFullName,
-    arithmeticOps,
+    arithmeticOps: ARITHMETIC_OPS,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
@@ -209,7 +216,7 @@ export const select = (
     rightParen: RIGHT_PAREN_KEY,
     aggregatorOps,
     validName: validFullName,
-    arithmeticOps,
+    arithmeticOps: ARITHMETIC_OPS,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
@@ -277,7 +284,7 @@ export const select = (
 
   const stringWildcard = stringWithQuotes;
   const equalClause = parser.addRule(join(
-    equalOps,
+    EQUAL_OPS,
     optionalRecommendedWhitespace,
     any(validFullName, positiveIntegerDef, stringWithQuotes),
   ),
@@ -298,7 +305,7 @@ export const select = (
     SINGLE_QUOTE_KEY,
   ), DATE_DEFINITION);
   const numericClause = parser.addRule(join(
-    numericOps,
+    NUMERIC_OPS,
     optionalRecommendedWhitespace,
     any(
       rule(NUMBER),
@@ -306,7 +313,7 @@ export const select = (
     ),
   ), NUMERIC_WHERE_CLAUSE);
   const wildcardClause = parser.addRule(join(
-    stringOps,
+    STRING_OPS,
     optionalRecommendedWhitespace,
     stringWildcard,
   ), WILDCARD_WHERE_CLAUSE);
@@ -438,9 +445,9 @@ export const select = (
     is: KEYS[IS],
     not: KEYS[NOT],
     nullKey: KEYS[NULL],
-    numericOps,
-    stringOps,
-    equalOps,
+    numericOps: NUMERIC_OPS,
+    stringOps: STRING_OPS,
+    equalOps: EQUAL_OPS,
     stringWildcard,
     boolean: BOOLEAN,
     whitespace: mandatoryWhitespace,
