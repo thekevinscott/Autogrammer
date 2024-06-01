@@ -5,7 +5,6 @@ import {
 import {
   _,
   GrammarBuilder,
-  GBNFRule,
 } from "gbnf/builder-v2";
 import {
   select as getSelectRule,
