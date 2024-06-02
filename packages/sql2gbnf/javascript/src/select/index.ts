@@ -13,7 +13,6 @@ import {
   AND_MORE,
   EQUAL_OPS,
   ANY_WHERE_CLAUSE,
-  AS,
   BETWEEN,
   BETWEEN_WHERE_CLAUSE,
   DIR,
@@ -101,7 +100,6 @@ import {
 } from "./get-projection.js";
 import { getTableName, } from "./get-table-name.js";
 import { getWhereClause, } from "./get-where-clause.js";
-import { buildCase, } from "../utils/build-case.js";
 import {
   $,
   GrammarBuilder,
@@ -133,7 +131,6 @@ export const select = (
   parser: GrammarBuilder,
   KEYS: Record<string, string>,
   {
-    case: caseKind,
   }: {
     whitespace: WhitespaceKind;
     case: CaseKind,
@@ -157,49 +154,14 @@ export const select = (
     singleColumn?: boolean;
   }
 ): string => {
-  addShorthand(_.key(EQUAL_OPS)`
-  (
-    "="
-    | "!="
-    | ${$`IS`} 
-    | ${$`IS NOT`} 
-  )
-  `, parser);
-  addShorthand(_.key(ARITHMETIC_OPS)`
-  (
-    "+"
-    | "-"
-    | "*"
-    | "/"
-  )
-  `, parser);
-  addShorthand(_.key(NUMERIC_OPS)`
-  (
-    ">"
-    | "<"
-    | ">="
-    | "<="
-  )
-  `, parser);
-
+  addShorthand(_.key(EQUAL_OPS)` ( "=" | "!=" | ${$`IS`} | ${$`IS NOT`} ) `, parser);
+  addShorthand(_.key(ARITHMETIC_OPS)` ( "+" | "-" | "*" | "/") `, parser);
+  addShorthand(_.key(NUMERIC_OPS)` ( ">" | "<" | ">=" | "<=") `, parser);
   addShorthand($.key(STRING_OPS)`LIKE`, parser);
-  const aggregatorOps = parser.addRule(buildCase(
-    caseKind,
-    'MIN',
-    'MAX',
-    'AVG',
-    'SUM',
-  ), AGGREGATORS);
-  const asColAlias = parser.addRule(join(
-    KEYS[AS],
-    mandatoryWhitespace,
-    validFullName
-  ), AS_COL_ALIAS);
-  const asTableAlias = parser.addRule(join(
-    '',
-    validFullName
-  ), AS_TABLE_ALIAS);
-  const countAggregatorRule = parser.addRule(getCountAggregator({
+  addShorthand(_.key(AGGREGATORS)` (${$`MIN`} | ${$`MAX`} | ${$`AVG`} | ${$`SUM`}) `, parser);
+  addShorthand(_.key(AS_COL_ALIAS)`${$`AS `} ${validFullName}`, parser);
+  addShorthand(_.key(AS_TABLE_ALIAS)`${$`${validFullName}`}`, parser);
+  const countAggregatorRule = parser.addRule(getCountAggregator(parser, {
     countAggregator: KEYS[COUNT_AGGREGATOR],
     validName: validFullName,
     arithmeticOps: ARITHMETIC_OPS,
@@ -213,7 +175,7 @@ export const select = (
   const otherAggregatorsRule = parser.addRule(getOtherAggregators({
     leftParen: LEFT_PAREN_KEY,
     rightParen: RIGHT_PAREN_KEY,
-    aggregatorOps,
+    aggregatorOps: AGGREGATORS,
     validName: validFullName,
     arithmeticOps: ARITHMETIC_OPS,
     optionalRecommendedWhitespace,
@@ -230,9 +192,7 @@ export const select = (
   }), COLUMN_NAMES);
   const tableName = parser.addRule(getTableName({
     validName: validFullName,
-    // validName: database ? '{{TABLE_NAME}}' : validFullName,
-    // validName: '("posts" | "users" | "comments")',
-    asAlias: asTableAlias,
+    asAlias: AS_TABLE_ALIAS,
     whitespace: mandatoryWhitespace,
   }), TABLE);
   const overStatement = parser.addRule(getOverStatement({
@@ -384,7 +344,7 @@ export const select = (
     order: KEYS[ORDER],
     direction: KEYS[DIR],
     validColName: columnNames,
-    asAlias: asColAlias,
+    asAlias: AS_COL_ALIAS,
     optionalWhitespace: optionalRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   }), ORDER_CLAUSE);
@@ -429,7 +389,7 @@ export const select = (
     comma: COMMA_KEY,
     group: KEYS[GROUP],
     validColName: columnNames,
-    asAlias: asColAlias,
+    asAlias: AS_COL_ALIAS,
     optionalWhitespace: optionalRecommendedWhitespace,
     whitespace: mandatoryWhitespace,
   }), GROUP_CLAUSE);
@@ -438,7 +398,7 @@ export const select = (
     optionalNonRecommendedWhitespace,
     having: KEYS[HAVING],
     validColName: columnNames,
-    asAlias: asColAlias,
+    asAlias: AS_COL_ALIAS,
     number: NUMBER,
     string: stringWithQuotes,
     is: KEYS[IS],
@@ -455,7 +415,7 @@ export const select = (
   const possibleColsWithAlias = parser.addRule(getPossibleColumnsWithAlias({
     columnNames,
     overStatement,
-    asAlias: asColAlias,
+    asAlias: AS_COL_ALIAS,
     windowStatement,
     whitespace: mandatoryWhitespace,
   }), POSSIBLE_COLUMNS_WITH_ALIAS);

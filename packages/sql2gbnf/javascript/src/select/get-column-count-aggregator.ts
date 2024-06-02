@@ -5,8 +5,9 @@ import { rule, } from "../utils/get-rule.js";
 import { star, } from "../utils/get-star.js";
 import { opt, } from "../utils/get-optional.js";
 import { any, } from "../utils/any.js";
+import { GrammarBuilder, } from "gbnf/builder-v2";
 
-export const getCountAggregator = ({
+export const getCountAggregator = (parser: GrammarBuilder, {
   countAggregator,
   arithmeticOps,
   validName,
@@ -26,23 +27,25 @@ export const getCountAggregator = ({
   rightParen: string;
   distinct: string;
   whitespace: string;
-}) => join(
-  countAggregator,
-  leftParen,
-  optionalNonRecommendedWhitespace,
-  any(
-    '"*"',
-    rule(
-      opt(distinct, whitespace),
-      validName,
-      star(
-        optionalRecommendedWhitespace,
-        arithmeticOps,
-        optionalRecommendedWhitespace,
+}) => {
+  return join(
+    countAggregator,
+    leftParen,
+    optionalNonRecommendedWhitespace,
+    any(
+      '"*"',
+      rule(
+        opt(distinct, whitespace),
         validName,
+        star(
+          optionalRecommendedWhitespace,
+          arithmeticOps,
+          optionalRecommendedWhitespace,
+          validName,
+        ),
       ),
     ),
-  ),
-  optionalNonRecommendedWhitespace,
-  rightParen,
-);
+    optionalNonRecommendedWhitespace,
+    rightParen,
+  );
+};

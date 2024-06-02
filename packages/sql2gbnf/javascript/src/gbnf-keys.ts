@@ -10,7 +10,6 @@ export const LIMIT = 'limit';
 export const OFFSET = 'offset';
 export const DATE_DEFINITION = 'datedef';
 export const AND = 'and';
-export const AS = 'as';
 export const OR = 'or';
 export const ON = 'on';
 export const NOT = 'not';

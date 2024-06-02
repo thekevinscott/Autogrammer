@@ -5,9 +5,11 @@ import {
 } from 'vitest';
 import GBNF from "gbnf";
 import { getCountAggregator } from './get-column-count-aggregator.js';
+import { GrammarBuilder } from 'gbnf/builder-v2';
 
 describe('getCountAggregator', () => {
-  const grammar = getCountAggregator({
+  const grammarBuilder = new GrammarBuilder();
+  const grammar = getCountAggregator(grammarBuilder, {
     leftParen: '"("',
     rightParen: '")"',
     countAggregator: '"COUNT"',

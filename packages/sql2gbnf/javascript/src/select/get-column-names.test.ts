@@ -7,8 +7,10 @@ import GBNF from "gbnf";
 import { getColumnNames } from './get-column-names.js';
 import { getOtherAggregators } from './get-other-aggregators.js';
 import { getCountAggregator } from './get-column-count-aggregator.js';
+import { GrammarBuilder } from 'gbnf/builder-v2';
 
 describe('getColumnNames', () => {
+  const grammarBuilder = new GrammarBuilder();
   const grammar = getColumnNames({
     validName: 'validName',
     otherAggregatorsRule: getOtherAggregators({
@@ -22,7 +24,7 @@ describe('getColumnNames', () => {
       validName: 'validName',
       aggregatorOps: '("SUM" | "AVG" | "MIN" | "MAX")',
     }),
-    countAggregatorRule: getCountAggregator({
+    countAggregatorRule: getCountAggregator(grammarBuilder, {
       validName: 'validName',
       leftParen: '"("',
       rightParen: '")"',

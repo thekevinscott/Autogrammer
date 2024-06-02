@@ -4,7 +4,6 @@ import {
 
 import {
   AND,
-  AS,
   BETWEEN,
   DIR,
   DISTINCT,
@@ -93,7 +92,6 @@ export const addCasedWords = (parser: GrammarBuilder, caseKind: CaseKind): Cased
   [OFFSET, ['offset',],],
   [AND, ['and',],],
   [PARTITION, ['partition by',],],
-  [AS, ['as',],],
   [NULL, ['null',],],
   [OVER, ['over',],],
   [OR, ['OR',],],
