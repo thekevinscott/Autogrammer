@@ -29,7 +29,6 @@ import {
   JOIN_CLAUSE,
   JOIN_TYPE,
   LEFT,
-  LIKE,
   LIMIT,
   LIMIT_CLAUSE,
   NOT,

@@ -1,6 +1,5 @@
 import {
   GrammarBuilder,
-  $,
   _,
 } from "gbnf/builder-v2";
 import type {
@@ -8,21 +7,17 @@ import type {
   Database,
   WhitespaceKind,
 } from "../types.js";
-import { star, } from "../utils/get-star.js";
 import {
   NULL,
-  VALUE,
 } from "../gbnf-keys.js";
 import { getInsertQuery, } from "./get-insert-query.js";
 import { rule, } from "../utils/get-rule.js";
 import {
   BOOLEAN,
-  COMMA_KEY,
   LEFT_PAREN_KEY,
   NUMBER,
   RIGHT_PAREN_KEY,
 } from "../constants/grammar-keys.js";
-import { any, } from "../utils/any.js";
 import {
   select as getSelectRule,
 } from '../select/index.js';

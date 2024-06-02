@@ -19,7 +19,6 @@ export const IN = 'in';
 export const NULL = 'null';
 export const OVER = 'over';
 export const PARTITION = 'partition';
-export const LIKE = 'like';
 export const BETWEEN = 'between';
 export const EQUAL_OPS = 'equalops';
 export const NUMERIC_OPS = 'numericops';

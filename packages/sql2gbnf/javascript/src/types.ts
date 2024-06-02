@@ -1,4 +1,4 @@
-import type { SchemaOpts as _SchemaOpts, } from 'gbnf';
+import type { SchemaOpts as _SchemaOpts, } from 'gbnf/builder-v1';
 import type { Parser, importer, } from "@dbml/core";
 /* eslint-disable @typescript-eslint/ban-types */
 
