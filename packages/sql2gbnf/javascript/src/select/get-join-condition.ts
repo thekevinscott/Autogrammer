@@ -1,43 +1,38 @@
-import { rule, } from "../utils/get-rule.js";
-import { star, } from "../utils/get-star.js";
-import { any, } from "../utils/any.js";
+import {
+  $,
+  GBNFRule,
+  _,
+} from "gbnf/builder-v2";
 
 export const getJoinCondition = ({
   whitespace,
-  and,
-  or,
-  // optionalRecommendedWhitespace,
   optionalNonRecommendedWhitespace,
-  leftParen,
-  rightParen,
   equijoinCondition,
 }: {
-  whitespace: string;
-  and: string;
-  or: string;
-  optionalRecommendedWhitespace: string;
-  optionalNonRecommendedWhitespace: string;
-  leftParen: string;
-  rightParen: string;
-  equijoinCondition: string;
-}) => {
-  const equijoinConditions = rule(
-    equijoinCondition,
-    star(
-      whitespace,
-      any(and, or),
-      whitespace,
-      equijoinCondition,
-    ),
-  );
-  return any(
-    rule(
-      leftParen,
-      optionalNonRecommendedWhitespace,
-      equijoinConditions,
-      optionalNonRecommendedWhitespace,
-      rightParen,
-    ),
-    equijoinConditions,
-  );
+  whitespace: GBNFRule | undefined;
+  optionalNonRecommendedWhitespace: GBNFRule | undefined;
+  equijoinCondition: GBNFRule;
+}): GBNFRule => {
+  const equijoinConditions = _`
+    ${equijoinCondition}
+    ${_`
+      ${whitespace}
+      ${_`
+        ${$`AND`}
+        | ${$`OR`}
+      `}
+      ${whitespace}
+      ${equijoinCondition}
+    `.wrap('*')}
+  `;
+  return _`
+  ${_`
+    "("
+      ${optionalNonRecommendedWhitespace}
+      ${equijoinConditions}
+      ${optionalNonRecommendedWhitespace}
+    ")"
+  `}
+  | ${equijoinConditions}
+  `;
 };

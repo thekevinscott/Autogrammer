@@ -13,17 +13,6 @@ import GBNF, {
 
 describe('Whitespace, no schema', () => {
   describe('verbose', () => {
-
-    test('it accepts a SQL query with any whitespace', () => {
-      const grammar = SQL2GBNF(undefined, {
-        whitespace: 'verbose',
-      });
-      let parser = GBNF(grammar);
-      const initial = `SELECT first_name, \n last_name \n FROM \n employees \n WHERE   department \n = 'Sales';`;
-      parser = parser.add(initial);
-      expect(parser.size).toBeGreaterThan(0);
-    });
-
     test.each([
       `select foo, bar,  froo`,
       'SELECT foo, bar FROM table;',
@@ -32,6 +21,8 @@ describe('Whitespace, no schema', () => {
       'SELECT col FROM table WHERE col =1',
       'SELECT col FROM table WHERE col =1;',
       `SELECT first_name,last_name`,
+      `SELECT first_name,\\nlast_name,fo\\n`,
+      `SELECT first_name,\\n last_name,fo\\n`,
       `SELECT first_name,\\t last_name,fo\\n`,
       `SELECT first_name, \\n last_name FROM \\n f \\t f1 WHERE x>`,
       `SELECT first_name, last_name FROM f f1 WHERE \\t x >1`,
@@ -44,6 +35,7 @@ describe('Whitespace, no schema', () => {
       `SELECT order_id FROM orders HAVING SUM(oi.quantity * oi.unit_price)>'2023-12-31'`,
       `SELECT order_id FROM orders HAVING SUM(oi.quantity * oi.unit_price)>500`,
       `SELECT order_id, COUNT(*) FROM orders GROUP BY order_id HAVING foo="foo";`,
+      `SELECT first_name, \\n last_name \\n FROM \\n employees \\n WHERE   department \\n = 'Sales';`,
       `SELECT employee_id, salary, SUM(salary) OVER() AS total_salary FROM salaries;`,
     ])('it accepts any amount of whitespace: %s', (initial) => {
       const grammar = SQL2GBNF(undefined, {
@@ -60,6 +52,7 @@ describe('Whitespace, no schema', () => {
     test.each([
       `SELECT first_name, last_name FROM employees WHERE department = 'Sales';`,
       `SELECT first_name, COUNT(age) FROM employees WHERE department = 'Sales';`,
+      `SELECT first_name, COUNT(age) FROM employees WHERE x > 1 LIMIT 0, 1`,
     ])('it accepts a SQL query with singular whitespace', (initial) => {
       const grammar = SQL2GBNF(undefined, {
         whitespace: 'default',
@@ -75,7 +68,26 @@ describe('Whitespace, no schema', () => {
       [`SELECT first_name, last_name FROM f f1 WHERE x>`, 46],
       [`SELECT first_name, last_name FROM f f1 WHERE x >1`, 48],
       [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,1`, 59],
-    ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
+    ])('it rejects missing whitespace: %s', (initial, errorPos) => {
+      const grammar = SQL2GBNF(undefined, {
+        whitespace: 'default',
+      });
+      let parser = GBNF(grammar);
+      expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));
+    });
+
+    test.each([
+      [`SELECT first_name,  last_name`, 19],
+      [`SELECT first_name, \\nlast_name`, 19],
+      [`SELECT first_name, last_name,  fo`, 30],
+      [`SELECT first_name, last_name, \\nfo`, 30],
+      [`SELECT first_name, last_name FROM f f1 WHERE x  >`, 47],
+      [`SELECT first_name, last_name FROM f f1 WHERE x \\t>`, 47],
+      [`SELECT first_name, last_name FROM f f1 WHERE x >  1`, 49],
+      [`SELECT first_name, last_name FROM f f1 WHERE x > \\n1`, 49],
+      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  1`, 61],
+      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  \\n1`, 61],
+    ])('it rejects excess whitespace: %s', (initial, errorPos) => {
       const grammar = SQL2GBNF(undefined, {
         whitespace: 'default',
       });

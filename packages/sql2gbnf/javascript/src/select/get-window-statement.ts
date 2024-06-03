@@ -1,66 +1,38 @@
 import {
-  join,
-} from "gbnf/builder-v1";
-import { rule, } from "../utils/get-rule.js";
-import { opt, } from "../utils/get-optional.js";
-import { any, } from "../utils/any.js";
+  $,
+  GBNFRule,
+  _,
+} from "gbnf/builder-v2";
 
 export const getWindowStatement = ({
-  rank,
-  denserank,
-  rownumber,
   colName,
-  comma,
   positiveInteger,
-  lead,
-  lag,
   optionalRecommendedWhitespace,
-  // whitespace: ws,
   optionalNonRecommendedWhitespace,
-  leftparen,
-  rightparen,
 }: {
-  optionalNonRecommendedWhitespace: string;
-  whitespace: string,
-  optionalRecommendedWhitespace: string,
-  rank: string;
-  denserank: string;
-  rownumber: string;
-  colName: string;
-  comma: string;
-  positiveInteger: string;
-  lead: string;
-  lag: string;
-  leftparen: string;
-  rightparen: string;
-}) => join(
-  any(
-    rule(
-      any(
-        rank,
-        denserank,
-        rownumber,
-      ),
-      `"()"`,
-    ),
-    rule(
-      any(
-        lead,
-        lag,
-      ),
-      leftparen,
-      optionalNonRecommendedWhitespace,
-      colName,
-      comma,
-      optionalRecommendedWhitespace,
-      positiveInteger,
-      opt(
-        comma,
-        optionalRecommendedWhitespace,
-        positiveInteger,
-      ),
-      optionalNonRecommendedWhitespace,
-      rightparen,
-    ),
-  ),
-);
+  optionalNonRecommendedWhitespace: GBNFRule | undefined;
+  optionalRecommendedWhitespace: GBNFRule | undefined;
+  colName: GBNFRule;
+  positiveInteger: GBNFRule;
+}): GBNFRule => _`
+  ${_`
+    ${_` ${$`RANK`} | ${$`DENSE_RANK`} | ${$`ROW_NUMBER`} `} 
+    "()"
+  `}
+  | ${_`
+    ${_` ${$`LEAD`} | ${$`LAG`} `}
+    "("
+      ${optionalNonRecommendedWhitespace}
+      ${colName}
+      ","
+      ${optionalRecommendedWhitespace}
+      ${positiveInteger}
+      ${_`
+        "," 
+        ${optionalRecommendedWhitespace} 
+        ${positiveInteger}
+      `.wrap('?')}
+      ${optionalNonRecommendedWhitespace}
+    ")"
+  `}
+`;

@@ -13,21 +13,25 @@ import { getStringValue, } from "./get-string-value.js";
 interface Opts {
   raw: boolean;
   name?: string;
+  wrapped?: string;
 }
 
 export class GBNFRule {
   raw: boolean;
   name?: string;
+  wrapped?: string;
   constructor(
     protected strings: TemplateStringsArray,
     protected values: Value[],
     {
       raw,
       name,
+      wrapped,
     }: Opts
   ) {
     this.raw = raw;
     this.name = name;
+    this.wrapped = wrapped;
   }
 
   compile = ({ caseKind = 'default', }: {
@@ -37,6 +41,14 @@ export class GBNFRule {
     return joinWith('\n',
       ...[...parser.grammar,].sort(),
     );
+  };
+
+  wrap = (wrapped: string = '') => {
+    return new GBNFRule(this.strings, this.values, {
+      raw: this.raw,
+      name: this.name,
+      wrapped,
+    });
   };
 
   addToParser = (parser: GrammarBuilder, caseKind: CaseKind, leaf = false): string => {
@@ -50,10 +62,14 @@ export class GBNFRule {
     // first, get rule names for each value
     const ruleNames = values.map((value) => value instanceof GBNFRule ? value.addToParser(parser, caseKind, true) : value);
 
-    const gbnf = join(...strings.reduce<(string | undefined)[]>((acc, string, i) => acc.concat([
+    let gbnf = join(...strings.reduce<(string | undefined)[]>((acc, string, i) => acc.concat([
       raw ? getRawValue(string) : getStringValue(string, caseKind),
       ruleNames[i],
     ]), []).filter(Boolean));
+
+    if (this.wrapped !== undefined) {
+      gbnf = `(${gbnf})${this.wrapped}`;
+    }
 
     return parser.addRule(gbnf, !leaf ? 'root' : name);
   };

@@ -8,11 +8,8 @@ import { getJoinClause, } from "./get-join-clause.js";
 import { getJoinCondition } from './get-join-condition.js';
 
 describe('getJoinClause', () => {
-  const grammar = getJoinClause({
-    joinKey: '"JOIN"',
-    joinType: 'joinType',
+  const rule = getJoinClause({
     tableWithOptionalAlias: 'validName',
-    on: '"ON"',
     whitespace: 'ws',
     joinCondition: getJoinCondition({
       and: '"AND"',
@@ -33,8 +30,7 @@ describe('getJoinClause', () => {
     'INNER JOIN table1 ON ( table1.col1 = table2.col2 )',
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const fullGrammar = [
-      `root ::= ${grammar}`,
-      `joinType ::= ("INNER "|"LEFT "|"RIGHT "|"OUTER "|"FULL OUTER ")`,
+      rule.compile(),
       `ws ::= (" ")+`,
       `optws ::= (" ")*`,
       `optnws ::= optws`,
@@ -53,7 +49,7 @@ describe('getJoinClause', () => {
     ['INNER JOIN table1 ON table1.col1 = table2.col2);', 46],
   ])('it raises on bad input %s', (_initial, errorPos) => {
     const fullGrammar = [
-      `root ::= ${grammar}`,
+      rule.compile(),
       `joinType ::= ("INNER "|"LEFT "|"RIGHT "|"OUTER "|"FULL OUTER ")`,
       `ws ::= (" ")+`,
       `optws ::= (" ")*`,

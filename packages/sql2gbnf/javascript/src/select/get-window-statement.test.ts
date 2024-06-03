@@ -7,7 +7,7 @@ import GBNF from "gbnf";
 import { getWindowStatement } from './get-window-statement.js';
 
 describe('getWindowStatement', () => {
-  const grammar = getWindowStatement({
+  const rule = getWindowStatement({
     rank: '"RANK"',
     denserank: '"DENSE_RANK"',
     rownumber: '"ROW_NUMBER"',
@@ -33,7 +33,7 @@ describe('getWindowStatement', () => {
     `LAG(salary, 1, 0)`,
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const fullGrammar = [
-      `root ::= ${grammar}`,
+      rule.compile(),
       `com ::= ","`,
       `ws ::= (" ")+`,
       `optws ::= (" ")*`,
