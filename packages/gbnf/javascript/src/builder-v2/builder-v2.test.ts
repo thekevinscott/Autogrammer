@@ -49,44 +49,44 @@ describe('scratch', () => {
   test.each([
     [
       [
-        'root ::= [a-z] foo',
-        'foo ::= "FOO"',
+        'root ::= [a-z] x',
+        'x ::= "FOO"',
       ].join('\\n'),
       _`[a-z] ${$`FOO`}`,
     ],
     [
       [
-        'root ::= [a-z] foo',
-        'foo ::= "FOO"',
+        'root ::= [a-z] x',
+        'x ::= "FOO"',
       ].join('\\n'),
       _` \n[a-z] \n${$`FOO`}`,
     ],
     [
       [
-        'root ::= [a-z] ab ab',
-        'ab ::= [A-B]',
+        'root ::= [a-z] x x',
+        'x ::= [A-B]',
       ].join('\\n'),
       _` [a-z] ${_`[A-B]`} ${_`[A-B]`}`,
     ],
     [
       [
-        'root ::= [a-z] az',
-        'az ::= [A-Z]',
+        'root ::= [a-z] x',
+        'x ::= [A-Z]',
       ].join('\\n'),
       _` [a-z] ${_`[A-Z]`}`,
     ],
     [
       [
-        'root ::= [a-z] az az',
-        'az ::= [A-Z]',
+        'root ::= [a-z] x x',
+        'x ::= [A-Z]',
       ].join('\\n'),
       _` [a-z] ${_`[A-Z]`} ${_`[A-Z]`}`,
     ],
     // rules with extra spaces should resolve to the same rule
     [
       [
-        'root ::= [a-z] az az',
-        'az ::= [A-Z]',
+        'root ::= [a-z] x x',
+        'x ::= [A-Z]',
       ].join('\\n'),
       _` [a-z] ${_` \n\t[A-Z]`} ${_`[A-Z] \n\t`}`,
     ],
@@ -108,9 +108,9 @@ describe('scratch', () => {
     ],
     [
       [
-        'root ::= az az-a',
-        'az ::= [a-z]',
-        'az-a ::= [ a-z]',
+        'root ::= x x-a',
+        'x ::= [a-z]',
+        'x-a ::= [ a-z]',
       ].join('\\n'),
       _`${_`[a-z]`} ${_`[ a-z]`}`,
     ],
@@ -132,7 +132,6 @@ describe('scratch', () => {
       _`${_.key('az')`[a-z]`} ${_.key('az')`[ a-z]`} ${_.key('az')`[ a-z ]`}`,
     ],
 
-    // intelligent rule names
     [
       [
         'root ::= x',
@@ -147,41 +146,6 @@ describe('scratch', () => {
       ].join('\\n'),
       _`${_`" "`}`,
     ],
-    [
-      [
-        'root ::= x-alts',
-        'x-alts ::= ("1" | "2")',
-      ].join('\\n'),
-      _`${_`("1" | "2")`}`,
-    ],
-    [
-      [
-        'root ::= a-b-alts',
-        'a-b-alts ::= ("a" | "b")',
-      ].join('\\n'),
-      _`${_`("a" | "b")`}`,
-    ],
-    [
-      [
-        'root ::= az-optional',
-        'az-optional ::= ([a-z])?',
-      ].join('\\n'),
-      _`${_`([a-z])?`}`,
-    ],
-    [
-      [
-        'root ::= az-rpt-zero-up',
-        'az-rpt-zero-up ::= ([a-z])*',
-      ].join('\\n'),
-      _`${_`([a-z])*`}`,
-    ],
-    [
-      [
-        'root ::= az-rpt-one-up',
-        'az-rpt-one-up ::= ([a-z])+',
-      ].join('\\n'),
-      _`${_`([a-z])+`}`,
-    ],
   ])(`(multiline) '%s'`, (_expectation, rule) => {
     const expectation = _expectation.replace(/\\n/g, '\n').replace(/\\t/g, '\t').split('\n').sort().join('\n');
     expect(rule.compile()).toEqual(expectation);
@@ -190,11 +154,11 @@ describe('scratch', () => {
   test.each([
     [
       [
-        'root ::= select column-name from az',
+        'root ::= x column-name x-a x-b',
         'column-name ::= ("*" | [a-z])',
-        'select ::= "SELECT "',
-        'az ::= [a-z]',
-        'from ::= " FROM "',
+        'x ::= "SELECT "',
+        'x-b ::= [a-z]',
+        'x-a ::= " FROM "',
       ].join('\\n'),
       _`
       ${$`SELECT `}
