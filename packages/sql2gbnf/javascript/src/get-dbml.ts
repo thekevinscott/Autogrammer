@@ -2,7 +2,7 @@ import { isDBMLStringSchema, } from "./type-guards.js";
 import { Parser, importer, } from "@dbml/core";
 import type { DBMLSchemaOpts, Database, } from "./types.js";
 
-export const getDBML = (opts: DBMLSchemaOpts): void | Database => {
+export const getDBML = (opts: DBMLSchemaOpts): undefined | Database => {
   if (!('schema' in opts)) {
     return;
   }

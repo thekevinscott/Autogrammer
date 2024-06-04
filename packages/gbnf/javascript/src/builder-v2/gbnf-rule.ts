@@ -43,7 +43,7 @@ export class GBNFRule {
     );
   };
 
-  wrap = (wrapped: string = '') => {
+  wrap = (wrapped = '') => {
     return new GBNFRule(this.strings, this.values, {
       raw: this.raw,
       name: this.name,

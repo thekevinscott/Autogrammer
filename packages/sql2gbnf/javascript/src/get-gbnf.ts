@@ -21,7 +21,7 @@ export const getGBNF = (
     case: CaseKind,
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  database: void | Database,
+  database?: Database,
   // schema?: string,
 ): GBNFRule => {
   const validString = _`[^\'\\"]+`;
@@ -49,7 +49,7 @@ export const getGBNF = (
     boolean,
     number,
     validFullName,
-    stringWithQuotes: stringWithQuotes,
+    stringWithQuotes,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     mandatoryWhitespace,
@@ -60,7 +60,7 @@ export const getGBNF = (
     boolean,
     number,
     validFullName,
-    stringWithQuotes: stringWithQuotes,
+    stringWithQuotes,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
     mandatoryWhitespace,
