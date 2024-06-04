@@ -5,7 +5,7 @@ import {
 } from 'vitest';
 import GBNF from "gbnf";
 import { getOverStatement } from "./get-over-statement.js";
-import { _ } from 'gbnf/builder-v2';
+import { $, _ } from 'gbnf/builder-v2';
 
 describe('getOverStatement', () => {
   test.each([
@@ -43,6 +43,7 @@ describe('getOverStatement', () => {
       whitespace,
       optionalRecommendedWhitespace: _`(${whitespace})?`,
       optionalNonRecommendedWhitespace: undefined,
+      direction: _` ${whitespace} ${_`${$`ASC`} | ${$`DESC`}`} `,
     });
     let parser = GBNF([
       grammar.compile(),

@@ -20,6 +20,7 @@ export const getGBNF = (
     whitespace: WhitespaceKind;
     case: CaseKind,
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   database: void | Database,
   // schema?: string,
 ): GBNFRule => {

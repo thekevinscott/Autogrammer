@@ -9,7 +9,7 @@ export const getOverStatement = ({
   positiveInteger,
   optionalRecommendedWhitespace: optionalRecommendedWS,
   whitespace: ws,
-  optionalNonRecommendedWhitespace: optionalNonRecommendedWS,
+  // optionalNonRecommendedWhitespace: optionalNonRecommendedWS,
   direction,
 }: {
   direction: GBNFRule;

@@ -1,5 +1,4 @@
 import { getJoinClause, } from "./get-join-clause.js";
-import { getColumnNames, } from "./get-column-names.js";
 import { getSelectQuery, } from "./get-select-query.js";
 import {
   $,
@@ -18,6 +17,7 @@ export const select = ({
   mandatoryWhitespace: ws,
   validFullName,
   withUnion = true,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   singleColumn = false,
   number,
 }: {
