@@ -11,7 +11,7 @@ import GBNF from 'gbnf';
 import { noSchemaTests } from './no-schema-tests/index.js';
 
 describe('synthetic, no schema', () => {
-  test.only.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
+  test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
     const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
     });
