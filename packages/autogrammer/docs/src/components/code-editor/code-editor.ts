@@ -61,7 +61,7 @@ export class CodeEditor extends LitElement {
       border-radius: 4px 4px 0 0;
       overflow: hidden;
       min-height: 100px;
-      max-height: 315px;
+      max-height: 1000px;
       overflow: scroll;
     }
     #output {
