@@ -1,4 +1,4 @@
-import { getJoinClause, } from "./get-join-clause.js";
+import { getJoinClause, } from "../join/get-join-clause.js";
 import { getSelectQuery, } from "./get-select-query.js";
 import {
   $,
@@ -7,7 +7,8 @@ import {
 } from "gbnf/builder-v2";
 import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
-import { getJoinCondition, } from "./get-join-condition.js";
+import { getJoinCondition, } from "../join/get-join-condition.js";
+import { getWhereClauseInner, } from "./get-where-clause-inner.js";
 
 export const select = ({
   boolean,
@@ -20,6 +21,10 @@ export const select = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   singleColumn = false,
   number,
+  positiveInteger,
+  equalOps,
+  arithmeticOps,
+  numericOps,
 }: {
   boolean: GBNFRule;
   number: GBNFRule;
@@ -30,23 +35,12 @@ export const select = ({
   validFullName: GBNFRule;
   withUnion?: boolean;
   singleColumn?: boolean;
+  positiveInteger: GBNFRule;
+  equalOps: GBNFRule;
+  arithmeticOps: GBNFRule;
+  numericOps: GBNFRule;
 }
 ): GBNFRule => {
-  const positiveInteger = _`[0-9] | [1-9] [0-9]*`.wrap("?");
-  const equalOps = _`
-    "=" 
-    | "!=" 
-    | ${_`
-      ${$`IS`} 
-      ${ws} 
-      ${_`
-        ${$`NOT`} 
-        ${ws}
-        `.wrap('?')}
-      `}
-  `;
-  const arithmeticOps = _`"+" | "-" | "*" | "/"`;
-  const numericOps = _`">" | "<" | ">=" | "<="`;
   const asAlias = _`${$`AS`} ${ws} ${validFullName}`;
   const columnNames = _`
     ${validFullName}
@@ -101,59 +95,17 @@ export const select = ({
   `;
   const tableName = _`${validFullName} ${_`${ws} ${validFullName}`.wrap('?')}`;
 
-  const dateDef = _` "'" [0-9] [0-9] [0-9] [0-9] "-" [0-9] [0-9] "-" [0-9] [0-9] "'" `;
-  const whereClauseInner = _`
-  ${validFullName}
-  ${_`
-    ${_`
-      ${optRecWS} 
-      ${equalOps}
-      ${optRecWS}
-      ${_`
-        ${validFullName}
-        | ${positiveInteger}
-        | ${stringWithQuotes}
-      `}
-    `}
-    | ${_`
-      ${optRecWS} 
-      ${numericOps}
-      ${optRecWS}
-      ${_` ${number} | ${dateDef} `}
-    `}
-    | ${_`
-      ${optRecWS} 
-      ${$`LIKE`}
-      ${optRecWS}
-      ${stringWithQuotes}
-    `}
-    | ${_`
-      ${optRecWS} 
-      ${$`BETWEEN`}
-      ${ws}
-      ${_`
-        ${_` ${number} ${ws} ${$`AND`} ${ws} ${number} `}
-        | ${_` ${stringWithQuotes} ${ws} ${$`AND`} ${ws} ${stringWithQuotes} `}
-      `}
-    `}
-    |
-    ${_`
-      ${ws} 
-      ${$`IN`}
-      ${ws}
-      "("
-        ${optRecWS}
-        ${stringWithQuotes}
-        ${_`
-          ","
-          ${optRecWS}
-          ${stringWithQuotes}
-        `.wrap('*')}
-        ${optNonRecWS}
-      ")"
-    `}
-  `}
-  `;
+  const whereClauseInner = getWhereClauseInner({
+    equalOps,
+    validFullName,
+    optRecWS,
+    positiveInteger,
+    stringWithQuotes,
+    numericOps,
+    number,
+    ws,
+    optNonRecWS,
+  });
 
   const windowStatement = getWindowStatement({
     colName: validFullName,

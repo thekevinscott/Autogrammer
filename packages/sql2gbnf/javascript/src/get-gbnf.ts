@@ -11,9 +11,15 @@ import type {
   WhitespaceKind,
 } from "./types.js";
 import {
-  insert as getInsertRule,
+  getInsertRule,
 } from "./insert/index.js";
-import { getWhitespaceDefs, } from "./utils/get-whitespace-def.js";
+import {
+  getDeleteRule,
+} from "./delete/index.js";
+import {
+  getWhitespaceDefs,
+} from "./utils/get-whitespace-def.js";
+import { $, } from "gbnf/builder-v2";
 
 export const getGBNF = (
   opts: {
@@ -28,11 +34,12 @@ export const getGBNF = (
   const stringWithQuotes = _`${_`"'" ${validString} "'"`} | ${_`"\\"" ${validString} "\\""`}`;
   const validName = _`[a-zA-Z_] [a-zA-Z0-9_]*`;
   const validFullName = _` ${validName} ${_`"." ${validName}`.wrap('*')} `;
+  const positiveInteger = _`[0-9] | [1-9] [0-9]*`.wrap("?");
 
   const {
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
-    whitespace: mandatoryWhitespace,
+    whitespace: ws,
   } = getWhitespaceDefs(opts.whitespace);
 
   const number = _`
@@ -44,30 +51,75 @@ export const getGBNF = (
     ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
   `;
   const boolean = _`"TRUE" | "FALSE" | "true" | "false"`;
+  const equalOps = _`
+    "=" 
+    | "!=" 
+    | ${_`
+      ${$`IS`} 
+      ${ws} 
+      ${_`
+        ${$`NOT`} 
+        ${ws}
+        `.wrap('?')}
+      `}
+  `;
+  const arithmeticOps = _`"+" | "-" | "*" | "/"`;
+  const numericOps = _`">" | "<" | ">=" | "<="`;
 
   const selectRule = getSelectRule({
+    equalOps,
+    arithmeticOps,
+    numericOps,
+    positiveInteger,
     boolean,
     number,
     validFullName,
     stringWithQuotes,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
-    mandatoryWhitespace,
+    mandatoryWhitespace: ws,
     withUnion: true,
   });
 
   const insertRule = getInsertRule({
+    equalOps,
+    arithmeticOps,
+    numericOps,
+    positiveInteger,
     boolean,
     number,
     validFullName,
     stringWithQuotes,
     optionalRecommendedWhitespace,
     optionalNonRecommendedWhitespace,
-    mandatoryWhitespace,
+    mandatoryWhitespace: ws,
   });
 
-  return _.key('root')`
-    ${_` ${selectRule} | ${insertRule} `.wrap()}
-    ${_`${optionalNonRecommendedWhitespace} ";"`.wrap('?')}
+  const deleteRule = getDeleteRule({
+    equalOps,
+    arithmeticOps,
+    numericOps,
+    positiveInteger,
+    boolean,
+    number,
+    validFullName,
+    stringWithQuotes,
+    optionalRecommendedWhitespace,
+    optionalNonRecommendedWhitespace,
+    mandatoryWhitespace: ws,
+  });
+
+  const gbnf = _`
+    ${_`
+      ${selectRule}
+      | ${insertRule} 
+      | ${deleteRule}
+    `.wrap()}
+    ${_`
+      ${optionalNonRecommendedWhitespace} 
+      ";"
+    `.wrap('?')}
   `;
+  console.log(gbnf.compile());
+  return gbnf;
 };

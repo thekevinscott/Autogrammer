@@ -7,7 +7,7 @@ import {
   select as getSelectRule,
 } from '../select/index.js';
 
-export const insert = ({
+export const getInsertRule = ({
   number,
   stringWithQuotes,
   optionalRecommendedWhitespace: optRecWs,
@@ -15,6 +15,10 @@ export const insert = ({
   mandatoryWhitespace,
   validFullName,
   boolean,
+  equalOps,
+  arithmeticOps,
+  numericOps,
+  positiveInteger,
 }: {
   boolean: GBNFRule;
   number: GBNFRule,
@@ -23,9 +27,17 @@ export const insert = ({
   optionalNonRecommendedWhitespace: GBNFRule | undefined;
   mandatoryWhitespace: GBNFRule | undefined;
   validFullName: GBNFRule;
+  equalOps: GBNFRule;
+  arithmeticOps: GBNFRule;
+  numericOps: GBNFRule;
+  positiveInteger: GBNFRule;
 }
 ): GBNFRule => {
   const selectRule = getSelectRule({
+    equalOps,
+    arithmeticOps,
+    numericOps,
+    positiveInteger,
     boolean,
     validFullName,
     stringWithQuotes,
@@ -39,7 +51,9 @@ export const insert = ({
 
   const listOfStrings = (value: GBNFRule | string) => _` "(" ${optNRecWs} ${value} ${_` "," ${optRecWs} ${value} `.wrap('*')} ${optNRecWs} ")" `;
   return _`
-    ${$`INSERT INTO`}
+    ${$`INSERT`}
+    ${mandatoryWhitespace}
+    ${$`INTO`}
     ${mandatoryWhitespace}
     ${validFullName}
     ${optRecWs}

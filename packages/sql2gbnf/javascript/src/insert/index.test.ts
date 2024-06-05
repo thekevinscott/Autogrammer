@@ -4,9 +4,10 @@ import {
   expect,
 } from 'vitest';
 import {
-  insert,
+  getInsertRule,
 } from './index.js';
 import {
+  $,
   _,
 } from 'gbnf/builder-v2';
 import GBNF from 'gbnf';
@@ -48,16 +49,31 @@ describe('insert', () => {
     'INSERT INTO table (col1,col2,col3) VALUES ("a","b","c")',
     'INSERT INTO table (col1,col2,col3) VALUES ("a", \\n\\n"b", \\n\\n"c"\\n\\n)',
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    const whitespace = _`[ \\n\\r]`;
+    const ws = _`[ \\n\\r]`;
     const validFullName = _`[a-zA-Z_.0-9]`.wrap('+');
-    const grammar = insert({
+    const grammar = getInsertRule({
       validFullName,
       boolean: _`"TRUE" | "FALSE" | "true" | "false"`,
       number: _`("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? `,
       stringWithQuotes: _`${_`"'" ${validFullName} "'"`} | ${_`"\\"" ${validFullName} "\\""`}`,
-      mandatoryWhitespace: whitespace.wrap('+'),
-      optionalRecommendedWhitespace: whitespace.wrap('*'),
-      optionalNonRecommendedWhitespace: whitespace.wrap('*'),
+      mandatoryWhitespace: ws.wrap('+'),
+      optionalRecommendedWhitespace: ws.wrap('*'),
+      optionalNonRecommendedWhitespace: ws.wrap('*'),
+      positiveInteger: _`[0-9] | [1-9] [0-9]*`.wrap('?'),
+      equalOps: _`
+    "=" 
+    | "!=" 
+    | ${_`
+      ${$`IS`} 
+      ${ws} 
+      ${_`
+        ${$`NOT`} 
+        ${ws}
+        `.wrap('?')}
+      `}
+  `,
+      arithmeticOps: _`"+" | "-" | "*" | "/"`,
+      numericOps: _`">" | "<" | ">=" | "<="`,
     });
     let parser = GBNF([
       grammar.compile({
