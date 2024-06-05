@@ -3,23 +3,23 @@ import {
   GBNFRule,
   _,
 } from "gbnf/builder-v2";
+import {
+  getDirection,
+  unit,
+  positiveInteger,
+  columnName,
+} from '../constants.js';
 
 export const getOverStatement = ({
-  validName,
-  positiveInteger,
   optionalRecommendedWhitespace: optionalRecommendedWS,
   whitespace: ws,
   // optionalNonRecommendedWhitespace: optionalNonRecommendedWS,
-  direction,
 }: {
-  direction: GBNFRule;
   optionalRecommendedWhitespace: GBNFRule | undefined;
-  validName: GBNFRule;
-  positiveInteger: GBNFRule;
   whitespace: GBNFRule | undefined;
   optionalNonRecommendedWhitespace: GBNFRule | undefined;
 }): GBNFRule => {
-  const unit = _` ${$`DAY`} | ${$`MONTH`} | ${$`YEAR`} | ${$`HOUR`} | ${$`MINUTE`} | ${$`SECOND`} `;
+  const direction = getDirection(ws);
   const rangeClause = (modifier: GBNFRule) => _`
   ${_`
     ${$`INTERVAL`}
@@ -70,8 +70,8 @@ export const getOverStatement = ({
   const betweenRule = _` ${$`ROWS BETWEEN`} ${ws} ${btwnClause($`PRECEDING`)} ${ws} ${$`AND`} ${ws} ${btwnClause($`FOLLOWING`)} `;
 
   const rangeOrBetween = _`${ws} ${_`${rangeRule} | ${betweenRule}`}`;
-  const orderStmt = _`${$`ORDER BY`} ${ws} ${validName} ${direction.wrap('?')}`;
-  const partitionByStmt = _`${$`PARTITION BY`} ${ws} ${validName}`;
+  const orderStmt = _`${$`ORDER BY`} ${ws} ${columnName} ${direction.wrap('?')}`;
+  const partitionByStmt = _`${$`PARTITION BY`} ${ws} ${columnName}`;
 
   return _`${$`OVER`} ${optionalRecommendedWS} "(" 
     ${_`

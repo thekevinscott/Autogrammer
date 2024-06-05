@@ -59,10 +59,16 @@ export class GBNFRule {
     });
   };
 
-  log = (opts: Parameters<typeof this.compile>[0] = {}) => {
-    let gbnf = this.compile(opts);
+  log = ({
+    caseKind = 'default',
+  }: Parameters<typeof this.compile>[0] = {}) => {
+    let gbnf = this.compile({
+      caseKind,
+    });
     gbnf = gbnf.replaceAll(/\((.*?)\)\*/g, '($1)? ($1)? ($1)?');
-    gbnf = gbnf.replaceAll(/\((.*?)\)\+/g, '($1) ($1)? ($1)?');
+    gbnf = gbnf.replaceAll(/\((.*?)\)\+/g, '($1)  ($1)? ($1)?');
+    gbnf = gbnf.replaceAll(/\[(.*?)\]\*/g, '[$1]? [$1]? [$1]?');
+    gbnf = gbnf.replaceAll(/\[(.*?)\]\+/g, '[$1]  [$1]? [$1]?');
     class Node {
       char: string;
       terminal = false;

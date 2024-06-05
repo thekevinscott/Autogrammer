@@ -4,7 +4,7 @@ import {
   expect,
 } from 'vitest';
 import {
-  insert,
+  getInsertRule,
 } from './index.js';
 import {
   $,
@@ -54,23 +54,11 @@ describe('insert', () => {
     'INSERT INTO table (col1, col2) VALUES ( ( SELECT 1 FROM table ), ( SELECT foo FROM table ) )',
     'INSERT INTO table (col1) VALUES (SELECT (SELECT foo FROM bar) FROM table)',
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    const whitespace = _`[ \\n\\r]`;
-    const validFullName = _`[a-zA-Z_.0-9]`.wrap('+');
-    const grammar = insert({
-      validFullName,
-      boolean: _`${$`TRUE`} | ${$`FALSE`}`,
-      number: _`
-        ${_`"-"? ([0-9] | [1-9] [0-9]*)`} 
-        ${_`"." [0-9]+`.wrap('?')} 
-        ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
-      `,
-      stringWithQuotes: _`
-        ${_`"'" ${validFullName} "'"`} 
-        | ${_`"\\"" ${validFullName} "\\""`}
-      `,
-      mandatoryWhitespace: whitespace.wrap('+'),
-      optionalRecommendedWhitespace: whitespace.wrap('*'),
-      optionalNonRecommendedWhitespace: whitespace.wrap('*'),
+    const ws = _`[ \\n\\r]`;
+    const grammar = getInsertRule({
+      mandatoryWhitespace: ws.wrap('+'),
+      optionalRecommendedWhitespace: ws.wrap('*'),
+      optionalNonRecommendedWhitespace: ws.wrap('*'),
     });
     let parser = GBNF([
       grammar.compile({

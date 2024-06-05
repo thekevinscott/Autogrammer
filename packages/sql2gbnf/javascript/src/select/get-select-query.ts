@@ -3,6 +3,7 @@ import {
   GBNFRule,
   _,
 } from "gbnf/builder-v2";
+import { getTableWithAlias, tableName, } from "../constants.js";
 
 export const getSelectQuery = ({
   whereClause,
@@ -12,13 +13,9 @@ export const getSelectQuery = ({
   groupByClause,
   havingClause,
 
-  validTableName,
   projection,
   optionalRecommendedWhitespace,
-  // selectTables,
-  table,
-  // database,
-  whitespace,
+  ws,
 }: {
   whereClause: GBNFRule;
   orderByClause: GBNFRule;
@@ -29,35 +26,45 @@ export const getSelectQuery = ({
 
   projection: GBNFRule;
   optionalRecommendedWhitespace: GBNFRule | undefined;
-
-  validTableName: GBNFRule;
-  // selectTables: string;
-  table: GBNFRule;
-  whitespace: GBNFRule | undefined;
+  ws: GBNFRule;
 }): GBNFRule => {
   const projectionOrStar = _` ${projection} | "*" `;
-  const intoClause = _` ${$`INTO`} ${whitespace} ${validTableName} ${whitespace} `;
+  const intoClause = _`
+    ${$`INTO`} 
+    ${ws} 
+    ${tableName} 
+    ${ws}
+  `;
+  const tableWithAlias = getTableWithAlias(ws);
   const selectlist = _`
-  ${_`
-    ${_`${projectionOrStar} ${whitespace} ${intoClause.wrap('?')}`}
-    | ${_`${intoClause.wrap('?')} ${projectionOrStar} ${whitespace}`}
-  `}
-  ${$`FROM`}
-  ${whitespace}
-  ${table}
-  ${_`
-    ","
-    ${optionalRecommendedWhitespace}
-    ${table}
-  `.wrap('*')}
-`;
+    ${_`
+      ${_`
+        ${projectionOrStar} 
+        ${ws} 
+        ${intoClause.wrap('?')}
+      `}
+      | ${_`
+          ${intoClause.wrap('?')} 
+          ${projectionOrStar} 
+          ${ws}
+        `}
+    `}
+    ${$`FROM`}
+    ${ws}
+    ${tableWithAlias}
+    ${_`
+      ","
+      ${optionalRecommendedWhitespace}
+      ${tableWithAlias}
+    `.wrap('*')}
+  `;
 
   return _`
   ${$`SELECT`}
-  ${whitespace}
-  ${_`${$`DISTINCT`} ${whitespace}`.wrap('?')}
+  ${ws}
+  ${_`${$`DISTINCT`} ${ws}`.wrap('?')}
   ${selectlist}
-  ${_`${whitespace} ${joinClause}`.wrap('*')}
+  ${_`${ws} ${joinClause}`.wrap('*')}
   ${_`${whereClause.wrap('?')}`}
   ${_`${groupByClause.wrap('?')}`}
   ${_`${havingClause.wrap('?')}`}

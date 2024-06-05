@@ -5,22 +5,13 @@ import {
 } from 'vitest';
 import GBNF from "gbnf";
 import { getWindowStatement } from './get-window-statement.js';
+import { _ } from 'gbnf/builder-v2';
 
 describe('getWindowStatement', () => {
+  const ws = _`[ \\t\\n\\r]`;
   const rule = getWindowStatement({
-    rank: '"RANK"',
-    denserank: '"DENSE_RANK"',
-    rownumber: '"ROW_NUMBER"',
-    colName: 'validName',
-    comma: '","',
-    positiveInteger: '[0-9]+',
-    lead: '"LEAD"',
-    lag: '"LAG"',
-    optionalNonRecommendedWhitespace: 'optws',
-    whitespace: 'ws',
-    optionalRecommendedWhitespace: 'optws',
-    leftparen: '"("',
-    rightparen: '")"',
+    optionalNonRecommendedWhitespace: ws.wrap('*'),
+    optionalRecommendedWhitespace: ws.wrap('*'),
   });
 
   test.each([
@@ -32,14 +23,7 @@ describe('getWindowStatement', () => {
     `LAG(salary, 1)`,
     `LAG(salary, 1, 0)`,
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    const fullGrammar = [
-      rule.compile(),
-      `com ::= ","`,
-      `ws ::= (" ")+`,
-      `optws ::= (" ")*`,
-      `optnws ::= optws`,
-      `validName ::= ([a-zA-Z1-9_.])+`,
-    ].join('\n')
+    const fullGrammar = rule.compile();
     let parser = GBNF(fullGrammar);
     parser = parser.add(initial.split('\\n').join('\n').split('\\t').join('\t'));
     expect(parser.size).toBeGreaterThan(0);

@@ -11,6 +11,7 @@ const basicTests = [
   'SELECT * FROM',
   'select fromm from',
   'select col from table',
+  'select col from table;',
   'select col as foo from table',
   'SELECT col FROM table',
   'SELECT col FROM table;',

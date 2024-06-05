@@ -8,7 +8,7 @@ const isWhitespaceKind = (whitespace: WhitespaceKind): whitespace is WhitespaceK
 
 const WS = _`[ \\t\\n\\r]`;
 
-const getGetWhitespaceDef = (whitespace: WhitespaceKind) => (mandatory: boolean, recommended = true): GBNFRule | undefined => {
+const getGetWhitespaceDef = (whitespace: WhitespaceKind) => (mandatory: boolean, recommended = true) => {
   if (!isWhitespaceKind(whitespace)) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Unsupported whitespace type: ${whitespace}`);
@@ -40,11 +40,15 @@ const getGetWhitespaceDef = (whitespace: WhitespaceKind) => (mandatory: boolean,
 
 export const getWhitespaceDefs = (
   whitespaceKind: WhitespaceKind
-) => {
+): {
+  ws: GBNFRule;
+  optRecWS: GBNFRule | undefined;
+  optNonRecWS: GBNFRule | undefined;
+} => {
   const getWhitespaceDef = getGetWhitespaceDef(whitespaceKind);
   return {
-    whitespace: getWhitespaceDef(true),
-    optionalRecommendedWhitespace: getWhitespaceDef(false, true),
-    optionalNonRecommendedWhitespace: getWhitespaceDef(false, false),
+    ws: getWhitespaceDef(true) as GBNFRule,
+    optRecWS: getWhitespaceDef(false, true),
+    optNonRecWS: getWhitespaceDef(false, false),
   };
 };

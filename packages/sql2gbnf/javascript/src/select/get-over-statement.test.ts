@@ -38,16 +38,11 @@ describe('getOverStatement', () => {
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const whitespace = _`[ \\t\\n\\r]`;
     const grammar = getOverStatement({
-      validName: _`[a-zA-Z_.]`.wrap('+'),
-      positiveInteger: _`[0-9] | [1-9] [0-9]*`.wrap('?'),
       whitespace,
       optionalRecommendedWhitespace: _`(${whitespace})?`,
       optionalNonRecommendedWhitespace: undefined,
-      direction: _` ${whitespace} ${_`${$`ASC`} | ${$`DESC`}`} `,
     });
-    let parser = GBNF([
-      grammar.compile(),
-    ].join('\n'));
+    let parser = GBNF(grammar.compile());
     parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
   });

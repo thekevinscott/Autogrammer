@@ -14,7 +14,6 @@ describe('Rejections, no schema', () => {
   test.each([
     ['1', 0],
     ['select;', 6],
-    ['select 1', 7],
     ['select .', 7],
     [`SELECT INTO newtable column1, column2 INTO newtable FROM sourcetable;`, 38],
     // [`INSERT INTO foooo (foo) VALUES (SELECT foo, bar FROM)`, 38],

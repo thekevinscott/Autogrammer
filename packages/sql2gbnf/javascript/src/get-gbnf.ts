@@ -3,7 +3,7 @@ import {
   GBNFRule,
 } from "gbnf/builder-v2";
 import {
-  select as getSelectRule,
+  getSelectRuleWithUnion,
 } from "./select/index.js";
 import type {
   CaseKind,
@@ -11,9 +11,14 @@ import type {
   WhitespaceKind,
 } from "./types.js";
 import {
-  insert as getInsertRule,
+  getInsertRule,
 } from "./insert/index.js";
-import { getWhitespaceDefs, } from "./utils/get-whitespace-def.js";
+import {
+  getDeleteRule,
+} from "./delete/index.js";
+import {
+  getWhitespaceDefs,
+} from "./utils/get-whitespace-def.js";
 
 export const getGBNF = (
   opts: {
@@ -24,50 +29,40 @@ export const getGBNF = (
   database?: Database,
   // schema?: string,
 ): GBNFRule => {
-  const validString = _`[^\'\\"]+`;
-  const stringWithQuotes = _`${_`"'" ${validString} "'"`} | ${_`"\\"" ${validString} "\\""`}`;
-  const validName = _`[a-zA-Z_] [a-zA-Z0-9_]*`;
-  const validFullName = _` ${validName} ${_`"." ${validName}`.wrap('*')} `;
-
   const {
-    optionalRecommendedWhitespace,
-    optionalNonRecommendedWhitespace,
-    whitespace: mandatoryWhitespace,
+    optRecWS,
+    optNonRecWS,
+    ws,
   } = getWhitespaceDefs(opts.whitespace);
 
-  const number = _`
-    ${_`
-      "-"? 
-      ${_`[0-9] | [1-9] [0-9]*`.wrap()}
-    `.wrap()} 
-    ${_`"." [0-9]+`.wrap('?')} 
-    ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
-  `;
-  const boolean = _`"TRUE" | "FALSE" | "true" | "false"`;
-
-  const selectRule = getSelectRule({
-    boolean,
-    number,
-    validFullName,
-    stringWithQuotes,
-    optionalRecommendedWhitespace,
-    optionalNonRecommendedWhitespace,
-    mandatoryWhitespace,
-    withUnion: true,
+  const selectRule = getSelectRuleWithUnion({
+    optionalRecommendedWhitespace: optRecWS,
+    optionalNonRecommendedWhitespace: optNonRecWS,
+    mandatoryWhitespace: ws,
   });
 
   const insertRule = getInsertRule({
-    boolean,
-    number,
-    validFullName,
-    stringWithQuotes,
-    optionalRecommendedWhitespace,
-    optionalNonRecommendedWhitespace,
-    mandatoryWhitespace,
+    optionalRecommendedWhitespace: optRecWS,
+    optionalNonRecommendedWhitespace: optNonRecWS,
+    mandatoryWhitespace: ws,
   });
 
-  return _.key('root')`
-    ${_` ${selectRule} | ${insertRule} `.wrap()}
-    ${_`${optionalNonRecommendedWhitespace} ";"`.wrap('?')}
+  const deleteRule = getDeleteRule({
+    optionalRecommendedWhitespace: optRecWS,
+    optionalNonRecommendedWhitespace: optNonRecWS,
+    mandatoryWhitespace: ws,
+  });
+
+  const gbnf = _`
+    ${_`
+      ${selectRule}
+      | ${insertRule} 
+      | ${deleteRule}
+    `.wrap()}
+    ${_`
+      ${optNonRecWS} 
+      ";"
+    `.wrap('?')}
   `;
+  return gbnf;
 };
