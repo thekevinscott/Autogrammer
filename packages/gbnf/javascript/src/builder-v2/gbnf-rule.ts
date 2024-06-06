@@ -10,7 +10,6 @@ import { GrammarBuilder, } from "./grammar-builder.js";
 import { getRawValue, } from "./get-raw-value.js";
 import { getStringValue, } from "./get-string-value.js";
 import { GBNF, } from "../gbnf.js";
-import { Range, RuleType, } from "../grammar-graph/types.js";
 import { isRuleChar, isRuleCharExcluded, isRuleEnd, } from "../grammar-graph/type-guards.js";
 import { ParseState, } from "../grammar-graph/parse-state.js";
 
@@ -64,7 +63,7 @@ export class GBNFRule {
       terminal = false;
       children: Node[] = [];
 
-      constructor(char: string = '') {
+      constructor(char = '') {
         this.char = char;
       }
     }
@@ -96,7 +95,7 @@ export class GBNFRule {
     traverseParseState(rootNode, parseState);
 
     const result = new Set<string>();
-    function traverse(node: Node, path: string = '') {
+    function traverse(node: Node, path = '') {
       if (node.terminal) {
         result.add(path);
       }
