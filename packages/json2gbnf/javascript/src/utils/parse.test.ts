@@ -3,11 +3,9 @@ import {
   test,
   expect,
   vi,
-  beforeEach,
   afterEach,
 } from 'vitest';
 import { parse, } from './parse.js';
-import { NULL_KEY, } from '../constants/grammar-keys.js';
 import { JSONSchema, } from '../types.js';
 import {
   parseType,
@@ -31,7 +29,6 @@ import { Grammar } from '../grammar.js';
 import { array, boolean, nll, number, object, string } from '../constants.js';
 import {
   _,
-  $,
 } from 'GBNF/builder-v2';
 
 vi.mock('../type-guards.js', async () => {
