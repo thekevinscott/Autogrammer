@@ -25,11 +25,20 @@ import {
   getConstDefinition,
 } from './get-const-definition.js';
 import type * as _getConstDefinition from './get-const-definition.js';
-import { Grammar } from '../grammar.js';
-import { array, boolean, nll, number, object, string } from '../constants.js';
+import {
+  Grammar
+} from '../grammar.js';
+import {
+  array,
+  boolean,
+  nll,
+  number,
+  object,
+  string
+} from '../constants.js';
 import {
   _,
-} from 'GBNF/builder-v2';
+} from 'gbnf/builder-v2';
 
 vi.mock('../type-guards.js', async () => {
   const actual = await vi.importActual('../type-guards.js') as typeof _typeGuards;
