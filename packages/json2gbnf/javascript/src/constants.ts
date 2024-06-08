@@ -1,4 +1,3 @@
-import { GBNFRule, } from "gbnf/builder-v2";
 import {
   _,
 } from "gbnf/builder-v2";
@@ -42,8 +41,3 @@ export const object = _`
 export const value = _`
   ${number} | ${boolean} | ${nll} | ${string} | ${array} | ${object}
 `.key('value');
-
-export const objectEntry = (key: string, value: GBNFRule) => _`
-${`"\\"${key}\\"" ":"`} 
-${value}
-`;

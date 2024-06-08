@@ -5,6 +5,14 @@ import {
   isWhitespace as _isWhitespace,
 } from "./is-whitespace.js";
 
+const reduceGBNF = (strings: string[], ruleNames: string[]): string[] => {
+  const gbnf: string[] = [];
+  for (let i = 0; i < strings.length; i++) {
+    gbnf.push(strings[i], ruleNames[i]);
+  }
+  return gbnf;
+};
+
 const isWhitespace = (str: string, pos: number) => {
   if (str[pos] === '\\') {
     if (str[pos] + str[pos + 1] === '\\n') {
@@ -77,17 +85,3 @@ export const getGBNF = (
   return gbnf;
 };
 
-const reduceGBNF = (strings: string[], ruleNames: string[]): string[] => {
-  const gbnf: string[] = [];
-  for (let i = 0; i < strings.length; i++) {
-    gbnf.push(strings[i]);
-    const ruleName = ruleNames[i];
-    // if (Array.isArray(ruleName)) {
-    //   const gbnfString = getGBNF([], flatten(ruleName), { raw: true, });
-    //   gbnf.push(gbnfString);
-    // } else {
-    gbnf.push(ruleName);
-    // }
-  }
-  return gbnf;
-};

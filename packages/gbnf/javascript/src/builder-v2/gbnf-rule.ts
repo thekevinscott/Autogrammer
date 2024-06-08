@@ -152,9 +152,9 @@ export class GBNFRule {
     let inQuote = false;
     const _strings = strings.map(string => {
       if (raw) {
-        const r = getRawValue(string, inQuote);
-        inQuote = r.inQuote;
-        return r.str;
+        const { str, inQuote: _inQuote, } = getRawValue(string, inQuote);
+        inQuote = _inQuote;
+        return str;
       }
       return getStringValue(string, caseKind);
     });
