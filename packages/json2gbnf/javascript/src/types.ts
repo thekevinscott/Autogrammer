@@ -77,10 +77,10 @@ export interface JSONSchemaObject {
   minProperties?: number;
   maxProperties?: number;
 }
-export interface JSONSchemaMultipleBasicTypes {
+export interface JSONSchemaMultiplePrimitiveTypes {
   type: ('string' | 'number' | 'boolean' | 'null' | 'object' | 'array')[]
 }
-export type JSONSchema = JSONSchemaValue | JSONSchemaMultipleBasicTypes;
+export type JSONSchema = JSONSchemaValue | JSONSchemaMultiplePrimitiveTypes;
 export type TopLevelJSONSchema = {} | JSONSchema & {
   $schema?: string;
 } | boolean;

@@ -4,9 +4,6 @@ import { parseString, } from './parse-string.js';
 import type {
   ParseTypeArg,
 } from '../types.js';
-import {
-  type Grammar,
-} from '../grammar.js';
 import { parseNumber, } from './parse-number.js';
 import { isSchemaNumber, isSchemaString, } from '../type-guards.js';
 import {
@@ -16,8 +13,8 @@ import {
 import { boolean, nll, } from '../constants.js';
 
 export const parseType = (
-  parser: Grammar,
   schema: ParseTypeArg,
+  fixedOrder?: boolean
 ): GBNFRule => {
   const { type, } = schema;
   if (type === 'boolean') {
@@ -31,7 +28,7 @@ export const parseType = (
   } else if (type === 'array') {
     return parseArray(schema);
   } else if (type === 'object') {
-    return _`${parseObject(parser, schema)}`;
+    return _`${parseObject(schema, fixedOrder)}`;
   }
   throw new Error(`type for schema ${JSON.stringify(schema)} is not supported`);
 };

@@ -10,7 +10,6 @@ import {
 import {
   parseObject,
 } from './parse-object.js';
-import { getMockGrammar } from './__mocks__/get-mock-grammar.js';
 import { JSONSchemaObject } from '../types.js';
 import {
   parseType,
@@ -31,7 +30,7 @@ vi.mock('./parse-type.js', async () => {
 
 describe('parseObject', () => {
   beforeEach(() => {
-    vi.mocked(parseType).mockImplementation((_grammar, key) => {
+    vi.mocked(parseType).mockImplementation((key) => {
       if (key.type === 'string') {
         return _`"\\"" [a-z]+ "\\"" `;
       }
@@ -44,10 +43,7 @@ describe('parseObject', () => {
   });
 
   test(`it should parse an empty schema`, () => {
-    const mockGrammar = getMockGrammar({
-      fixedOrder: false,
-    });
-    const rule = parseObject(mockGrammar, { type: 'object' });
+    const rule = parseObject({ type: 'object' });
     if (typeof rule === 'string') {
       throw new Error('Expected rule to be a GBNFRule');
     }
@@ -172,10 +168,7 @@ describe('parseObject', () => {
       }, val,
     ])),
   ] as [JSONSchemaObject, string][])(`it should parse '%s' for '%s'`, (schema, initial) => {
-    const mockGrammar = getMockGrammar({
-      fixedOrder: false,
-    });
-    const rule = parseObject(mockGrammar, schema);
+    const rule = parseObject(schema);
     if (typeof rule === 'string') {
       throw new Error('Expected rule to be a GBNFRule');
     }
@@ -230,10 +223,7 @@ describe('parseObject', () => {
       val,
     ])),
   ] as [JSONSchemaObject, string][])(`it should parse fixed order for '%s' for '%s'`, (schema, initial) => {
-    const mockGrammar = getMockGrammar({
-      fixedOrder: true,
-    });
-    const rule = parseObject(mockGrammar, schema);
+    const rule = parseObject(schema, true);
     if (typeof rule === 'string') {
       throw new Error('Expected rule to be a GBNFRule');
     }
@@ -247,8 +237,7 @@ describe('parseObject', () => {
 
   it('should throw an error if an unsupported key is present', () => {
     const schema = { patternProperties: {}, } as JSONSchemaObject;
-    const mockGrammar = getMockGrammar();
-    expect(() => parseObject(mockGrammar, schema)).toThrowError(
+    expect(() => parseObject(schema)).toThrowError(
       'patternProperties is not supported',
     );
   });
@@ -266,10 +255,7 @@ describe('parseObject', () => {
       additionalProperties: false,
       required,
     };
-    const mockGrammar = getMockGrammar({
-      fixedOrder: false,
-    });
-    const rule = parseObject(mockGrammar, schema).compile();
+    const rule = parseObject(schema).compile();
     expect(() => GBNF(rule, initial)).toThrow();
   });
 
@@ -284,10 +270,7 @@ describe('parseObject', () => {
       },
       additionalProperties: false,
     };
-    const mockGrammar = getMockGrammar({
-      fixedOrder: false,
-    });
-    const rule = parseObject(mockGrammar, schema).compile();
+    const rule = parseObject(schema).compile();
     expect(() => GBNF(rule, initial)).toThrow();
   });
 

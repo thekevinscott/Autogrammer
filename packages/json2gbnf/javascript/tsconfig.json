@@ -6,7 +6,7 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "src/grammar.ts.bl"],
   "exclude": [
     "node_modules",
     ".vscode-test",

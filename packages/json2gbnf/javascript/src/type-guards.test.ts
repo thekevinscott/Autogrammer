@@ -1,19 +1,24 @@
 import {
+  describe,
+  test,
+  expect,
+} from 'vitest';
+import {
   isEmptyObject,
   isSchemaConst,
   isSchemaEnum,
-  isSchemaMultipleBasicTypes,
+  isSchemaMultiplePrimitiveTypes,
   isSchemaObject,
 } from "./type-guards.js";
 
 describe('types', () => {
   describe('isSchemaMultipleBasicTypes', () => {
     test('it returns true if given a schema with a type array', () => {
-      expect(isSchemaMultipleBasicTypes({ type: ['string', 'number', 'boolean', 'null', 'object', 'array'] })).toEqual(true);
+      expect(isSchemaMultiplePrimitiveTypes({ type: ['string', 'number', 'boolean', 'null', 'object', 'array'] })).toEqual(true);
     });
 
     test('it returns false if not given a schema with a type array', () => {
-      expect(isSchemaMultipleBasicTypes({ type: 'string' })).toEqual(false);
+      expect(isSchemaMultiplePrimitiveTypes({ type: 'string' })).toEqual(false);
     });
   });
 

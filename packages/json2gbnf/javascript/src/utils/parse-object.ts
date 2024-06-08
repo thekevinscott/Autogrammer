@@ -5,17 +5,15 @@ import {
   JSONSchemaValue,
 } from '../types.js';
 import { parseType, } from './parse-type.js';
-import { Grammar, } from '../grammar.js';
 import {
   isSchemaConst,
   isSchemaEnum,
 } from '../type-guards.js';
 import {
-  getConstDefinition,
-} from './get-const-definition.js';
+  parseConst,
+} from './parse-const.js';
 import {
   _,
-  GrammarBuilder,
   GBNFRule,
 } from 'gbnf/builder-v2';
 import {
@@ -34,7 +32,6 @@ const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaObject)[] = [
   'maxProperties',
 ];
 
-
 interface ObjectEntry {
   rule: GBNFRule;
   key?: string;
@@ -51,19 +48,19 @@ const filterObjectEntry = (permutation: ObjectEntry[], key: string): boolean => 
   return keyIsValid;
 };
 
-const getPropertiesValue = (grammar: GrammarBuilder, value: JSONSchemaValue): GBNFRule => {
+const getPropertiesValue = (value: JSONSchemaValue): GBNFRule => {
   if (isSchemaConst(value)) {
-    return getConstDefinition(value);
+    return parseConst(value);
   }
   if (isSchemaEnum(value)) {
     return parseEnum(value);
   }
-  return parseType(grammar, value);
+  return parseType(value);
 };
 
 export const parseObject = (
-  grammar: Grammar,
   schema: JSONSchemaObject,
+  fixedOrder?: boolean,
 ): GBNFRule => {
   for (const key of UNSUPPORTED_PROPERTIES) {
     if (key in schema) {
@@ -74,9 +71,9 @@ export const parseObject = (
   if (properties !== undefined && typeof properties === 'object') {
     const keys: ObjectEntry[] = Object.entries(properties).map(([key, value,]) => ({
       key,
-      rule: _` ${quote} ${`"${key}"`} ${quote} ":"  ${getPropertiesValue(grammar, value)} `,
+      rule: _` ${quote} ${`"${key}"`} ${quote} ":"  ${getPropertiesValue(value)} `,
     }));
-    if (grammar.fixedOrder) {
+    if (fixedOrder) {
       const getPermutation = (entries: ObjectEntry[]) => _`
         ${[entries[0].rule, ...entries.slice(1).map(({ rule, }) => _`"," ${rule}`.wrap('?')),]}
       `;

@@ -9,7 +9,7 @@ import {
   quote,
 } from '../constants.js';
 
-export const getConstDefinition = (value: JSONSchemaObjectValueConst): GBNFRule => _`
+export const parseConst = (value: JSONSchemaObjectValueConst): GBNFRule => _`
   ${quote} 
   "${value.const}"
   ${quote}

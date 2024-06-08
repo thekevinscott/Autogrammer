@@ -8,13 +8,17 @@ import {
 import { parse, } from './parse.js';
 import { JSONSchema, } from '../types.js';
 import {
+  parsePrimitives,
+} from './parse-primitives.js';
+import type * as _parsePrimitives from './parse-primitives.js';
+import {
   parseType,
 } from './parse-type.js';
 import type * as _parseType from './parse-type.js';
 import {
   isSchemaConst,
   isSchemaEnum,
-  isSchemaMultipleBasicTypes,
+  isSchemaMultiplePrimitiveTypes,
 } from '../type-guards.js';
 import type * as _typeGuards from '../type-guards.js';
 import {
@@ -22,20 +26,12 @@ import {
 } from './parse-enum.js';
 import type * as _parseEnum from './parse-enum.js';
 import {
-  getConstDefinition,
-} from './get-const-definition.js';
-import type * as _getConstDefinition from './get-const-definition.js';
+  parseConst,
+} from './parse-const.js';
+import type * as _parseConst from './parse-const.js';
 import {
   Grammar
-} from '../grammar.js';
-import {
-  array,
-  boolean,
-  nll,
-  number,
-  object,
-  string
-} from '../constants.js';
+} from '../grammar.ts.bl';
 import {
   _,
 } from 'gbnf/builder-v2';
@@ -46,7 +42,7 @@ vi.mock('../type-guards.js', async () => {
     ...actual,
     isSchemaConst: vi.fn(),
     isSchemaEnum: vi.fn(),
-    isSchemaMultipleBasicTypes: vi.fn(),
+    isSchemaMultiplePrimitiveTypes: vi.fn(),
   };
 });
 
@@ -66,47 +62,42 @@ vi.mock('./parse-enum.js', async () => {
   };
 });
 
-vi.mock('./get-const-definition.js', async () => {
-  const actual = await vi.importActual('./get-const-definition.js') as typeof _getConstDefinition;
+vi.mock('./parse-const.js', async () => {
+  const actual = await vi.importActual('./parse-const.js') as typeof _parseConst;
   return {
     ...actual,
-    getConstDefinition: vi.fn(),
+    parseConst: vi.fn(),
+  };
+});
+
+vi.mock('./parse-primitives.js', async () => {
+  const actual = await vi.importActual('./parse-primitives.js') as typeof _parseConst;
+  return {
+    ...actual,
+    parsePrimitives: vi.fn(),
   };
 });
 
 describe('parse fn', () => {
-  let parser: Grammar;
-
   afterEach(() => {
     vi.resetAllMocks();
   });
 
-  describe('Multiple Primitives', () => {
-    test('should parse schema with a handful of primitives', () => {
-      vi.mocked(isSchemaMultipleBasicTypes).mockReturnValueOnce(true);
-      const schema: JSONSchema = {
-        type: ['string', 'number',],
-      };
-      const rule = parse(parser, schema);
-      expect(rule.compile()).toEqual(_`${[string, number]}`.separate(' | ').compile());
-    });
-
-    test('should parse schema with all primitives', () => {
-      vi.mocked(isSchemaMultipleBasicTypes).mockReturnValueOnce(true);
-      const schema: JSONSchema = {
-        type: ['string', 'number', 'boolean', 'null', 'object', 'array',],
-      };
-      const rule = parse(parser, schema);
-      expect(rule.compile()).toEqual(_`${[string, number, boolean, nll, object, array]}`.separate(' | ').compile());
-    });
-  })
+  test('should parse primitive schema', () => {
+    vi.mocked(isSchemaMultiplePrimitiveTypes).mockReturnValueOnce(true);
+    const schema: JSONSchema = {
+      type: ['string', 'number',],
+    };
+    parse(schema);
+    expect(parsePrimitives).toHaveBeenCalledWith(schema);
+  });
 
   test('should parse enum schema', () => {
     vi.mocked(isSchemaEnum).mockReturnValueOnce(true);
     const schema: JSONSchema = {
       enum: ['foo', 'bar', null,],
     };
-    parse(parser, schema);
+    parse(schema);
     expect(parseEnum).toHaveBeenCalledWith(schema);
   });
 
@@ -115,25 +106,16 @@ describe('parse fn', () => {
     const schema: JSONSchema = {
       const: 'foo',
     };
-    parse(parser, schema);
-    expect(getConstDefinition).toHaveBeenCalledWith(schema);
+    parse(schema);
+    expect(parseConst).toHaveBeenCalledWith(schema);
   });
 
   test('should parse type', () => {
     const schema: JSONSchema = {
       const: 'foo',
     };
-    parse(parser, schema);
-    expect(parseType).toHaveBeenCalledWith(parser, schema);
+    parse(schema);
+    expect(parseType).toHaveBeenCalledWith(schema, undefined);
   });
 
-  test('should throw an error for unknown types', () => {
-    vi.mocked(isSchemaMultipleBasicTypes).mockReturnValueOnce(true);
-    const schema = {
-      type: ['unknown'],
-    };
-    expect(() => {
-      parse(parser, schema as JSONSchema);
-    }).toThrowError(new Error('Unknown type unknown for schema {"type":["unknown"]}'));
-  });
 });

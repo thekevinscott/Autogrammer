@@ -6,7 +6,7 @@ import type {
   JSONSchemaArrayMultipleItemType,
   JSONSchemaArrayNoItemType,
   JSONSchemaArraySingularItemType,
-  JSONSchemaMultipleBasicTypes,
+  JSONSchemaMultiplePrimitiveTypes,
   JSONSchemaNumber,
   JSONSchemaObject,
   JSONSchemaObjectValueConst,
@@ -18,9 +18,9 @@ import type {
 const isObject = (schema: unknown): schema is Record<string, unknown> => typeof schema === 'object' && schema !== null;
 
 export const isPrimitive = (val: string): val is PrimitiveType => ['string', 'number', 'boolean', 'null', 'object', 'array',].includes(val);
-export const isSchemaMultipleBasicTypes = (
+export const isSchemaMultiplePrimitiveTypes = (
   schema: unknown
-): schema is JSONSchemaMultipleBasicTypes => isObject(schema) && 'type' in schema && Array.isArray(schema['type']);
+): schema is JSONSchemaMultiplePrimitiveTypes => isObject(schema) && 'type' in schema && Array.isArray(schema['type']);
 export const isSchemaEnum = (
   schema: unknown
 ): schema is JSONSchemaObjectValueEnum => isObject(schema) && 'enum' in schema;

@@ -1,6 +1,6 @@
 import {
   Grammar as Grammar,
-} from './grammar.js';
+} from './grammar.ts.bl';
 import {
   isEmptyObject,
   hasDollarSchemaProp,
@@ -39,19 +39,14 @@ export function JSON2GBNF<T extends JSONSchema>(
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
 
-  const parser = new Grammar({
-    fixedOrder,
-  });
-
   if (schema === true || schema === null || isEmptyObject(schema)) {
     return _`${value}`.compile();
   }
 
-  const rule = parse(
-    parser,
+  return parse(
     schema,
-  );
-  return rule.compile({
+    fixedOrder,
+  ).compile({
     rules: [
       value,
     ],
