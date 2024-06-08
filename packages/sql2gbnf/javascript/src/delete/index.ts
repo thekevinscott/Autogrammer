@@ -2,7 +2,7 @@ import {
   $,
   GBNFRule,
   _,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import { getJoinClause, } from "../join/get-join-clause.js";
 import { getWhereClauseInner, } from "../select/get-where-clause-inner.js";
 import {

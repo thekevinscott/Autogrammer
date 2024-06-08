@@ -10,7 +10,7 @@ import {
 import { GrammarBuilder } from './grammar-builder.js';
 import {
   _,
-} from '../builder-v2/template-tags.js';
+} from '../builder/template-tags.js';
 
 const parser = new GrammarBuilder();
 
@@ -31,20 +31,12 @@ describe('getRuleNames', () => {
     )).toEqual(['a1', 'b1']);
   });
 
-  test('it skips undefined', () => {
-    expect(getRuleNames(
-      ['a', undefined, 'b'],
-      parser,
-      'default',
-    )).toEqual(['a', 'b']);
-  });
-
   test('it returns a mixed group', () => {
     expect(getRuleNames(
       ['foo', _`a`.key('a1'), undefined, _`b`.key('b1')],
       parser,
       'default',
-    )).toEqual(['foo', 'a1', 'b1']);
+    )).toEqual(['foo', 'a1', undefined, 'b1']);
   });
 
   describe('arrays', () => {
@@ -60,7 +52,7 @@ describe('getRuleNames', () => {
           ],
           _`b`.key('b1'),
         ],
-        ['foo', 'a1', 'x', 'b1'],
+        ['foo', 'a1', undefined, 'x', 'b1'],
         [
           'a1 ::= a',
           'b1 ::= b',

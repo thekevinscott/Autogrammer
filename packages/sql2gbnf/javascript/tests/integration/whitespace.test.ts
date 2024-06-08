@@ -85,8 +85,8 @@ describe('Whitespace, no schema', () => {
       [`SELECT first_name, last_name FROM f f1 WHERE x \\t>`, 47],
       [`SELECT first_name, last_name FROM f f1 WHERE x >  1`, 49],
       [`SELECT first_name, last_name FROM f f1 WHERE x > \\n1`, 49],
-      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  1`, 61],
-      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  \\n1`, 61],
+      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  1`, 60],
+      [`SELECT first_name, last_name FROM f f1 WHERE x > 1 LIMIT 0,  \\n1`, 60],
     ])('it rejects excess whitespace: %s', (initial, errorPos) => {
       const grammar = SQL2GBNF(undefined, {
         whitespace: 'default',
@@ -105,7 +105,7 @@ describe('Whitespace, no schema', () => {
       `SELECT SUM(foo+bar) FROM orders`,
       `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary`,
       `SELECT employee_id,salary,LEAD(salary,1) OVER(ORDER BY employee_id) AS next_salary,LAG(salary,1) OVER(ORDER BY employee_id) AS previous_salary FROM salaries;`,
-    ])('it accepts a SQL query without whitespace', (initial) => {
+    ])(`it accepts a SQL query without whitespace: '%s'`, (initial) => {
       const grammar = SQL2GBNF(undefined, {
         whitespace: 'succinct',
       });
@@ -120,7 +120,7 @@ describe('Whitespace, no schema', () => {
       [`SELECT first_name,last_name, fo`, 28],
       [`SELECT first_name,last_name FROM f f1 WHERE x >`, 46],
       [`SELECT first_name,last_name FROM f f1 WHERE x> `, 46],
-      [`SELECT first_name,last_name FROM f f1 WHERE x>1 LIMIT 0, `, 54],
+      [`SELECT first_name,last_name FROM f f1 WHERE x>1 LIMIT 0, `, 53],
     ])('it rejects unnecessary whitespace: %s', (initial, errorPos) => {
       const grammar = SQL2GBNF(undefined, {
         whitespace: 'succinct',

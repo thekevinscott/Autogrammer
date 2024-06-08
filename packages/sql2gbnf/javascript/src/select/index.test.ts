@@ -9,7 +9,7 @@ import {
 import {
   $,
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import GBNF from 'gbnf';
 
 describe('select', () => {

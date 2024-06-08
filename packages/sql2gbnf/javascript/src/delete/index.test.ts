@@ -9,7 +9,7 @@ import {
 import {
   $,
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import GBNF from 'gbnf';
 import { FULL_SELECT_QUERY } from '../keys.js';
 

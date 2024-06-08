@@ -17,7 +17,7 @@ import {
 import type * as _parseType from './parse-type.js';
 import {
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import GBNF from 'gbnf';
 
 vi.mock('./parse-type.js', async () => {

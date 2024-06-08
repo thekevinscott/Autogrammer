@@ -1,7 +1,8 @@
-import { AddRule, } from "../builder-v1/types.js";
-import { buildGrammar, } from "../builder-v1/utils/build-grammar.js";
-import { getID, } from "../builder-v1/utils/get-id.js";
+import { buildGrammar, } from "./build-grammar.js";
+import { getID, } from "./get-id.js";
 import { getRuleName, } from "./get-rule-name.js";
+
+export type AddRule = (rule: string, symbolName?: string) => string;
 
 export class GrammarBuilder {
   #rules = new Map<string, string>();

@@ -10,7 +10,7 @@ import { parseConst, } from "./parse-const.js";
 import {
   _,
   GBNFRule,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import { parseType, } from "./parse-type.js";
 import { parseEnum, } from "./parse-enum.js";
 import { parsePrimitives, } from "./parse-primitives.js";

@@ -34,7 +34,7 @@ import {
 } from '../grammar.ts.bl';
 import {
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 
 vi.mock('../type-guards.js', async () => {
   const actual = await vi.importActual('../type-guards.js') as typeof _typeGuards;

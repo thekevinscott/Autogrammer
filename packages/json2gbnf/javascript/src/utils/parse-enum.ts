@@ -7,7 +7,7 @@ import {
 import {
   GBNFRule,
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 
 export const parseEnum = (
   schema: JSONSchemaObjectValueEnum,

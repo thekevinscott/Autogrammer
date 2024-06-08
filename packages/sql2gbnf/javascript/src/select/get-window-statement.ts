@@ -2,7 +2,7 @@ import {
   $,
   GBNFRule,
   _,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import {
   positiveInteger,
   columnName,
@@ -14,25 +14,28 @@ export const getWindowStatement = ({
 }: {
   optionalNonRecommendedWhitespace: GBNFRule | undefined;
   optionalRecommendedWhitespace: GBNFRule | undefined;
-}): GBNFRule => _`
-  ${_`
-    ${_` ${$`RANK`} | ${$`DENSE_RANK`} | ${$`ROW_NUMBER`} `} 
-    "()"
-  `}
-  | ${_`
-    ${_` ${$`LEAD`} | ${$`LAG`} `}
-    "("
-      ${optionalNonRecommendedWhitespace}
-      ${columnName}
-      ","
-      ${optionalRecommendedWhitespace}
-      ${positiveInteger}
-      ${_`
-        "," 
-        ${optionalRecommendedWhitespace} 
+}): GBNFRule => {
+  const rankRule = _`
+      ${_`${[$`RANK`, $`DENSE_RANK`, $`ROW_NUMBER`,]}`.separate(' | ')}
+      "()"
+    `;
+
+  const leadLagRule = _`
+      ${_`${[$`LEAD`, $`LAG`,]}`.separate(' | ')}
+      "("
+        ${optionalNonRecommendedWhitespace}
+        ${columnName}
+        ","
+        ${optionalRecommendedWhitespace}
         ${positiveInteger}
-      `.wrap('?')}
-      ${optionalNonRecommendedWhitespace}
-    ")"
-  `}
-`;
+        ${_`
+          "," 
+          ${optionalRecommendedWhitespace} 
+          ${positiveInteger}
+        `.wrap('?')}
+        ${optionalNonRecommendedWhitespace}
+      ")"
+    `;
+
+  return _` ${[rankRule, leadLagRule,]} `.separate(' | ');
+};

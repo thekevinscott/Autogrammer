@@ -1,14 +1,18 @@
 import {
   joinWith,
-} from "../builder-v1/index.js";
+} from './join.js';
 import {
   isWhitespace as _isWhitespace,
 } from "./is-whitespace.js";
 
-const reduceGBNF = (strings: string[], ruleNames: string[]): string[] => {
+const reduceGBNF = (strings: string[], ruleNames: (undefined | string)[]): string[] => {
   const gbnf: string[] = [];
   for (let i = 0; i < strings.length; i++) {
-    gbnf.push(strings[i], ruleNames[i]);
+    gbnf.push(strings[i]);
+    const ruleName = ruleNames[i];
+    if (ruleName !== undefined) {
+      gbnf.push(ruleName);
+    }
   }
   return gbnf;
 };
@@ -35,7 +39,7 @@ function nonNullable<T>(value: T): value is NonNullable<T> {
 }
 
 export const getGBNF = (
-  ruleNames: string[],
+  ruleNames: (undefined | string)[],
   strings: string[],
   {
     wrapped,

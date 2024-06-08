@@ -9,7 +9,7 @@ import { getJoinClause, } from "./get-join-clause.js";
 import {
   _,
   $,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import {
   getWhereClauseInner
 } from '../select/get-where-clause-inner.js';

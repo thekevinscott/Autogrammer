@@ -9,7 +9,7 @@ import { isSchemaNumber, isSchemaString, } from '../type-guards.js';
 import {
   GBNFRule,
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import { boolean, nll, } from '../constants.js';
 
 export const parseType = (

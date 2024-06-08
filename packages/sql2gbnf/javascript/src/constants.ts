@@ -2,7 +2,7 @@ import {
   $,
   GBNFRule,
   _,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import {
   FULL_SELECT_QUERY,
 } from './keys.js';
@@ -13,7 +13,7 @@ export const validName = _`[a-zA-Z_] [a-zA-Z0-9_]*`;
 export const databaseName = _`${validName}`;
 export const tableName = _`${_`${databaseName} "." `.wrap('?')} ${validName}`;
 export const columnName = _`${_`${tableName} "." `.wrap('?')} ${validName}`;
-export const positiveInteger = _`[0-9] | [1-9] [0-9]*`.wrap("?");
+export const positiveInteger = _`([0] | ([1-9] [0-9]*))`;
 export const getTableWithAlias = (ws: GBNFRule) => _`
   ${tableName}
   ${_`${ws} ${validAlias}`.wrap('?')}

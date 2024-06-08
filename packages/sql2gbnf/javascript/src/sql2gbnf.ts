@@ -1,6 +1,6 @@
 import {
-  getGBNF,
-} from "./get-gbnf.js";
+  getSQLGBNF,
+} from "./get-sql-gbnf.js";
 import type {
   DBMLSchemaOpts,
   SchemaOpts,
@@ -15,11 +15,10 @@ export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
 }: SchemaOpts = {}): string {
   const database = getDBML(schemaDef);
 
-  const gbnf = getGBNF({
+  return getSQLGBNF({
     whitespace,
     case: caseKind,
-  }, database);
-  return gbnf.compile({
+  }, database).compile({
     caseKind,
   });
 };

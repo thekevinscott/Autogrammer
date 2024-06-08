@@ -3,7 +3,7 @@ import { parseString } from './parse-string.js';
 import GBNF, { InputParseError } from 'gbnf';
 import {
   _
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 
 describe('parseString', () => {
   test.each([

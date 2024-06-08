@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import type { SchemaOpts as _SchemaOpts, } from 'gbnf/builder-v1';
 
 export interface JSONSchemaObjectValueEnum {
   enum: (string | null | number | boolean)[];
@@ -87,6 +86,6 @@ export type TopLevelJSONSchema = {} | JSONSchema & {
 
 export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject;
 
-export interface JSON2GBNFOpts extends _SchemaOpts {
+export interface JSON2GBNFOpts {
   fixedOrder?: boolean;
 }

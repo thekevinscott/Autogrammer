@@ -14,7 +14,7 @@ import { hasDollarSchemaProp } from './type-guards.js';
 import type * as _types from './types.js';
 import { parse } from './utils/parse.js';
 import type * as _parse from './utils/parse.js';
-import { _ } from 'gbnf/builder-v2';
+import { _ } from 'gbnf/builder';
 
 vi.mock('./utils/parse.js', async () => {
   const actual = await vi.importActual('./utils/parse.js') as typeof _parse;

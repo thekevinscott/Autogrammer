@@ -4,7 +4,7 @@ import {
   $,
   GBNFRule,
   _,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import { getOverStatement, } from "./get-over-statement.js";
 import { getWindowStatement, } from "./get-window-statement.js";
 import { getWhereClauseInner, } from "./get-where-clause-inner.js";

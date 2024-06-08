@@ -2,7 +2,7 @@ import {
   GBNFRule,
   _,
   $,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import {
   columnName,
   positiveInteger,

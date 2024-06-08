@@ -10,7 +10,7 @@ import {
 } from './index.js';
 import { CaseKind } from './types.js';
 
-describe('builder-v2', () => {
+describe('builder', () => {
   describe('singleline', () => {
     test.each([
       ['root ::= [a-z]', _`[a-z]`],
@@ -300,6 +300,21 @@ describe('builder-v2', () => {
           "ll1"
           "${"foo"}"
           "ll1"
+      `,
+      ],
+
+      // undefined rules should maintain their indices
+      [
+        [
+          'root ::= "ll2"  "ll2" x "ll2"',
+          'x ::= llb',
+        ].join('\\n'),
+        _`
+          "ll2"
+          ${undefined}
+          "ll2"
+          ${_`llb`}
+          "ll2"
       `,
       ],
     ])(`'%s'`, (_expectation, rule) => {

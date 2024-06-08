@@ -9,7 +9,7 @@ import {
   getJoinCondition,
 } from './get-join-condition.js';
 import { getWhereClauseInner } from '../select/get-where-clause-inner.js';
-import { _ } from 'gbnf/builder-v2';
+import { _ } from 'gbnf/builder';
 
 describe('getJoinClause', () => {
   const ws = _`[ \\n\\r]`;

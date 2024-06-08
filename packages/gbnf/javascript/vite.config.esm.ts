@@ -15,8 +15,7 @@ export default mergeConfig(config, {
     rollupOptions: {
       input: {
         index: 'src/index.ts',
-        'builder-v1/index': 'src/builder-v1/index.ts',
-        'builder-v2/index': 'src/builder-v2/index.ts',
+        'builder/index': 'src/builder/index.ts',
       },
     },
     sourcemap: true,

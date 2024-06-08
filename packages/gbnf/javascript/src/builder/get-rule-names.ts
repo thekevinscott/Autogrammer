@@ -1,6 +1,6 @@
 import {
   joinWith,
-} from "../builder-v1/index.js";
+} from './join.js';
 import {
   GBNFRule,
 } from "./gbnf-rule.js";
@@ -22,21 +22,19 @@ export const getRuleNames = (
   parser: GrammarBuilder,
   caseKind: CaseKind,
   separator?: string,
-): string[] => values.reduce<string[]>((
-  acc,
+): (string | undefined)[] => values.map((
   value,
 ) => {
   if (Array.isArray(value)) {
     const ruleNames = getRuleNames(value, parser, caseKind, separator);
     const rule = _`${joinWith(separator ? separator : ' ', ...ruleNames)}`;
-    return acc.concat(rule.addToParser(parser, caseKind, true));
+    return rule.addToParser(parser, caseKind, true);
   }
   if (value instanceof GBNFRule) {
-    return acc.concat(value.addToParser(parser, caseKind, true));
+    return value.addToParser(parser, caseKind, true);
   }
   if (value !== undefined) {
-    return acc.concat(value);
+    return value;
   }
-  return acc;
-}, []);
-
+  return undefined;
+});

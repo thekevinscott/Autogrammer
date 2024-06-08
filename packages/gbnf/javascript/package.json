@@ -18,13 +18,9 @@
       "import": "./dist/index.js",
       "require": "./dist/index.umd.cjs"
     },
-    "./builder-v2": {
-      "import": "./dist/builder-v2/index.js",
-      "require": "./dist/builder-v2/index.umd.cjs"
-    },
-    "./builder-v1": {
-      "import": "./dist/builder-v1/index.js",
-      "require": "./dist/builder-v1/index.umd.cjs"
+    "./builder": {
+      "import": "./dist/builder/index.js",
+      "require": "./dist/builder/index.umd.cjs"
     }
   },
   "scripts": {
@@ -55,7 +51,7 @@
       "command": "eslint -c .eslintrc.cjs src --ext .ts"
     },
     "build:check": {
-      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./dist/builder-v1/index.js && path-exists ./dist/builder-v1/index.umd.cjs && path-exists ./dist/builder-v1/index.d.ts && path-exists ./dist/builder-v2/index.js && path-exists ./dist/builder-v2/index.umd.cjs && path-exists ./dist/builder-v2/index.d.ts && path-exists ./LICENSE"
+      "command": "path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./dist/builder/index.js && path-exists ./dist/builder/index.umd.cjs && path-exists ./dist/builder/index.d.ts && path-exists ./LICENSE"
     },
     "build:esm": {
       "command": "vite build -c ./vite.config.esm.ts"

@@ -5,7 +5,7 @@ import {
 } from 'vitest';
 import GBNF from "gbnf";
 import { getOverStatement } from "./get-over-statement.js";
-import { $, _ } from 'gbnf/builder-v2';
+import { $, _ } from 'gbnf/builder';
 
 describe('getOverStatement', () => {
   test.each([

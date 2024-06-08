@@ -1,7 +1,7 @@
 import {
   _,
   GBNFRule,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import {
   getSelectRuleWithUnion,
 } from "./select/index.js";
@@ -20,7 +20,7 @@ import {
   getWhitespaceDefs,
 } from "./utils/get-whitespace-def.js";
 
-export const getGBNF = (
+export const getSQLGBNF = (
   opts: {
     whitespace: WhitespaceKind;
     case: CaseKind,

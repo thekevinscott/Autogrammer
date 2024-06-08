@@ -6,7 +6,7 @@ import {
 import { parsePrimitives } from './parse-primitives.js';
 import {
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import { JSONSchemaMultiplePrimitiveTypes } from '../types.js';
 import { array, boolean, nll, number, object, string } from '../constants.js';
 

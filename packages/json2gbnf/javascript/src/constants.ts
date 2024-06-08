@@ -1,6 +1,6 @@
 import {
   _,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 
 const baseNum = _`"-"? ${_`[0-9] | ([1-9] [0-9]*)`}`;
 export const quote = _`"\\""`;

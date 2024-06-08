@@ -2,7 +2,7 @@ import {
   $,
   _,
   GBNFRule,
-} from "gbnf/builder-v2";
+} from "gbnf/builder";
 import {
   getAsAlias,
   getColumnNames,

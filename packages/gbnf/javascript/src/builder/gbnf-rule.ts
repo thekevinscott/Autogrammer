@@ -1,6 +1,6 @@
 import {
   joinWith,
-} from "../builder-v1/utils/join.js";
+} from "./join.js";
 import {
   customInspectSymbol,
   type CaseKind,

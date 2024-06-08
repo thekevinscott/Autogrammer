@@ -11,7 +11,7 @@ import {
 } from './utils/parse.js';
 import {
   _,
-} from 'gbnf/builder-v2';
+} from 'gbnf/builder';
 import {
   value,
 } from './constants.js';

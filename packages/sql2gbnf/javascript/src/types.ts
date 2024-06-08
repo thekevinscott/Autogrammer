@@ -1,4 +1,3 @@
-import type { SchemaOpts as _SchemaOpts, } from 'gbnf/builder-v1';
 import type { Parser, importer, } from "@dbml/core";
 /* eslint-disable @typescript-eslint/ban-types */
 
@@ -7,7 +6,7 @@ export type GetConst = (key: string, opts?: { left?: boolean; right?: boolean })
 
 export type WhitespaceKind = 'succinct' | 'verbose' | 'default';
 export type CaseKind = 'lower' | 'upper' | 'any';
-export interface BaseSchemaOpts extends Omit<_SchemaOpts, 'whitespace'> {
+export interface BaseSchemaOpts {
   whitespace?: WhitespaceKind;
   case?: CaseKind;
   // schema?: string;
