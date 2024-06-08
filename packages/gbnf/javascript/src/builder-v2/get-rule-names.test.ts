@@ -12,24 +12,6 @@ import {
   _,
 } from '../builder-v2/template-tags.js';
 
-// class MockGrammarBuilder {
-//   #rules: Map<string, string>;
-//   #keys: Set<string>;
-
-//   addRule = (
-//     rule,
-//     key,
-//   ) => {
-//     return key;
-//   }
-//   public get grammar(): IterableIterator<string> {
-//     return (function* () {
-//       yield '1';
-//     })();
-//   }
-// }
-
-// const mockGrammarBuilder = new MockGrammarBuilder() as unknown as GrammarBuilder
 const parser = new GrammarBuilder();
 
 describe('getRuleNames', () => {
@@ -67,15 +49,6 @@ describe('getRuleNames', () => {
 
   describe('arrays', () => {
     test.each([
-      // [
-      //   [[_`c`.key('c1'), _`d`.key('d1')]],
-      //   ['x'],
-      //   [
-      //     'c1 ::= c',
-      //     'd1 ::= d',
-      //     'x ::= c1 d1',
-      //   ],
-      // ],
       [
         [
           'foo',
