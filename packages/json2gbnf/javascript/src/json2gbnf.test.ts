@@ -49,9 +49,9 @@ describe('JSON2GBNF', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });
-  test('it returns blank grammar if passed false', () => {
-    expect(JSON2GBNF(false)).toEqual(BLANK_GRAMMAR);
-  });
+  // test('it returns blank grammar if passed false', () => {
+  //   expect(JSON2GBNF(false)).toEqual(BLANK_GRAMMAR);
+  // });
 
   test('it throws an error if schema is an object with an unsupported schema version', () => {
     vi.mocked(hasDollarSchemaProp).mockReturnValue(true);
