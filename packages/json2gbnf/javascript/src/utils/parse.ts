@@ -1,7 +1,4 @@
 import {
-  type Grammar,
-} from "../grammar.ts.bl";
-import {
   isSchemaConst,
   isSchemaEnum,
   isSchemaMultiplePrimitiveTypes,

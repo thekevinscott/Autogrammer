@@ -1,7 +1,4 @@
 import {
-  Grammar as Grammar,
-} from './grammar.ts.bl';
-import {
   isEmptyObject,
   hasDollarSchemaProp,
 } from './type-guards.js';
