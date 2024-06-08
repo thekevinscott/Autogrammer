@@ -10,7 +10,7 @@ import {
 import GBNF from 'gbnf';
 import { noSchemaTests } from './no-schema-tests/index.js';
 
-describe.only('synthetic, no schema', () => {
+describe('synthetic, no schema', () => {
   test.each(noSchemaTests)('it parses schema to grammar with input "%s"', (initial) => {
     const grammar = SQL2GBNF(undefined, {
       whitespace: 'verbose',
