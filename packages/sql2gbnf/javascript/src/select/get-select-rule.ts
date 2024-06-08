@@ -11,7 +11,6 @@ import { getWhereClauseInner, } from "./get-where-clause-inner.js";
 import {
   getAsAlias,
   getEqualOps,
-  positiveInteger,
   stringWithQuotes,
   numericOps,
   number,
