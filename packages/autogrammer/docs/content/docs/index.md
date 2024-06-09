@@ -2,7 +2,12 @@
 title: 'Motivation'
 layout: 'layouts/page.html'
 displayOrder: 0
+eleventyNavigation:
+  key: Humans
+  parent: Mammals
+  order: 0
 ---
+
 
 **LLMs don't always do what you tell them to do.**
 

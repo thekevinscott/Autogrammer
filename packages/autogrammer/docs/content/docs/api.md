@@ -2,6 +2,11 @@
 title: 'API'
 layout: 'layouts/page.html'
 displayOrder: 3
+
+eleventyNavigation:
+  key: api 
+  parent: Docs
+  order: 0
 ---
 
 ## `constructor`

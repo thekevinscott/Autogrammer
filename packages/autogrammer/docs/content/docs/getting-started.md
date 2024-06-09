@@ -2,6 +2,11 @@
 title: 'Getting Started'
 layout: 'layouts/page.html'
 displayOrder: 2
+
+eleventyNavigation:
+  key: getting-started
+  parent: Docs
+  order: 0
 ---
 
 ## Installation

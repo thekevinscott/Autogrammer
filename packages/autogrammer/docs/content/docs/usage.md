@@ -2,6 +2,10 @@
 title: 'Usage'
 layout: 'layouts/page.html'
 displayOrder: 2
+eleventyNavigation:
+  key: usage
+  parent: Docs
+  order: 0
 ---
 
 You create an instance of `Autogrammer` to do anything:

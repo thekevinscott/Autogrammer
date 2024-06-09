@@ -3,8 +3,28 @@
 <main tabindex="-1">
   {% include "partials/nav.html" %}
   <article  class="markdown-body">
+
     <h1>{{ title }}</h1>
     {{ content | safe }}
+
+
+    <div id="pagination">
+      {%- set col = 'category_' + page.url.split('/')[1] -%}
+{% set previousPost = collections[col] | getPreviousCollectionItem %}
+{% set nextPost = collections[col] | getNextCollectionItem %}
+    {% if previousPost %}<a class="prev" href="{{ previousPost.url }}">
+      <label>Previous</label>
+      <span>{{ previousPost.data.title }}</span>
+    </a>{% endif %}
+{% if nextPost %}
+<a class="next" href="{{ nextPost.url }}">
+      <label>Next</label>
+      <span>{{ nextPost.data.title }}</span>
+</a>
+  {% endif %}
+
+    </div>
+
 
   </article>
   {% if content | toc %}

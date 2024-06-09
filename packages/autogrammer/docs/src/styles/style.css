@@ -386,3 +386,61 @@ small {
   }
 
 }
+
+#pagination {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+
+  a {
+    padding: 1rem;
+    border: 1px solid var(--color-nav-border-color);
+    border-radius: var(--border-radius);
+    transition-duration: 0.4s;
+
+    &:hover,
+    &:active {
+      text-decoration: none;
+      border-color: var(--color-button-border-active);
+      transition-duration: 0.2s;
+    }
+
+    &:hover {
+      background-color: var(--color-button-background-hover);
+    }
+
+    &:active {
+      background-color: var(--color-button-background-active);
+    }
+
+    label {
+      color: var(--color-default);
+      opacity: 0.8;
+      display: block;
+      font-size: 0.875rem;
+    }
+
+    &.prev {
+      width: 50%;
+      float: left;
+
+      span {
+        &:before {
+          content: "« ";
+        }
+      }
+    }
+
+    &.next {
+      width: 50%;
+      float: right;
+      text-align: right;
+
+      span {
+        &:after {
+          content: " »";
+        }
+      }
+    }
+  }
+}

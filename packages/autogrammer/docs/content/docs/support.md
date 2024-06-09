@@ -2,6 +2,11 @@
 title: 'Support'
 layout: 'layouts/page.html'
 displayOrder: 4
+
+eleventyNavigation:
+  key: support
+  parent: Docs
+  order: 0
 ---
 
 ## Bugs, feature requests, and questions​

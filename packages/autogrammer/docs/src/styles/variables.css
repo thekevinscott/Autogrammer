@@ -8,6 +8,9 @@
   --max-width: 1240px;
   --min-width: 400px;
 
+  --border-radius: 8px;
+
+  --color-default: rgba(0, 0, 0, 0.8);
   --color-default-bg: white;
   --color-header-bg: rgba(255, 255, 255, 0.6);
   --color-nav-bg: white;
@@ -21,7 +24,6 @@
   --color-button-background-active: #fde8ff;
   --color-anchor-active-midway: blue;
   --color-anchor-active-bg: rgba(0, 0, 0, 0.05);
-  --color-default: rgba(0, 0, 0, 0.8);
   --color-home-h1: #031b29;
   --color-h1: var(--color-default);
   --color-h2: var(--color-default);

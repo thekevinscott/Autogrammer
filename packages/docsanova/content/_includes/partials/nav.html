@@ -1,6 +1,6 @@
   <nav>
     <ul>
-      {%- set col = 'c_' + page.url.split('/')[1] -%}
+      {%- set col = 'category_' + page.url.split('/')[1] -%}
       {%- for post in collections[col] | sortByOrder -%}
         <li>
           <a 
