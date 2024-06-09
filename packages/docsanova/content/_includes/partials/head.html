@@ -20,5 +20,15 @@
       </a>
     {% endfor %}
     <theme-toggle></theme-toggle>
+    <div id="docsearch"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+    <script type="module">
+      docsearch({
+        container: '#docsearch',
+        appId: 'LQ7FIB4N3D',
+        indexName: 'autogrammer',
+        apiKey: 'eb51b2e714c17a48ecb3fbf2cc18841b',
+      });
+    </script>
   </div>
 </header>

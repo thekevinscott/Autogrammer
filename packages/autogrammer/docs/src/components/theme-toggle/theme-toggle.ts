@@ -45,7 +45,6 @@ export class ThemeToggle extends LitElement {
     super();
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
     this.theme = localStorage.getItem('theme') || 'light';
-    console.log(this.theme, prefersDarkScheme.matches)
     this.setTheme(this.theme === 'dark' || (!this.theme && prefersDarkScheme.matches) ? 'dark' : 'light');
   }
 

@@ -5,6 +5,7 @@ body {
 
 @view-transition {
   navigation: auto;
+  types: slide, forwards;
 }
 
 :root {
@@ -64,7 +65,7 @@ code {
   font-family: monospace;
 }
 
-header {
+header.site-head {
   display: flex;
   z-index: 5;
   height: var(--header-height);
@@ -383,4 +384,5 @@ small {
       }
     }
   }
+
 }
