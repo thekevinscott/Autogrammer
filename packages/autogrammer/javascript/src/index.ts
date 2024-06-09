@@ -1,4 +1,5 @@
-export { Autogrammer as default, } from './autogrammer.js';
+export { Autogrammer, } from './autogrammer.js';
+export { autogram, } from './autogram.js';
 export {
   isSupportedLanguage,
 } from './type-guards.js';
