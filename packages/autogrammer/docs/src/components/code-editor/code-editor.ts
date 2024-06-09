@@ -39,14 +39,13 @@ import { CodeEditorCodeMirror } from './code-mirror.js';
 
 export const TAG_NAME = 'code-editor';
 
-interface WCCodeMirror extends HTMLElement {
-  value: string;
-  editor: any;
-}
-
 export class CodeEditor extends LitElement {
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
+    :host {
+      --ce-max-width: 100%;
+      --ce-margin: 40px auto 60px auto;
+    }
     slot {
       display: none;
     }
@@ -54,64 +53,49 @@ export class CodeEditor extends LitElement {
     #container {
       display: block;
       position: relative;
-      margin-bottom: 20px;
+      max-width: var(--ce-max-width);
+      margin: var(--ce-margin);
     }
 
     wc-codemirror {
-      border: 1px solid var(--color-code-editor-border-color);
-      border-bottom: 3px solid var(--color-code-editor-border-color);
+      // border: 1px solid var(--color-code-editor-border-color);
       border-radius: 4px 4px 0 0;
       overflow: hidden;
       min-height: 100px;
       max-height: 1000px;
       overflow: scroll;
+      border-bottom: none;
     }
     #output {
-      border: 1px solid var(--color-code-editor-border-color);
+      // border: 1px solid var(--color-code-editor-border-color);
       border-top: none;
       border-radius: 0 0 4px 4px;
       overflow: scroll;
-      height: 140px;
+      // height: 40px;
       background-color: var(--color-code-editor-output);
       font-family: monospace;
       position: relative;
-      padding-left: 10px;
-      padding-top: 5px;
+      // padding: 5px 0px;
     }
 
-    json-viewer {
-      /* Background, font and indentation */
-      --background-color: transparent;
-      --color: #f8f8f2;
-      --font-family: monaco, Consolas, 'Lucida Console', monospace;
-      --font-size: 1rem;
-      --indent-size: 1.5em;
-      --indentguide-size: 1px;
-      --indentguide-style: solid;
-      --indentguide-color: #333;
-      --indentguide-color-active: #666;
-      --indentguide: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color);
-      --indentguide-active: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color-active);
-  
-      /* Types colors */
-      --string-color: #CD463A;
-      --number-color: #28545b;
-      --boolean-color: #1f4d54;
-      --null-color: #a2a5a6;
-      --property-color: #CD463A;
-  
-      /* Collapsed node preview */
-      --preview-color: rgba(222, 175, 143, 0.9);
-  
-      /* Search highlight color */
-      --highlight-color: #6fb3d2;
+    #output-inner {
+      border-bottom: 1px solid rgba(0,0,0,0.6); 
+      background-color: rgba(0,0,0,0.1);
+      padding: 5px 10px;
+      color: red;
+    }
+
+    form {
+      // margin-top: -4px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px 0;
     }
 
     sl-button#run {
-      position: absolute;
-      right: 0;
-      margin-top: -43px;
-      height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -121,15 +105,38 @@ export class CodeEditor extends LitElement {
       border-bottom: none;
     }
     sl-button::part(base) {
-      border-radius: 4px 0 0 0;
-      border-bottom: none;
+      // --sl-input-height-medium: 48px;
+      // padding: 0 20px;
+      // font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+
     }
+
+  sl-button::part(base):hover {
+  color: black;
+  border-color: var(--color-button-border-active);
+  background-color: var(--color-button-background-hover);
+  }
+
+  sl-button::part(base):active {
+  color: black;
+  border-color: var(--color-button-border-active);
+  background-color: var(--color-button-background-active);
+  }
+
     sl-button span {
-      opacity: 0.6;
+      // opacity: 0.6;
     }
     .cm-s-neo .CodeMirror-cursor {
       // border-left: 1px solid red;
       background: transparent;
+    }
+
+    small {
+    opacity: 0.6;
+    font-size: 12px;
+    font-style: italic;
     }
   `;
 
@@ -243,7 +250,6 @@ export class CodeEditor extends LitElement {
   ref: Ref<CodeEditorCodeMirror> = createRef();
 
   protected render() {
-    console.log('in render, the mode', this.mode);
     return html`
       <div id="container" @keydown=${this.handleKeydown}>
       <div id="codemirror-container">
@@ -254,6 +260,23 @@ export class CodeEditor extends LitElement {
           <slot></slot>
         </code-editor-wc-codemirror>
         </div>
+        <div id="output">
+        ${this.output.length ? html`
+          <div id="output-inner" >
+          ${this.output.map((output) => {
+      // <json-viewer .data=${output}></json-viewer>
+      if (typeof output === 'object') {
+        return html`
+            ${JSON.stringify(output)}
+          `;
+      }
+      return html`
+            ${output}
+          `;
+    })}
+          </div>
+          ` : html``}
+
         <form @submit=${this.handleSubmit}>
         <sl-button 
           type="submit"
@@ -264,18 +287,8 @@ export class CodeEditor extends LitElement {
           @mouseout=${this.mouseout}
         >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
         </form>
-        <div id="output">
-        ${this.output.map((output) => {
-      // <json-viewer .data=${output}></json-viewer>
-      if (typeof output === 'object') {
-        return html`
-            ${JSON.stringify(output)}
-          `;
-      }
-      return output;
-    })}
-
         </div>
+        <small>All code snippets are editable</small>
         </div>
       `;
 
