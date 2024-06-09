@@ -93,7 +93,9 @@ export class Autogrammer {
     return this.#contortionist;
   }
 
-  public async execute(
+  autogram = this.generate.bind(this);
+
+  public async generate(
     prompt: string,
     {
       languageOptions,

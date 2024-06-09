@@ -1,2 +1,1 @@
-import Autogrammer from 'autogrammer';
-export default Autogrammer;
+export * from 'autogrammer';

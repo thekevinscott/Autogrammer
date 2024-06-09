@@ -1,18 +1,31 @@
-
 <main tabindex="-1" id="home">
-  <div id="left">
+  <div id="home-hello">
   <h1>Autogrammer</h1>
-  <h2>Generate syntactically correct code with an LLM.</h2>
+  <div id="two-col">
+  <div id="left">
+  <h2>Generate syntactically valid code with an LLM. Right in your Browser.</h2>
   </div>
   <code-editor>
-import { Autogrammer } from 'autogrammer'
+import { autogram } from 'autogrammer'
 
 const prompt = `
+
 Write me JSON that captures the following address. 
 Ensure you include the zip code in the JSON output.
-Address: 1600 Pennsylvania Avenue NW, Washington, DC 20500
+
+Address: 
+
+1600 Pennsylvania Avenue NW, Washington, DC 20500
+
 `
 
-console.log(await grammer.execute(prompt))
+console.log(await autogram(prompt, {
+  language: 'json' 
+}))
+
 </code-editor>
+
+  </div>
+
+  </div>
 </main>

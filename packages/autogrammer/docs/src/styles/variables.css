@@ -5,7 +5,7 @@
   /* --font-size-medium: 1.125rem; */
   --font-size-large: 1.5rem;
 
-  --max-width: 1200px;
+  --max-width: 1240px;
   --min-width: 400px;
 
   --color-default-bg: white;
@@ -13,16 +13,15 @@
   --color-nav-bg: white;
   --color-nav-border-color: rgba(0, 0, 0, 0.1);
   --color-anchor: rgba(0, 0, 0, 1.0);
-  --color-anchor-active: var(--color-primary-blue);
+  /* --color-anchor-active: rgb(40, 87, 164); */
+  --color-anchor-active: #fa4dff;
+  --color-button-border-active: var(--color-anchor-active);
+  --color-button-background-hover: #fef5ff;
+  --color-button-background-active: #fde8ff;
+  --color-anchor-active-midway: blue;
   --color-anchor-active-bg: rgba(0, 0, 0, 0.05);
-  /*
-  --color-primary: #FB5895;
-  --color-primary: #FB5895;
-  --color-primary-shadow: #DF3373;
-  */
-  /* --color-primary-blue: #5677fb; */
-  --color-primary-blue: rgb(40, 87, 164);
   --color-default: rgba(0, 0, 0, 0.8);
+  --color-home-h1: #031b29;
   --color-h1: var(--color-default);
   --color-h2: var(--color-default);
   --color-h3: var(--color-default);
@@ -35,6 +34,7 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
+  --color-home-h1: #cfedff;
   --color-default: rgb(227, 227, 227);
   --color-default-bg: #152539;
   --color-header-bg: #011627;
