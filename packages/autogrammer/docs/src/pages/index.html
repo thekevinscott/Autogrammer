@@ -1,11 +1,11 @@
 <main tabindex="-1" id="home">
   <div id="home-hello">
-  <h1>Autogrammer</h1>
-  <div id="two-col">
-  <div id="left">
-  <h2>Generate syntactically valid code with an LLM. Right in your Browser.</h2>
-  </div>
-  <code-editor>
+    <h1>Autogrammer</h1>
+    <div id="two-col">
+      <div id="left">
+        <h2>Syntactically Valid Code with an LLM. Right in your Browser.</h2>
+      </div>
+      <code-editor>
 import { autogram } from 'autogrammer'
 
 const prompt = `
@@ -22,10 +22,16 @@ Address:
 console.log(await autogram(prompt, {
   language: 'json' 
 }))
-
-</code-editor>
-
-  </div>
-
+      </code-editor>
+    </div>
+    <div id="home-buttons">
+      {% set nextPost = collections.category_docs | getNextCollectionItem %}
+      <a class="left button" href="/docs/">
+        <span>Learn more about why Autogrammer exists</span>
+      </a>
+      <a class="right button" href="/docs/getting-started">
+        <span>Start using Autogrammer now</span>
+      </a>
+    </div>
   </div>
 </main>

@@ -10,6 +10,7 @@
 
   --border-radius: 8px;
 
+  --color-heavy: black;
   --color-default: rgba(0, 0, 0, 0.8);
   --color-default-bg: white;
   --color-header-bg: rgba(255, 255, 255, 0.6);
@@ -18,7 +19,8 @@
   --color-anchor: rgba(0, 0, 0, 0.6);
   --color-nav-anchor: rgba(0, 0, 0, 1.0);
   /* --color-anchor-active: rgb(40, 87, 164); */
-  --color-anchor-active: #fa4dff;
+  --color-anchor-active: #fb8eff;
+  --color-anchor-active-heavy: #fa4dff;
   --color-button-border-active: var(--color-anchor-active);
   --color-button-background-hover: #fef5ff;
   --color-button-background-active: #fde8ff;
@@ -37,6 +39,7 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
+  --color-heavy: white;
   --color-home-h1: #cfedff;
   --color-default: rgb(227, 227, 227);
   --color-default-bg: #152539;

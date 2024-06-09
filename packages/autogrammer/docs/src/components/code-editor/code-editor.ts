@@ -46,6 +46,9 @@ export class CodeEditor extends LitElement {
       --ce-max-width: 100%;
       --ce-margin: 40px auto 60px auto;
     }
+    * {
+      box-sizing: border-box;
+    }
     slot {
       display: none;
     }
@@ -71,39 +74,68 @@ export class CodeEditor extends LitElement {
       border-top: none;
       border-radius: 0 0 4px 4px;
       overflow: scroll;
+      display: flex;
+      flex-direction: column;
       // height: 40px;
       background-color: var(--color-code-editor-output);
       font-family: monospace;
       position: relative;
       // padding: 5px 0px;
+      transition-duration: 0.2s;
+      height: 50px;
+      overflow-y: scroll;
     }
+      #output.active {
+        height: 260px;
+      }
 
     #output-inner {
-      border-bottom: 1px solid rgba(0,0,0,0.6); 
+      // border-top: 1px solid rgba(0,0,0,0.4); 
       background-color: rgba(0,0,0,0.1);
+      flex: 1;
       padding: 5px 10px;
       color: red;
     }
 
+    .chat-bubble {
+      margin: calc(var(--padding) * 4);
+      background: white;
+      box-shadow: 0 3px 3px rgba(0,0,0,0.1);
+      padding: calc(var(--padding) * 4);
+      border-radius: calc(var(--padding) * 2);
+      max-width: 50%;
+    }
+
     form {
       // margin-top: -4px;
+      position: relative;
       width: 100%;
-      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 5px 0;
+      box-shadow: 0 2px 2px rgba(0,0,0,0.1);
     }
 
-    sl-button#run {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-      border: none;
-      cursor: pointer;
-      border-bottom: none;
+    sl-button {
+      & #run {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        border: none;
+        cursor: pointer;
+        border-bottom: none;
+      }
     }
+
+    sl-button#loading::part(base) {
+          width: 100%;
+          background-color: transparent;
+          border-color: transparent;
+          color: red;
+}
+
     sl-button::part(base) {
       // --sl-input-height-medium: 48px;
       // padding: 0 20px;
@@ -134,10 +166,15 @@ export class CodeEditor extends LitElement {
     }
 
     small {
-    opacity: 0.6;
-    font-size: 12px;
-    font-style: italic;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      opacity: 0.6;
+      font-size: 12px;
+      font-style: italic;
+      margin: calc(var(--padding) * 2);
     }
+
   `;
 
   static readonly metadata = {
@@ -260,9 +297,20 @@ export class CodeEditor extends LitElement {
           <slot></slot>
         </code-editor-wc-codemirror>
         </div>
-        <div id="output">
+        <div id="output" class="${this.output.length || this.running ? 'active' : ''}">
+        <form @submit=${this.handleSubmit}>
+        <sl-button 
+          type="submit"
+          variant="default" 
+          id="run" 
+          @mouseover=${this.mouseover}
+          @mouseout=${this.mouseout}
+        >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
+        <small>All code snippets are editable</small>
+        </form>
         ${this.output.length ? html`
           <div id="output-inner" >
+          <div class="chat-bubble" >
           ${this.output.map((output) => {
       // <json-viewer .data=${output}></json-viewer>
       if (typeof output === 'object') {
@@ -275,20 +323,16 @@ export class CodeEditor extends LitElement {
           `;
     })}
           </div>
+          </div>
+          ` : this.running ? html`
+          <div id="output-inner" >
+          <div class="chat-bubble" >
+          <sl-button id="loading" loading></sl-button>
+          </div>
+          </div>
           ` : html``}
 
-        <form @submit=${this.handleSubmit}>
-        <sl-button 
-          type="submit"
-          variant="default" 
-          id="run" 
-          ?loading=${this.running && this.hover === false}
-          @mouseover=${this.mouseover}
-          @mouseout=${this.mouseout}
-        >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
-        </form>
         </div>
-        <small>All code snippets are editable</small>
         </div>
       `;
 
