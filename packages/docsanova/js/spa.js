@@ -21,15 +21,16 @@ const loadAndPopulate = async (href, pushState) => {
   }
   try {
     const d = await load(href);
-    console.log('d', d);
-    const dDocument = getDocument(d);
-    console.log(dDocument)
-    const dTitle = dDocument.title || '';
-    const container = $('#container', dDocument);
-    console.log(container);
-    container.innerHTML = (container && container.innerHTML) || '';
+    const loadedDoc = getDocument(d);
+    const nextTitle = loadedDoc.title || '';
+    const nextBodyContainer = $('#container', loadedDoc);
+    if (nextBodyContainer === null) {
+      document.querySelector('html').innerHTML = d;
+    } else {
+      $('#container', document).innerHTML = (nextBodyContainer && nextBodyContainer.innerHTML) || '';
+    }
     if (pushState) {
-      history.pushState({}, dTitle, href);
+      history.pushState({}, nextTitle, href);
     }
     $('#container').focus();
     window.scrollTo(0, 0);
