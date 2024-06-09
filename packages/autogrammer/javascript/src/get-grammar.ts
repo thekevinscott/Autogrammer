@@ -10,7 +10,7 @@ import type {
 const GRAMMARS = {
   json: ({ schema, options, }: JSONLanguageOptions) => JSON2GBNF(schema, {
     fixedOrder: false,
-    whitespace: 1,
+    // whitespace: 1,
     ...options,
   }),
   sql: ({ options, }: SQLLanguageOptions) => SQL2GBNF({
