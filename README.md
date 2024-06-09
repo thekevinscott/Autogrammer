@@ -1,8 +1,16 @@
-# Autogrammer
+<center>
+<h1>Autogrammer</h1>
+
+<a href="https://www.npmjs.com/package/autogrammer"><img alt="Latest Autogrammer NPM Version" src="https://badge.fury.io/js/autogrammer.svg" /></a>
+<a href="https://github.com/thekevinscott/autogrammer/blob/master/LICENSE"><img alt="License for Autogrammer" src="https://img.shields.io/npm/l/autogrammer" /></a>
+<a href="https://www.npmjs.com/package/cnotort"><img alt="Downloads per week on NPM for Autogrammer" src="https://img.shields.io/npm/dw/autogrammer" /></a>
+</center>
 
 Autogrammer constrains the output of language models (LLMs) to generate syntactically valid JSON or SQL. 
 
 By leveraging grammars, Autogrammer ensures that an LLM generates output adhering to specific structures and syntax, even with smaller models. 
+
+_Autogrammer is still being actively developed and should be considered in alpha_
 
 ## Use Cases
 
