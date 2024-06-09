@@ -1,5 +1,5 @@
 {
-  "name": "TEST",
+  "title": "Autogrammer",
   "nav": {
     "left": [
       {
@@ -9,10 +9,6 @@
       {
         "text": "Docs",
         "url": "/docs/"
-      },
-      {
-        "text": "Demos",
-        "url": "/demos/"
       }
     ],
     "right": [
