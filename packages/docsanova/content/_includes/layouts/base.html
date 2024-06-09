@@ -48,9 +48,9 @@
   </head>
   <body>
     <script type="module">
-      const mode = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', mode);
-      document.body.classList.add(`sl-theme-${mode}`);
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.body.classList.add(`sl-theme-${theme}`);
     </script>
     {% include "partials/head.html" %}
     <div id="container">
