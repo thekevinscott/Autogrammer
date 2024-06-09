@@ -43,11 +43,16 @@
 
   </head>
   <body>
+    <script type="module">
+      const mode = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', mode);
+      document.body.classList.add(`sl-theme-${mode}`);
+    </script>
     {% include "partials/head.html" %}
     <div id="container">
       {% block content %}{% endblock %}
     </div>
-    <script async=false defer=false type="module" src="/_internal_js/spa.js"></script>
+    <!-- <script async=false defer=false type="module" src="/_internal_js/spa.js"></script> -->
     <script async=false defer=false type="module" src="/js/index.js"></script>
   </body>
 </html>

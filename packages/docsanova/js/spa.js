@@ -35,8 +35,7 @@ const loadAndPopulate = async (href, pushState) => {
     $('#container').focus();
     window.scrollTo(0, 0);
   } catch (err) {
-    console.log('err!');
-    debugger;
+    console.log('err!', err);
     document.location.href = href;
   }
 };
@@ -64,6 +63,7 @@ window.addEventListener('click', function (evt) {
   const el = findAnchorTag(evt.target);
   const href = el?.getAttribute('href');
   if (el && href) {
+    console.log(href);
     if (
       href.startsWith('#') ||
       el.getAttribute('target') === '_blank' ||
@@ -76,6 +76,7 @@ window.addEventListener('click', function (evt) {
     }
     // if the URL starts with the base url, do the SPA handling
     if (href.startsWith(baseUrl)) {
+      console.log('go!')
       evt.preventDefault();
       loadAndPopulate(href, true);
     }
@@ -83,5 +84,6 @@ window.addEventListener('click', function (evt) {
 });
 
 window.addEventListener('popstate', function (e) {
+  console.log('popstate!', e)
   loadAndPopulate(document.location.pathname, false);
 });

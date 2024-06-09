@@ -5,7 +5,15 @@
   <article  class="markdown-body">
     <h1>{{ title }}</h1>
     {{ content | safe }}
+
   </article>
+  {% if content | toc %}
+
+  <aside>
+    {{ content | toc | safe }}
+  </aside>
+  {% endif %}
+
 
 </main>
 {% endblock %}

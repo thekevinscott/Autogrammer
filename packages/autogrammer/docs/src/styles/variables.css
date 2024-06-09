@@ -12,7 +12,8 @@
   --color-header-bg: rgba(255, 255, 255, 0.6);
   --color-nav-bg: white;
   --color-nav-border-color: rgba(0, 0, 0, 0.1);
-  --color-anchor: rgba(0, 0, 0, 1.0);
+  --color-anchor: rgba(0, 0, 0, 0.6);
+  --color-nav-anchor: rgba(0, 0, 0, 1.0);
   /* --color-anchor-active: rgb(40, 87, 164); */
   --color-anchor-active: #fa4dff;
   --color-button-border-active: var(--color-anchor-active);
@@ -38,7 +39,8 @@
   --color-default: rgb(227, 227, 227);
   --color-default-bg: #152539;
   --color-header-bg: #011627;
-  --color-anchor: #e3e3e3;
+  --color-nav-anchor: #e3e3e3;
+  --color-anchor: rgba(255, 255, 255, 0.6);
   --color-anchor-active: #7fa5f0;
   --color-anchor-active-bg: rgba(255, 255, 255, 0.05);
   --color-h4: rgba(255, 255, 255, 0.6);
