@@ -306,7 +306,7 @@ export class CodeEditor extends LitElement {
           @mouseover=${this.mouseover}
           @mouseout=${this.mouseout}
         >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
-        <small>All code snippets are editable</small>
+        <small>All code editable</small>
         </form>
         ${this.output.length ? html`
           <div id="output-inner" >

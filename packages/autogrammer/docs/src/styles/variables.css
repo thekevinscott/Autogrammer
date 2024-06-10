@@ -20,7 +20,7 @@
   --color-nav-anchor: rgba(0, 0, 0, 1.0);
   /* --color-anchor-active: rgb(40, 87, 164); */
   --color-anchor-active: #fb8eff;
-  --color-anchor-active-heavy: #fa4dff;
+  --color-anchor-active-heavy: #fa61ff;
   --color-button-border-active: var(--color-anchor-active);
   --color-button-background-hover: #fef5ff;
   --color-button-background-active: #fde8ff;

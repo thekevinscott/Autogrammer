@@ -39,17 +39,14 @@ console.log(JSON.parse(result))
 
 ```javascript
 import { pipeline, } from '@xenova/transformers'
-import Autogrammer from 'autogrammer'
-
-const autogrammer = new Autogrammer({
-  language: 'json',
-})
+import { autogram } from 'autogrammer'
 
 const prompt = `Return the following address in a JSON object: 
 
 "1600 Pennsylvania Avenue NW, Washington, DC 20500"`
 
-const result = await autogrammer.execute(prompt, {
+const result = await autogram(prompt, {
+  language: 'json',
   languageOptions: {
     schema: {
       type: 'object',
