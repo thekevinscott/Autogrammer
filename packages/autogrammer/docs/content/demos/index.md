@@ -2,6 +2,9 @@
 title: 'Demos'
 layout: 'layouts/page.html'
 displayOrder: 0
+eleventyNavigation:
+  key: demos
+  title: "Demos"
 ---
 
 <autogrammer-demos title="JSON">

@@ -4,9 +4,10 @@ layout: 'layouts/page.html'
 displayOrder: 3
 
 eleventyNavigation:
-  key: api 
-  parent: Docs
-  order: 0
+  parent: docs
+  key: api
+  title: "API"
+  order: 3
 ---
 
 ## `constructor`

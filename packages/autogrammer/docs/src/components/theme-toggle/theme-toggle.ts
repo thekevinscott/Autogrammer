@@ -20,6 +20,9 @@ export class ThemeToggle extends LitElement {
     cursor: pointer;
     background: none;
     border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .dark {
     #sun {

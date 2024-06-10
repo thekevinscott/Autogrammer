@@ -3,9 +3,10 @@ title: 'Usage'
 layout: 'layouts/page.html'
 displayOrder: 2
 eleventyNavigation:
+  parent: docs
   key: usage
-  parent: Docs
-  order: 0
+  title: "Usage"
+  order: 2
 ---
 
 You create an instance of `Autogrammer` to do anything:
@@ -39,7 +40,7 @@ See the section on languages for more.
 
 ## Models
 
-One of the, frankly, killer things about this library is it's "bring-your-own-model" philosophy.
+Autogrammer has a "bring-your-own-model" philosophy, allowing you to pick and choose which LLMs to interact with.
 
 `Autogrammer` works a variety of LLMs and backends, including:
 

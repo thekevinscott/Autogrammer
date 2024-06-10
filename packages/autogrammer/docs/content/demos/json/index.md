@@ -2,6 +2,11 @@
 title: 'JSON'
 layout: 'layouts/page.html'
 displayOrder: 0
+
+eleventyNavigation:
+  parent: demos
+  key: JSON
+  order: 0
 ---
 
 Demos:

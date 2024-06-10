@@ -42,10 +42,6 @@ export const TAG_NAME = 'code-editor';
 export class CodeEditor extends LitElement {
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
-    :host {
-      --ce-max-width: 100%;
-      --ce-margin: 40px auto 60px auto;
-    }
     * {
       box-sizing: border-box;
     }
@@ -107,72 +103,68 @@ export class CodeEditor extends LitElement {
     }
 
     form {
-      // margin-top: -4px;
       position: relative;
       width: 100%;
-      display: flex;
       justify-content: center;
+      padding: 0 5px;
       align-items: center;
-      padding: 5px 0;
       box-shadow: 0 2px 2px rgba(0,0,0,0.1);
-    }
+      display: grid;
+      grid-template-columns: 2fr 1fr;
 
-    sl-button {
-      & #run {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 2;
-        border: none;
-        cursor: pointer;
-        border-bottom: none;
+      small {
+        opacity: 0.6;
+        font-size: 12px;
+        font-style: italic;
+        margin: calc(var(--padding) * 2);
       }
     }
 
-    sl-button#loading::part(base) {
-          width: 100%;
-          background-color: transparent;
-          border-color: transparent;
-          color: red;
-}
-
-    sl-button::part(base) {
-      // --sl-input-height-medium: 48px;
-      // padding: 0 20px;
-      // font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-
+    sl-button#run {
+      max-width: 150px;
+      justify-self: end;
     }
+    sl-button {
+      & #loading::part(base) {
+        width: 100%;
+        background-color: transparent;
+        border-color: transparent;
+        // color: red;
+      }
 
-  sl-button::part(base):hover {
-  color: black;
-  border-color: var(--color-button-border-active);
-  background-color: var(--color-button-background-hover);
-  }
+      &::part(base) {
+        border-radius: 8px;
+        cursor: pointer;
 
-  sl-button::part(base):active {
-  color: black;
-  border-color: var(--color-button-border-active);
-  background-color: var(--color-button-background-active);
-  }
+        &:hover {
+          color: black;
+          border-color: var(--color-button-border-active);
+          background-color: var(--color-button-background-hover);
+        }
 
-    sl-button span {
-      // opacity: 0.6;
+        &:active {
+          color: black;
+          border-color: var(--color-button-border-active);
+          background-color: var(--color-button-background-active);
+        }
+      }
     }
     .cm-s-neo .CodeMirror-cursor {
       // border-left: 1px solid red;
       background: transparent;
     }
 
-    small {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      opacity: 0.6;
-      font-size: 12px;
-      font-style: italic;
-      margin: calc(var(--padding) * 2);
+    @container (min-width: 800px) {
+      form {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @container (width < 6000px) {
+      form {
+        grid-template-columns: 2fr 1fr;
+        padding: 2px;
+      }
     }
 
   `;
@@ -299,14 +291,14 @@ export class CodeEditor extends LitElement {
         </div>
         <div id="output" class="${this.output.length || this.running ? 'active' : ''}">
         <form @submit=${this.handleSubmit}>
-        <sl-button 
-          type="submit"
-          variant="default" 
-          id="run" 
-          @mouseover=${this.mouseover}
-          @mouseout=${this.mouseout}
-        >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
-        <small>All code editable</small>
+          <small>All code editable</small>
+          <sl-button 
+            type="submit"
+            variant="default" 
+            id="run" 
+            @mouseover=${this.mouseover}
+            @mouseout=${this.mouseout}
+          >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
         </form>
         ${this.output.length ? html`
           <div id="output-inner" >

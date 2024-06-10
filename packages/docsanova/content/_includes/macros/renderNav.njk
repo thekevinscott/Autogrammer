@@ -1,0 +1,25 @@
+{% macro renderNav(name, navPages, pageURL) -%}
+<nav id="{{ name }}">
+  <ul>
+    {%- for entry in navPages %}{{ renderNavListItem(entry, pageURL) }}{%- endfor -%}
+  </ul>
+</nav>
+{%- endmacro %}
+
+{% macro renderNavListItem(entry, pageURL) -%}
+<li class="open">
+  <div class="inner">
+  <div class="menu-list {% if entry.url == pageURL %}active{% endif %}" >
+    <a href="{{ entry.url }}">{{ entry.title }}</a>
+    {%- if entry.children.length -%}
+      <button class="toggle" aria-label="Toggle the category" type="button"></button>
+    {%- endif -%}
+  </div>
+  {%- if entry.children.length -%}
+    <ul>
+      {%- for child in entry.children %}{{ renderNavListItem(child) }}{% endfor -%}
+    </ul>
+  {%- endif -%}
+  </div>
+</li>
+{%- endmacro %}

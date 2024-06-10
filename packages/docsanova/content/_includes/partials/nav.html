@@ -1,13 +1,4 @@
-  <nav>
-    <ul>
-      {%- set col = 'category_' + page.url.split('/')[1] -%}
-      {%- for post in collections[col] | sortByOrder -%}
-        <li>
-          <a 
-          href="{{ post.url }}"
-        class="{{ 'active' if page.url == post.url }}"
-          >{{post.data.title}}</a>
-        </li>
-      {%- endfor -%}
-      </ul>
-  </nav>
+{% from 'macros/renderNav.njk' import renderNav %}
+{%- set key =  page['filePathStem'].slice(1).split('/')[0]  -%}
+{%- set navPages = collections.all | eleventyNavigation(key) %}
+{{ renderNav('left-nav', navPages, page.url) }}
