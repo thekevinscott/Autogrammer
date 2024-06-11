@@ -13,8 +13,10 @@ export class GrammarBuilder {
     key,
   ) => {
     let symbolId = key ? key : (this.#rules.get(rule) ?? getRuleName(rule));
-    if (this.#rules.has(rule) && this.#rules.get(rule) !== symbolId) {
-      throw new Error(`Rule already exists: "${rule}" is already defined as "${this.#rules.get(rule)}". It cannot be redefined as "${symbolId}".`);
+    const existingSymbolId = this.#rules.get(rule);
+    if (existingSymbolId !== undefined && existingSymbolId !== symbolId) {
+      rule = existingSymbolId;
+      // throw new Error(`Rule already exists: "${rule}" is already defined as "${this.#rules.get(rule)}". It cannot be redefined as "${symbolId}".`);
     }
     if (this.#keys.has(symbolId) && symbolId !== this.#rules.get(rule)) {
       let i = 0;

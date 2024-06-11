@@ -1,5 +1,5 @@
 import { type JSONSchemaNumber, } from "../types.js";
-import { integer, number, } from "../constants.js";
+import { intRule, numRule, } from "../constants.js";
 
 
 const UNSUPPORTED_NUMERIC_PROPERTIES: (keyof JSONSchemaNumber)[] = [
@@ -16,5 +16,5 @@ export const parseNumber = (schema: JSONSchemaNumber) => {
       throw new Error(`${key} is not supported`);
     }
   }
-  return schema.type === 'number' ? number : integer;
+  return schema.type === 'number' ? numRule : intRule;
 };

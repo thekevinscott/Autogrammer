@@ -3,7 +3,7 @@ import {
   GBNFRule,
 } from "gbnf/builder";
 import {
-  getSelectRuleWithUnion,
+  selectRuleWithUnion,
 } from "./select/index.js";
 import type {
   CaseKind,
@@ -11,56 +11,28 @@ import type {
   WhitespaceKind,
 } from "./types.js";
 import {
-  getInsertRule,
+  insertRule,
 } from "./insert/index.js";
 import {
-  getDeleteRule,
+  deleteRule,
 } from "./delete/index.js";
 import {
-  getWhitespaceDefs,
-} from "./utils/get-whitespace-def.js";
+  nroptws,
+} from "./constants.js";
 
 export const getSQLGBNF = (
-  opts: {
-    whitespace: WhitespaceKind;
-    case: CaseKind,
-  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   database?: Database,
   // schema?: string,
 ): GBNFRule => {
-  const {
-    optRecWS,
-    optNonRecWS,
-    ws,
-  } = getWhitespaceDefs(opts.whitespace);
-
-  const selectRule = getSelectRuleWithUnion({
-    optionalRecommendedWhitespace: optRecWS,
-    optionalNonRecommendedWhitespace: optNonRecWS,
-    mandatoryWhitespace: ws,
-  });
-
-  const insertRule = getInsertRule({
-    optionalRecommendedWhitespace: optRecWS,
-    optionalNonRecommendedWhitespace: optNonRecWS,
-    mandatoryWhitespace: ws,
-  });
-
-  const deleteRule = getDeleteRule({
-    optionalRecommendedWhitespace: optRecWS,
-    optionalNonRecommendedWhitespace: optNonRecWS,
-    mandatoryWhitespace: ws,
-  });
-
   const gbnf = _`
     ${_`
-      ${selectRule}
+      ${selectRuleWithUnion}
       | ${insertRule} 
       | ${deleteRule}
     `.wrap()}
     ${_`
-      ${optNonRecWS} 
+      ${nroptws} 
       ";"
     `.wrap('?')}
   `;

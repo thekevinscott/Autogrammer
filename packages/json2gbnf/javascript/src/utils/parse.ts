@@ -26,5 +26,5 @@ export const parse = (
   } else if (isSchemaConst(schema)) {
     return parseConst(schema);
   }
-  return _`${parseType(schema, fixedOrder)}`;
+  return parseType(schema, fixedOrder);
 };

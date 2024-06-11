@@ -8,6 +8,17 @@ import type {
 import {
   getDBML,
 } from "./get-dbml.js";
+import {
+  getWhitespaceDefs,
+} from "./utils/get-whitespace-def.js";
+import {
+  nroptws,
+  optws,
+  ws,
+} from "./constants.js";
+import {
+  _,
+} from 'gbnf/builder';
 
 export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
   whitespace = 'default',
@@ -15,10 +26,14 @@ export function SQL2GBNF(schemaDef: DBMLSchemaOpts = {}, {
 }: SchemaOpts = {}): string {
   const database = getDBML(schemaDef);
 
-  return getSQLGBNF({
-    whitespace,
-    case: caseKind,
-  }, database).compile({
+  const rules = getWhitespaceDefs(whitespace);
+
+  return getSQLGBNF(database).compile({
     caseKind,
+    include: [
+      rules.ws.key(ws),
+      _`${rules.optRecWS}`.key(optws),
+      _`${rules.optNonRecWS}`.key(nroptws),
+    ],
   });
 };

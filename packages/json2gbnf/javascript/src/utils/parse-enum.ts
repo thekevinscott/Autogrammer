@@ -2,7 +2,7 @@ import {
   JSONSchemaObjectValueEnum,
 } from "../types.js";
 import {
-  quote,
+  quoteRule,
 } from '../constants.js';
 import {
   GBNFRule,
@@ -17,7 +17,7 @@ export const parseEnum = (
   }
   return _`${schema.enum.map(value => {
     if (typeof value === 'string') {
-      return _`${quote} ${JSON.stringify(value)} ${quote}`;
+      return _`${quoteRule} ${JSON.stringify(value)} ${quoteRule}`;
     }
     return _`"${JSON.stringify(value)}"`;
   })}`.separate(' | ');

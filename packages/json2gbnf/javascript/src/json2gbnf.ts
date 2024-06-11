@@ -41,15 +41,14 @@ export function JSON2GBNF<T extends JSONSchema>(
   }
 
   const ws = _`[ \\t\\n\\r]`.key(WS);
-  const opt_ws = whitespace === 'default' ? ws.wrap('?').key(OPT_WS) : whitespace === 'succinct' ? _`""`.key(OPT_WS) : ws.wrap('*').key(OPT_WS);
-  const non_rec_opt_ws = whitespace === 'default' ? _`${opt_ws}`.key(NR_OPT_WS) : whitespace === 'succinct' ? _`${opt_ws}`.key(NR_OPT_WS) : _`${opt_ws.wrap('*')}`.key(NR_OPT_WS);
+  const optionalWhitespace = _`${whitespace === 'default' ? ws.wrap('?').key(OPT_WS) : whitespace === 'succinct' ? _`""`.key(OPT_WS) : ws.wrap('*').key(OPT_WS)}`;
+  const nonRecommendedOptionalWhitespace = _`${whitespace === 'verbose' ? ws.wrap('*') : undefined}`.key(NR_OPT_WS);
 
   const include = [
     ws,
-    opt_ws,
-    non_rec_opt_ws,
+    optionalWhitespace,
+    nonRecommendedOptionalWhitespace,
   ];
-
 
   if (schema === true || schema === null || isEmptyObject(schema)) {
     return _`${value}`.compile({ include, });

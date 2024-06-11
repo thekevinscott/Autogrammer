@@ -4,7 +4,7 @@ import {
   _,
 } from "gbnf/builder";
 import {
-  getSelectRuleWithUnion as getSelectRule,
+  selectRuleWithUnion,
 } from '../select/index.js';
 import {
   stringWithQuotes,
@@ -13,61 +13,46 @@ import {
   tableName,
   columnName,
   validAlias,
+  ws,
+  optws,
+  nroptws,
 } from "../constants.js";
 
-export const getInsertRule = ({
-  optionalRecommendedWhitespace: optRecWs,
-  optionalNonRecommendedWhitespace: optNRecWs,
-  mandatoryWhitespace,
-}: {
-  optionalRecommendedWhitespace: GBNFRule | undefined;
-  optionalNonRecommendedWhitespace: GBNFRule | undefined;
-  mandatoryWhitespace: GBNFRule | undefined;
-}
-): GBNFRule => {
-  const selectRule = getSelectRule({
-    optionalRecommendedWhitespace: optRecWs,
-    optionalNonRecommendedWhitespace: optNRecWs,
-    mandatoryWhitespace,
-    withUnion: false,
-    singleColumn: true,
-  });
+const listOfStrings = (value: GBNFRule | string) => _` 
+  "(" 
+    ${nroptws} 
+    ${value} 
+    ${_`
+      "," 
+      ${optws} 
+      ${value}
+    `.wrap('*')} 
+    ${nroptws} 
+  ")" 
+`;
 
-  const listOfStrings = (value: GBNFRule | string) => _` 
-    "(" 
-      ${optNRecWs} 
-      ${value} 
-      ${_`
-        "," 
-        ${optRecWs} 
-        ${value}
-      `.wrap('*')} 
-      ${optNRecWs} 
-    ")" 
-  `;
-  return _`
-    ${$`INSERT`}
-    ${mandatoryWhitespace}
-    ${$`INTO`}
-    ${mandatoryWhitespace}
-    ${tableName}
-    ${_`${mandatoryWhitespace} ${validAlias}`.wrap("?")}
-    ${optRecWs}
-    ${listOfStrings(columnName)}
-    ${optRecWs}
-    ${$`VALUES`}
-    ${optRecWs}
-    ${listOfStrings(_`
-      ${stringWithQuotes} 
-      | ${number} 
-      | ${boolean} 
-      | ${$`NULL`} 
-      | ${selectRule} 
-      | "(" 
-          ${optNRecWs} 
-          ${selectRule} 
-          ${optNRecWs} 
-        ")"
-    `.wrap())}
-  `;
-};
+export const insertRule = _`
+  ${$`INSERT`}
+  ${ws}
+  ${$`INTO`}
+  ${ws}
+  ${tableName}
+  ${_`${ws} ${validAlias}`.wrap("?")}
+  ${optws}
+  ${listOfStrings(columnName)}
+  ${optws}
+  ${$`VALUES`}
+  ${optws}
+  ${listOfStrings(_`
+    ${stringWithQuotes} 
+    | ${number} 
+    | ${boolean} 
+    | ${$`NULL`} 
+    | ${selectRuleWithUnion} 
+    | "(" 
+        ${nroptws} 
+        ${selectRuleWithUnion} 
+        ${nroptws} 
+      ")"
+  `.wrap())}
+`;

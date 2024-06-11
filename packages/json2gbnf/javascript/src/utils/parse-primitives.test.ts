@@ -5,7 +5,14 @@ import {
 } from 'vitest';
 import { parsePrimitives } from './parse-primitives.js';
 import { JSONSchemaMultiplePrimitiveTypes } from '../types.js';
-import { array, boolean, nll, number, object, string } from '../constants.js';
+import {
+  arrRule,
+  boolRule,
+  nullRule,
+  numRule,
+  objRule,
+  strRule
+} from '../constants.js';
 
 import {
   _,
@@ -28,7 +35,7 @@ describe('Multiple Primitives', () => {
     const rule = parsePrimitives(schema);
     expect(rule.compile({
       include,
-    })).toEqual(_`${[string, number]}`.separate(' | ').compile({
+    })).toEqual(_`${[strRule, numRule]}`.separate(' | ').compile({
       include,
     }));
   });
@@ -40,7 +47,7 @@ describe('Multiple Primitives', () => {
     const rule = parsePrimitives(schema);
     expect(rule.compile({
       include,
-    })).toEqual(_`${[string, number, boolean, nll, object(), array()]}`.separate(' | ').compile({
+    })).toEqual(_`${[strRule, numRule, boolRule, nullRule, objRule(), arrRule()]}`.separate(' | ').compile({
       include,
     }));
   });

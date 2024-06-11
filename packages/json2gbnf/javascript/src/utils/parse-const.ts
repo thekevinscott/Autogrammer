@@ -6,11 +6,11 @@ import type {
   JSONSchemaObjectValueConst,
 } from "../types.js";
 import {
-  quote,
+  quoteRule,
 } from '../constants.js';
 
 export const parseConst = (value: JSONSchemaObjectValueConst): GBNFRule => _`
-  ${quote} 
+  ${quoteRule} 
   "${value.const}"
-  ${quote}
+  ${quoteRule}
 `;

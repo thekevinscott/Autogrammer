@@ -5,39 +5,25 @@ import {
   expect,
 } from 'vitest';
 import GBNF, { InputParseError } from "gbnf";
-import { getJoinClause, } from "./get-join-clause.js";
+import { joinClause, } from "./join-clause.js";
 import {
   _,
-  $,
 } from 'gbnf/builder';
+
+import * as _joinCondition from './join-condition.js';
 import {
-  getWhereClauseInner
-} from '../select/get-where-clause-inner.js';
+  verboseInclude,
+} from '../__fixtures__/includes.js';
 
-// import {
-//   getJoinCondition,
-// } from './get-join-condition.js';
-import * as _getJoinCondition from './get-join-condition.js';
-
-vi.mock('./get-join-condition.js', async () => {
-  const actual = await vi.importActual('./get-join-condition.js') as typeof _getJoinCondition;
+vi.mock('./join-condition.js', async () => {
+  const actual = await vi.importActual('./join-condition.js') as typeof _joinCondition;
   return {
     ...actual,
-    getJoinCondition: vi.fn(() => $`GET_JOIN_CONDITION`),
+    joinCondition: `"x"`,
   };
 });
 
-describe('getJoinClause', () => {
-  const ws = _`[ \\n\\r]`;
-  const rule = getJoinClause({
-    ws: ws.wrap('+'),
-    optNonRecWS: ws.wrap('*'),
-    whereClauseInner: getWhereClauseInner({
-      ws: ws.wrap('+'),
-      optRecWS: ws.wrap('*'),
-      optNonRecWS: ws.wrap('*'),
-    }),
-  });
+describe('joinClause', () => {
   test.each([
     'join',
     'inner \\njoin',
@@ -54,8 +40,9 @@ describe('getJoinClause', () => {
     'INNER JOIN table1 ON \\n\\n ',
     'INNER JOIN table1  \\n\\nON ',
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    let parser = GBNF(rule.compile({
+    let parser = GBNF(joinClause.compile({
       caseKind: 'any',
+      include: verboseInclude,
     }));
     parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
@@ -69,8 +56,9 @@ describe('getJoinClause', () => {
     ['outer left JOIN table1 ON ', 6],
   ])('it raises on bad input %s', (_initial, errorPos) => {
     // console.log(fullGrammar);
-    let parser = GBNF(rule.compile({
+    let parser = GBNF(joinClause.compile({
       caseKind: 'any',
+      include: verboseInclude,
     }));
     const initial = _initial.split('\\n').join('\n').trim();
     expect(() => parser.add(initial)).toThrowError(new InputParseError(initial, errorPos));

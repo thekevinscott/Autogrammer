@@ -10,7 +10,10 @@ import {
   GBNFRule,
   _,
 } from 'gbnf/builder';
-import { boolean, nll, } from '../constants.js';
+import {
+  boolRule,
+  nullRule,
+} from '../constants.js';
 
 export const parseType = (
   schema: ParseTypeArg,
@@ -18,9 +21,9 @@ export const parseType = (
 ): GBNFRule => {
   const { type, } = schema;
   if (type === 'boolean') {
-    return boolean;
+    return boolRule;
   } else if (type === 'null') {
-    return nll;
+    return nullRule;
   } else if (isSchemaString(schema)) {
     return parseString(schema);
   } else if (isSchemaNumber(schema)) {
@@ -28,7 +31,7 @@ export const parseType = (
   } else if (type === 'array') {
     return parseArray(schema);
   } else if (type === 'object') {
-    return _`${parseObject(schema, fixedOrder)}`;
+    return parseObject(schema, fixedOrder);
   }
   throw new Error(`type for schema ${JSON.stringify(schema)} is not supported`);
 };

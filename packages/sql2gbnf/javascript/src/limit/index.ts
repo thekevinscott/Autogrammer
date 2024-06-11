@@ -1,27 +1,22 @@
 import {
   $,
-  GBNFRule,
   _,
 } from "gbnf/builder";
 import {
   positiveInteger,
+  ws,
+  optws,
 } from '../constants.js';
 
-export const getLimitClause = ({
-  ws,
-  optRecWS,
-}: {
-  ws: GBNFRule;
-  optRecWS: GBNFRule | undefined;
-}): GBNFRule => _`
+export const limitClause = _`
   ${ws} 
   ${$`LIMIT`}
   ${_`
-    ${optRecWS} 
+    ${optws} 
     ${positiveInteger} 
     ","
   `.wrap('?')}
-  ${optRecWS}
+  ${optws}
   ${positiveInteger}
   ${_`
     ${ws}

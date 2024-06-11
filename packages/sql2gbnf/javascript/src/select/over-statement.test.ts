@@ -4,10 +4,15 @@ import {
   expect,
 } from 'vitest';
 import GBNF from "gbnf";
-import { getOverStatement } from "./get-over-statement.js";
-import { $, _ } from 'gbnf/builder';
+import { overStatement } from "./over-statement.js";
+import {
+  _
+} from 'gbnf/builder';
+import {
+  include,
+} from '../__fixtures__/includes.js';
 
-describe('getOverStatement', () => {
+describe('overStatement', () => {
   test.each([
     `OVER()`,
     `OVER ()`,
@@ -36,13 +41,9 @@ describe('getOverStatement', () => {
     `OVER (ORDER BY transaction_date RANGE BETWEEN INTERVAL '1' MONTH PRECEDING AND INTERVAL '1' MONTH FOLLOWING)`,
     `OVER (ORDER BY transaction_date RANGE BETWEEN INTERVAL '1-2' YEAR TO MONTH PRECEDING AND CURRENT ROW)`,
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    const whitespace = _`[ \\t\\n\\r]`;
-    const grammar = getOverStatement({
-      whitespace,
-      optionalRecommendedWhitespace: _`(${whitespace})?`,
-      optionalNonRecommendedWhitespace: undefined,
-    });
-    let parser = GBNF(grammar.compile());
+    let parser = GBNF(overStatement.compile({
+      include,
+    }));
     parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
   });

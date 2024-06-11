@@ -1,57 +1,36 @@
 import {
   $,
-  GBNFRule,
   _,
 } from "gbnf/builder";
-import { getJoinClause, } from "../join/get-join-clause.js";
-import { getWhereClauseInner, } from "../select/get-where-clause-inner.js";
+import { joinClause, } from "../join/join-clause.js";
 import {
-  getTableWithAlias,
+  tableWithAlias,
+  ws,
 } from "../constants.js";
 import {
-  getWhereClause,
-} from '../where/get-where-clause.js';
-import { getOrderByClause, } from "../order/get-order-by-clause.js";
-import { getLimitClause, } from "../limit/index.js";
+  whereClause,
+} from '../where/where-clause.js';
+import { orderByClause, } from "../order/order-by-clause.js";
+import { limitClause, } from "../limit/index.js";
 
-export const getDeleteRule = ({
-  optionalRecommendedWhitespace: optRecWS,
-  optionalNonRecommendedWhitespace: optNonRecWS,
-  mandatoryWhitespace: ws,
-}: {
-  optionalRecommendedWhitespace: GBNFRule | undefined;
-  optionalNonRecommendedWhitespace: GBNFRule | undefined;
-  mandatoryWhitespace: GBNFRule;
-}
-): GBNFRule => {
-  const whereClauseInner = getWhereClauseInner({
-    optRecWS,
-    ws,
-    optNonRecWS,
-  });
-
-  const tableWithAlias = getTableWithAlias(ws);
-
-  return _`
-    ${$`DELETE`}
+export const deleteRule = _`
+  ${$`DELETE`}
+  ${ws}
+  ${$`FROM`}
+  ${ws}
+  ${tableWithAlias}
+  ${_`
     ${ws}
-    ${$`FROM`}
-    ${ws}
+    ${$`USING`} 
+    ${ws} 
     ${tableWithAlias}
-    ${_`
-      ${ws}
-      ${$`USING`} 
-      ${ws} 
-      ${tableWithAlias}
-    `.wrap('?')}
-    ${_`
-      ${ws}
-      ${getJoinClause({ ws, optNonRecWS, whereClauseInner, })}
-    `.wrap('?')}
-    ${getWhereClause({ ws, whereClauseInner, }).wrap('?')}
-    ${getOrderByClause({ ws, optRecWS, optNonRecWS, }).wrap('?')}
-    ${getLimitClause({ ws, optRecWS, }).wrap('?')}
+  `.wrap('?')}
+  ${_`
     ${ws}
-  `;
-};
-
+    ${joinClause}
+  `.wrap('?')}
+  ${whereClause.wrap('?')}
+  ${orderByClause.wrap('?')}
+  ${limitClause.wrap('?')}
+  ${ws}
+`;

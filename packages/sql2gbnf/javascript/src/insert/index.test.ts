@@ -4,13 +4,15 @@ import {
   expect,
 } from 'vitest';
 import {
-  getInsertRule,
+  insertRule,
 } from './index.js';
 import {
-  $,
   _,
 } from 'gbnf/builder';
 import GBNF from 'gbnf';
+import {
+  verboseInclude,
+} from '../__fixtures__/includes.js';
 
 describe('insert', () => {
   test.each([
@@ -54,15 +56,10 @@ describe('insert', () => {
     'INSERT INTO table (col1, col2) VALUES ( ( SELECT 1 FROM table ), ( SELECT foo FROM table ) )',
     'INSERT INTO table (col1) VALUES (SELECT (SELECT foo FROM bar) FROM table)',
   ])('it parses schema to grammar with input "%s"', (initial) => {
-    const ws = _`[ \\n\\r]`;
-    const grammar = getInsertRule({
-      mandatoryWhitespace: ws.wrap('+'),
-      optionalRecommendedWhitespace: ws.wrap('*'),
-      optionalNonRecommendedWhitespace: ws.wrap('*'),
-    });
     let parser = GBNF([
-      grammar.compile({
+      insertRule.compile({
         caseKind: 'any',
+        include: verboseInclude,
       }),
     ].join('\n'));
     parser = parser.add(initial.split('\\n').join('\n'));
