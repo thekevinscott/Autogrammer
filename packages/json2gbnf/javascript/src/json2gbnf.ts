@@ -13,6 +13,9 @@ import {
   _,
 } from 'gbnf/builder';
 import {
+  NR_OPT_WS,
+  OPT_WS,
+  WS,
   value,
 } from './constants.js';
 
@@ -25,6 +28,7 @@ export function JSON2GBNF<T extends JSONSchema>(
   schema: {} | null | T | boolean = DEFAULT_SCHEMA,
   {
     fixedOrder,
+    whitespace = 'default',
   }: JSON2GBNFOpts = {},
 ): string {
   if (schema === false) {
@@ -36,15 +40,27 @@ export function JSON2GBNF<T extends JSONSchema>(
     throw new Error(`Unsupported schema version: ${schema['$schema']}`);
   }
 
+  const ws = _`[ \\t\\n\\r]`.key(WS);
+  const opt_ws = whitespace === 'default' ? ws.wrap('?').key(OPT_WS) : whitespace === 'succinct' ? _`""`.key(OPT_WS) : ws.wrap('*').key(OPT_WS);
+  const non_rec_opt_ws = whitespace === 'default' ? _`${opt_ws}`.key(NR_OPT_WS) : whitespace === 'succinct' ? _`${opt_ws}`.key(NR_OPT_WS) : _`${opt_ws.wrap('*')}`.key(NR_OPT_WS);
+
+  const include = [
+    ws,
+    opt_ws,
+    non_rec_opt_ws,
+  ];
+
+
   if (schema === true || schema === null || isEmptyObject(schema)) {
-    return _`${value}`.compile();
+    return _`${value}`.compile({ include, });
   }
 
   return parse(
     schema,
     fixedOrder,
   ).compile({
-    rules: [
+    include: [
+      ...include,
       value,
     ],
   });

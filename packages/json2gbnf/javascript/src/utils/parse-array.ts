@@ -42,28 +42,16 @@ export const parseArray = (
     throw new Error('boolean items is not supported, because prefixItems is not supported');
   }
   if (isSchemaArrayWithoutItems(schema)) {
-    return array;
+    return array();
   }
   const types = ([] as PrimitiveType[]).concat(schema.items.type);
-  const possibleValue = _`${types.map((type) => {
-    return {
-      string,
-      number,
-      array,
-      boolean,
-      'null': nll,
-      object,
-    }[type];
-  })}`.separate('|');
-  return _`
-  "["
-  ${_`
-      ${possibleValue} 
-      ${_`
-        ","
-        ${possibleValue}
-      `.wrap('*')}
-    `.wrap('?')}
-  "]"
-  `;
+  const possibleValue = _`${types.map((type) => ({
+    string,
+    number,
+    array: array(),
+    boolean,
+    'null': nll,
+    object: object(),
+  }[type]))}`.separate('|');
+  return array(possibleValue);
 };

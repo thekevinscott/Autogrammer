@@ -11,6 +11,17 @@ import {
   type ParseTypeArg,
 } from '../types.js';
 import GBNF from 'gbnf';
+import {
+  _,
+} from 'gbnf/builder';
+import {
+  OPT_WS,
+  WS
+} from '../constants.js';
+
+const ws = _`[ \\t\\n\\r]`.key(WS);
+const opt_ws = ws.wrap('?').key(OPT_WS);
+const include = [opt_ws];
 
 describe('parseType', () => {
   afterEach(() => {
@@ -35,7 +46,9 @@ describe('parseType', () => {
   ])(`it should parse '%s' for '%s'`, (schema, initial) => {
     const rule = parseType(schema as ParseTypeArg);
     expect(() => GBNF([
-      rule.compile(),
+      rule.compile({
+        include,
+      }),
       `value ::= [0-9]`,
       `obj ::= "{}"`,
     ].join('\n'), JSON.stringify(initial))).not.toThrow();

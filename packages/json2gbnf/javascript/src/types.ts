@@ -86,6 +86,9 @@ export type TopLevelJSONSchema = {} | JSONSchema & {
 
 export type ParseTypeArg = JSONSchemaArray | JSONSchemaBoolean | JSONSchemaNull | JSONSchemaNumber | JSONSchemaString | JSONSchemaObject;
 
+export type WhitespaceKind = 'succinct' | 'verbose' | 'default';
+
 export interface JSON2GBNFOpts {
   fixedOrder?: boolean;
+  whitespace?: WhitespaceKind;
 }
