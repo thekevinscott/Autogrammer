@@ -10,6 +10,17 @@ import { parseArray, } from './parse-array.js';
 import { JSONSchemaArray } from '../types.js';
 import type * as _parseType from './parse-type.js';
 import GBNF from 'gbnf';
+import {
+  _,
+} from 'gbnf/builder';
+import {
+  OPT_WS,
+  WS
+} from '../constants.js';
+
+const ws = _`[ \\t\\n\\r]`.key(WS);
+const opt_ws = ws.wrap('?').key(OPT_WS);
+const include = [opt_ws];
 
 vi.mock('./parse-type.js', async () => {
   const actual = await vi.importActual('./parse-type.js') as typeof _parseType;
@@ -31,7 +42,9 @@ describe('parseArray', () => {
   ] as [JSONSchemaArray, unknown[]][])(`it handles schema '%s' for '%s'`, (schema, initial) => {
     const rule = parseArray(schema);
     expect(() => GBNF([
-      rule.compile(),
+      rule.compile({
+        include,
+      }),
       `value ::= ""`,
     ].join('\n'), JSON.stringify(initial))).not.toThrow();
   });

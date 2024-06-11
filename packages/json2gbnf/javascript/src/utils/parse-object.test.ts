@@ -18,6 +18,10 @@ import type * as _parseType from './parse-type.js';
 import {
   _,
 } from 'gbnf/builder';
+import {
+  OPT_WS,
+  WS
+} from '../constants.js';
 import GBNF from 'gbnf';
 
 vi.mock('./parse-type.js', async () => {
@@ -27,6 +31,10 @@ vi.mock('./parse-type.js', async () => {
     parseType: vi.fn(),
   };
 });
+
+const ws = _`[ \\t\\n\\r]`.key(WS);
+const opt_ws = ws.wrap('?').key(OPT_WS);
+const include = [opt_ws];
 
 describe('parseObject', () => {
   beforeEach(() => {
@@ -48,7 +56,9 @@ describe('parseObject', () => {
       throw new Error('Expected rule to be a GBNFRule');
     }
     expect(() => GBNF([
-      rule.compile(),
+      rule.compile({
+        include,
+      }),
       `value ::= ""`,
     ].join('\n'), '{}')).not.toThrow();
   });
@@ -173,7 +183,9 @@ describe('parseObject', () => {
       throw new Error('Expected rule to be a GBNFRule');
     }
     expect(() => {
-      const grammar = rule.compile();
+      const grammar = rule.compile({
+        include,
+      });
       // console.log(grammar);
       GBNF(grammar, initial);
     }).not.toThrow();
@@ -227,7 +239,9 @@ describe('parseObject', () => {
     if (typeof rule === 'string') {
       throw new Error('Expected rule to be a GBNFRule');
     }
-    const grammar = rule.compile();
+    const grammar = rule.compile({
+      include
+    });
     // console.log(grammar);
     expect(() => GBNF([
       grammar,
@@ -255,7 +269,9 @@ describe('parseObject', () => {
       additionalProperties: false,
       required,
     };
-    const rule = parseObject(schema).compile();
+    const rule = parseObject(schema).compile({
+      include,
+    });
     expect(() => GBNF(rule, initial)).toThrow();
   });
 
@@ -270,7 +286,9 @@ describe('parseObject', () => {
       },
       additionalProperties: false,
     };
-    const rule = parseObject(schema).compile();
+    const rule = parseObject(schema).compile({
+      include,
+    });
     expect(() => GBNF(rule, initial)).toThrow();
   });
 
