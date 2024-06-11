@@ -11,7 +11,6 @@ import {
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
 import {
-  OPT_WS,
   array,
   boolean,
   nll,
