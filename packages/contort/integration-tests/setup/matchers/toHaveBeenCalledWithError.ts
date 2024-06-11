@@ -12,7 +12,7 @@ expect.extend({
     }
     if (received.mock.calls.length > 1) {
       return {
-        message: () => `Was called more than once, ${received.mock.calls.length} times, need to update hte matcher`,
+        message: () => `Was called more than once, ${received.mock.calls.length} times, need to update the matcher`,
         pass: false,
       };
     }
