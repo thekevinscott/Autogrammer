@@ -78,12 +78,13 @@ export class CodeEditor extends LitElement {
       position: relative;
       // padding: 5px 0px;
       transition-duration: 0.2s;
-      height: 50px;
+      // height: 50px;
       overflow-y: scroll;
     }
-      #output.active {
-        height: 260px;
-      }
+
+    #output.active {
+      height: 260px;
+    }
 
     #output-inner {
       // border-top: 1px solid rgba(0,0,0,0.4); 
@@ -106,11 +107,11 @@ export class CodeEditor extends LitElement {
       position: relative;
       width: 100%;
       justify-content: center;
-      padding: 0 5px;
       align-items: center;
       box-shadow: 0 2px 2px rgba(0,0,0,0.1);
       display: grid;
       grid-template-columns: 2fr 1fr;
+      padding: 0 5px;
 
       small {
         opacity: 0.6;
@@ -160,11 +161,9 @@ export class CodeEditor extends LitElement {
       }
     }
 
-    @container (width < 6000px) {
-      form {
-        grid-template-columns: 2fr 1fr;
-        padding: 2px;
-      }
+    // @container (width < 600px) {
+    form {
+      grid-template-columns: 2fr 1fr;
     }
 
   `;

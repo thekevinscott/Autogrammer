@@ -334,7 +334,7 @@ aside#toc-desktop {
   border-left: 1px solid var(--color-nav-border-color);
   margin: var(--aside-padding);
   margin-left: 0;
-  font-size: 12px;
+  font-size: 14px;
   max-height: 80vh;
   /* max-height: calc(100vh - var(--header-height) - var(--nav-padding)); */
   position: sticky;
@@ -366,6 +366,10 @@ aside#toc-mobile {
   ol {
     padding: 0;
     margin: 0;
+  }
+
+  li {
+    margin-left: calc(var(--padding) * 2);
   }
 
   .inner {
@@ -436,8 +440,9 @@ article {
   /* text-align: justify; */
 
   code-editor {
-    margin-top: 20px;
-    margin-bottom: 60px;
+    margin-top: calc(var(--padding) * 2);
+    margin-bottom: calc(var(--padding) * 4);
+    display: block;
   }
 
   code-editor+small {
@@ -448,6 +453,11 @@ article {
     background-color: var(--color-page-bg);
     color: var(--color-default);
     font-family: "Work Sans", "Open Sans", sans-serif;
+
+    a {
+      cursor: pointer;
+      color: var(--color-anchor-active);
+    }
 
     h1 {
       font-size: 5rem;
@@ -597,23 +607,32 @@ a.button {
 }
 
 #pagination {
-  /* display: flex; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
   width: 100%;
+  margin-top: calc(var(--padding) * 4);
 
   a {
-    &.left {
-      width: 50%;
+    display: block;
 
+    &:hover {
+      background-color: inherit;
+    }
+  }
+
+  .left {
+    a {
       span {
         &:before {
           content: "« ";
         }
       }
     }
+  }
 
-    &.right {
-      width: 50%;
+  .right {
+    a {
       text-align: right;
 
       span {
@@ -754,6 +773,30 @@ a.button {
     position: relative;
     overflow: hidden;
 
+    a {
+      border-radius: calc(var(--border-radius) / 2);
+
+      &:hover,
+      &.active {
+        background-color: var(--color-anchor-active-bg);
+      }
+    }
+
+    .menu-list {
+      border-radius: calc(var(--border-radius) / 2);
+      margin-bottom: calc(var(--padding) * 0.5);
+
+      a {
+        padding: calc(var(--padding) * 1) .75rem;
+      }
+
+      &:hover,
+      &.active {
+        background-color: var(--color-anchor-active-bg);
+      }
+    }
+
+
     main {
       position: relative;
       transition-duration: 0.2s;
@@ -841,7 +884,6 @@ a.button {
     article {
       max-width: none;
       min-width: 368px;
-      /* text-align: left; */
     }
   }
 }
@@ -851,5 +893,14 @@ a.button {
   padding: calc(var(--padding) * 1) calc(var(--padding) * 2);
   width: calc(100% + calc(var(--padding) * 2));
   margin-left: calc(var(--padding) * -1);
+  margin-bottom: calc(var(--padding) * 1);
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#content {
+  min-height: calc(100% - 130px);
 }

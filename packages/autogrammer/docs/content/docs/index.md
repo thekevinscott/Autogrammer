@@ -10,8 +10,6 @@ eleventyNavigation:
 ---
 
 
----
-
 
 **LLMs don't always do what you tell them to do.**
 
