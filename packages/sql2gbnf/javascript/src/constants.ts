@@ -1,6 +1,5 @@
 import {
   $,
-  GBNFRule,
   _,
 } from "gbnf/builder";
 import {

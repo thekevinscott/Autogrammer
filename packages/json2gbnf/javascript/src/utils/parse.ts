@@ -8,7 +8,6 @@ import type {
 } from "../types.js";
 import { parseConst, } from "./parse-const.js";
 import {
-  _,
   GBNFRule,
 } from 'gbnf/builder';
 import { parseType, } from "./parse-type.js";

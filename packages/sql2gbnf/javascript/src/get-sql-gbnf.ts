@@ -6,9 +6,7 @@ import {
   selectRuleWithUnion,
 } from "./select/index.js";
 import type {
-  CaseKind,
   Database,
-  WhitespaceKind,
 } from "./types.js";
 import {
   insertRule,

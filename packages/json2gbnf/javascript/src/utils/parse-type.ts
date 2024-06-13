@@ -8,7 +8,6 @@ import { parseNumber, } from './parse-number.js';
 import { isSchemaNumber, isSchemaString, } from '../type-guards.js';
 import {
   GBNFRule,
-  _,
 } from 'gbnf/builder';
 import {
   boolRule,
