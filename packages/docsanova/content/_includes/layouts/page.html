@@ -9,26 +9,43 @@
       {{ content | toc | safe }}
     </div>
     </aside>
+    <div id="content">
     <h1>{{ title }}</h1>
     {{ content | safe }}
 
+    </div>
+
 
     <div id="pagination">
-      {%- set col = 'category_' + page.url.split('/')[1] -%}
-      {% set previousPost = collections[col] | getPreviousCollectionItem %}
-      {% set nextPost = collections[col] | getNextCollectionItem %}
+      {%- set key =  page['filePathStem'].slice(1).split('/')[0]  -%}
+      {%- set pageCollection = collections.all | eleventyNavigation(key) -%}
+      {%- set i = 0 -%}
+      {%- set index = 0 -%}
+      {% for item in pageCollection %}
+        {% if item.url == page.url %}
+          {%- set index = i -%}
+        {% endif %}
+        {%- set i = i + 1 -%}
+      {% endfor %}
+      {% set previousPost = pageCollection[index - 1]%}
+      {% set nextPost = pageCollection[index + 1] %}
+      <div class="left">
       {% if previousPost %}
-        <a class="button left" href="{{ previousPost.url }}">
+        <a class="button" href="{{ previousPost.url }}">
           <label>Previous</label>
-          <span>{{ previousPost.data.title }}</span>
+          <span>{{ previousPost.title }}</span>
         </a>{% endif %}
+
+      </div>
+      <div class="right">
       {% if nextPost %}
-        <a class="button right" href="{{ nextPost.url }}">
+        <a class="button" href="{{ nextPost.url }}">
           <label>Next</label>
-          <span>{{ nextPost.data.title }}</span>
+          <span>{{ nextPost.title }}</span>
         </a>
       {% endif %}
 
+    </div>
     </div>
 
 
