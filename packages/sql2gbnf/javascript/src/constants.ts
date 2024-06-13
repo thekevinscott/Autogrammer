@@ -11,23 +11,41 @@ export const optws = 'opt-ws';
 export const nroptws = 'non-recommended-opt-ws';
 
 export const validString = _`[^\'\\"]+`;
-export const stringWithQuotes = _`${_`"'" ${validString} "'"`} | ${_`"\\"" ${validString} "\\""`}`;
+export const quote = _`"\\""`;
+export const stringWithQuotes = _`
+  ${_`
+    "'" 
+    ${validString} 
+    "'"
+  `}
+  | ${_`
+    ${quote} 
+    ${validString} 
+    ${quote}
+  `}
+`;
 export const validName = _`[a-zA-Z_] [a-zA-Z0-9_]*`;
 export const databaseName = _`${validName}`;
 export const tableName = _`${_`${databaseName} "." `.wrap('?')} ${validName}`;
 export const columnName = _`${_`${tableName} "." `.wrap('?')} ${validName}`;
-export const positiveInteger = _`([0] | ([1-9] [0-9]*))`;
+export const positiveInteger = _`
+  [0] 
+  | ${_`
+    [1-9]
+    [0-9]*`
+  }
+`;
 
 export const number = _`
-    ${_`
-      "-"? 
-      ${_`[0-9] | [1-9] [0-9]*`.wrap()}
-    `.wrap()} 
-    ${_`"." [0-9]+`.wrap('?')} 
-    ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
-  `;
+  ${_`
+    "-"? 
+    ${_`[0] | [1-9] [0-9]*`.wrap()}
+  `.wrap()} 
+  ${_`"." [0-9]+`.wrap('?')} 
+  ${_`[eE] [-+]? [0-9]+`.wrap('?')} 
+`;
 export const boolean = _`${$`TRUE`} | ${$`FALSE`}`;
-export const validValue = _`${_`[a-zA-Z] [a-zA-Z0-9_]*`} | ${number} | ${boolean} | "NULL" | "null"`;
+export const validValue = _`${_`${quote} [a-zA-Z] [a-zA-Z0-9_]*`} | ${number} | ${boolean} | "NULL" | "null"`;
 export const validAlias = _`[a-zA-Z] [a-zA-Z0-9_]*`;
 export const tableWithAlias = _`
   ${tableName}

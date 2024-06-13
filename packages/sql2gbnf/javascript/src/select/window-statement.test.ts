@@ -4,7 +4,7 @@ import {
   expect,
 } from 'vitest';
 import GBNF from "gbnf";
-import { windowStatement } from './get-window-statement.js';
+import { windowStatement } from './window-statement.js';
 import { _ } from 'gbnf/builder';
 import {
   include,

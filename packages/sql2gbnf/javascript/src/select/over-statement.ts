@@ -65,11 +65,15 @@ const rangeOrBetween = _`${ws} ${_`${rangeRule} | ${betweenRule}`}`;
 const orderStmt = _`${$`ORDER BY`} ${ws} ${columnName} ${direction.wrap('?')}`;
 const partitionByStmt = _`${$`PARTITION BY`} ${ws} ${columnName}`;
 
-export const overStatement = _`${$`OVER`} ${optws} "(" 
+export const overStatement = _`
+  ${$`OVER`} 
+  ${optws} 
+  "(" 
     ${_`
       ${partitionByStmt}
       | ${orderStmt}
       | ${_`${partitionByStmt} ${ws} ${orderStmt}`}
     `.wrap('?')}
     ${rangeOrBetween.wrap('?')}
-  ")"`;
+  ")"
+`;

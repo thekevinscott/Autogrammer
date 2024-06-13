@@ -29,7 +29,7 @@ import {
   havingClause,
 } from '../having/index.js';
 import { overStatement, } from "./over-statement.js";
-import { windowStatement, } from "./get-window-statement.js";
+import { windowStatement, } from "./window-statement.js";
 import {
 } from "../constants.js";
 import { FULL_SELECT_QUERY, } from "../keys.js";

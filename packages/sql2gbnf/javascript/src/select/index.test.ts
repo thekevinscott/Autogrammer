@@ -24,6 +24,7 @@ describe('select', () => {
     'SELECT 1 FROM table',
     'SELECT (SELECT bar FROM table2) FROM table',
     'SELECT (SELECT (SELECT baz FROM table3) FROM table2) FROM table',
+    'SELECT foo FROM table WHERE foo = "foo"',
     // you spent so much time wondering if you could, you never stopped to think if you should
     'SELECT (SELECT (SELECT (SELECT qux FROM table4) FROM table3) FROM table2) FROM table',
   ])('it parses schema to grammar with input "%s"', (initial) => {
