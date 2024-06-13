@@ -8,7 +8,6 @@ import type {
 } from "../types.js";
 import { parseConst, } from "./parse-const.js";
 import {
-  _,
   GBNFRule,
 } from 'gbnf/builder';
 import { parseType, } from "./parse-type.js";
@@ -26,5 +25,5 @@ export const parse = (
   } else if (isSchemaConst(schema)) {
     return parseConst(schema);
   }
-  return _`${parseType(schema, fixedOrder)}`;
+  return parseType(schema, fixedOrder);
 };

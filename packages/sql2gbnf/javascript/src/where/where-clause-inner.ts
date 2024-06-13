@@ -1,5 +1,4 @@
 import {
-  GBNFRule,
   _,
   $,
 } from "gbnf/builder";
@@ -9,27 +8,20 @@ import {
   stringWithQuotes,
   numericOps,
   number,
-  getEqualOps,
+  equalOps,
   dateDef,
+  ws,
+  optws,
+  nroptws,
 } from "../constants.js";
 
-export const getWhereClauseInner = ({
-  optRecWS,
-  optNonRecWS,
-  ws,
-}: {
-  optRecWS: GBNFRule | undefined;
-  optNonRecWS: GBNFRule | undefined;
-  ws: GBNFRule;
-}) => {
-  const equalOps = getEqualOps(ws);
-  return _`
+export const whereClauseInner = _`
   ${columnName}
   ${_`
     ${_`
-      ${optRecWS} 
+      ${optws} 
       ${equalOps}
-      ${optRecWS}
+      ${optws}
       ${_`
         ${columnName}
         | ${positiveInteger}
@@ -37,19 +29,19 @@ export const getWhereClauseInner = ({
       `}
     `}
     | ${_`
-      ${optRecWS} 
+      ${optws} 
       ${numericOps}
-      ${optRecWS}
+      ${optws}
       ${_` ${number} | ${dateDef} `}
     `}
     | ${_`
-      ${optRecWS} 
+      ${optws} 
       ${$`LIKE`}
-      ${optRecWS}
+      ${optws}
       ${stringWithQuotes}
     `}
     | ${_`
-      ${optRecWS} 
+      ${optws} 
       ${$`BETWEEN`}
       ${ws}
       ${_`
@@ -63,16 +55,15 @@ export const getWhereClauseInner = ({
       ${$`IN`}
       ${ws}
       "("
-        ${optRecWS}
+        ${optws}
         ${stringWithQuotes}
         ${_`
           ","
-          ${optRecWS}
+          ${optws}
           ${stringWithQuotes}
         `.wrap('*')}
-        ${optNonRecWS}
+        ${nroptws}
       ")"
     `}
   `}
-  `;
-};
+`;

@@ -1,10 +1,10 @@
 import {
-  array,
-  boolean,
-  nll,
-  number,
-  object,
-  string,
+  arrRule,
+  boolRule,
+  nullRule,
+  numRule,
+  objRule,
+  strRule,
 } from "../constants.js";
 import {
   type GBNFRule,
@@ -16,12 +16,12 @@ import {
 } from "../types.js";
 
 const PRIMITIVE_TYPES: Record<PrimitiveType, GBNFRule> = {
-  string,
-  number,
-  boolean,
-  'null': nll,
-  object: object(),
-  array: array(),
+  string: strRule,
+  number: numRule,
+  boolean: boolRule,
+  'null': nullRule,
+  object: objRule(),
+  array: arrRule(),
 };
 
 export const parsePrimitives = (schema: JSONSchemaMultiplePrimitiveTypes) => {

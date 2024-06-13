@@ -17,9 +17,9 @@ import {
   GBNFRule,
 } from 'gbnf/builder';
 import {
-  object,
-  quote,
-  string,
+  objRule,
+  quoteRule,
+  strRule,
   value,
 } from '../constants.js';
 
@@ -71,7 +71,7 @@ export const parseObject = (
   if (properties !== undefined && typeof properties === 'object') {
     const keys: ObjectEntry[] = Object.entries(properties).map(([key, value,]) => ({
       key,
-      rule: _` ${quote} ${`"${key}"`} ${quote} ":"  ${getPropertiesValue(value)} `,
+      rule: _` ${quoteRule} ${`"${key}"`} ${quoteRule} ":"  ${getPropertiesValue(value)} `,
     }));
     if (fixedOrder) {
       const getPermutation = (entries: ObjectEntry[]) => _`
@@ -86,7 +86,7 @@ export const parseObject = (
     }
 
     if (additionalProperties) {
-      const anyObjectEntry = _` ${string} ":" ${value} `;
+      const anyObjectEntry = _` ${strRule} ":" ${value} `;
       keys.push({
         rule: _` ${anyObjectEntry} ${_`"," ${anyObjectEntry}`.wrap('*')}`.wrap('?'),
       });
@@ -107,5 +107,5 @@ export const parseObject = (
     `;
   }
 
-  return object();
+  return objRule();
 };

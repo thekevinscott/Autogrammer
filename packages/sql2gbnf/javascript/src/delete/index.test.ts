@@ -4,14 +4,16 @@ import {
   expect,
 } from 'vitest';
 import {
-  getDeleteRule,
+  deleteRule,
 } from './index.js';
 import {
-  $,
   _,
 } from 'gbnf/builder';
 import GBNF from 'gbnf';
 import { FULL_SELECT_QUERY } from '../keys.js';
+import {
+  verboseInclude,
+} from '../__fixtures__/includes.js';
 
 describe('delete', () => {
   test.each([
@@ -43,14 +45,10 @@ describe('delete', () => {
     `DELETE FROM orders o \\n USING customers c \\n JOIN products p ON o.product_id = p.product_id \\n WHERE o.total_amount > 100 \\n AND c.country = 'USA' \\n AND p.category = 'Electronics' \\n ORDER BY o.order_date DESC \\n LIMIT 10`,
   ])('it parses schema to grammar with input "%s"', (initial) => {
     const ws = _`[ \\n\\r]`;
-    const deleteRule = getDeleteRule({
-      mandatoryWhitespace: ws.wrap('+'),
-      optionalRecommendedWhitespace: ws.wrap('*'),
-      optionalNonRecommendedWhitespace: ws.wrap('*'),
-    });
     let parser = GBNF([
       deleteRule.compile({
         caseKind: 'any',
+        include: verboseInclude,
       }),
       `${FULL_SELECT_QUERY} ::= "FULL_SELECT_RULE"`,
     ].join('\n'));

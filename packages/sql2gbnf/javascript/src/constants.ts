@@ -1,11 +1,14 @@
 import {
   $,
-  GBNFRule,
   _,
 } from "gbnf/builder";
 import {
   FULL_SELECT_QUERY,
 } from './keys.js';
+
+export const ws = 'ws';
+export const optws = 'opt-ws';
+export const nroptws = 'non-recommended-opt-ws';
 
 export const validString = _`[^\'\\"]+`;
 export const stringWithQuotes = _`${_`"'" ${validString} "'"`} | ${_`"\\"" ${validString} "\\""`}`;
@@ -14,10 +17,6 @@ export const databaseName = _`${validName}`;
 export const tableName = _`${_`${databaseName} "." `.wrap('?')} ${validName}`;
 export const columnName = _`${_`${tableName} "." `.wrap('?')} ${validName}`;
 export const positiveInteger = _`([0] | ([1-9] [0-9]*))`;
-export const getTableWithAlias = (ws: GBNFRule) => _`
-  ${tableName}
-  ${_`${ws} ${validAlias}`.wrap('?')}
-`;
 
 export const number = _`
     ${_`
@@ -30,8 +29,12 @@ export const number = _`
 export const boolean = _`${$`TRUE`} | ${$`FALSE`}`;
 export const validValue = _`${_`[a-zA-Z] [a-zA-Z0-9_]*`} | ${number} | ${boolean} | "NULL" | "null"`;
 export const validAlias = _`[a-zA-Z] [a-zA-Z0-9_]*`;
+export const tableWithAlias = _`
+  ${tableName}
+  ${_`${ws} ${validAlias}`.wrap('?')}
+`;
 
-export const getEqualOps = (ws: GBNFRule) => _`
+export const equalOps = _`
     "=" 
     | "!=" 
     | ${_`
@@ -46,29 +49,21 @@ export const getEqualOps = (ws: GBNFRule) => _`
 export const arithmeticOps = _`"+" | "-" | "*" | "/"`;
 export const numericOps = _`">" | "<" | ">=" | "<="`;
 
-export const getAsAlias = (ws: GBNFRule) => _`${$`AS`} ${ws} ${validAlias}`;
+export const asAlias = _`${$`AS`} ${ws} ${validAlias}`;
 
-export const getDirection = (ws: GBNFRule) => _` ${ws} ${_`${$`ASC`} | ${$`DESC`}`} `;
+export const direction = _` ${ws} ${_`${$`ASC`} | ${$`DESC`}`} `;
 export const unit = _` ${$`DAY`} | ${$`MONTH`} | ${$`YEAR`} | ${$`HOUR`} | ${$`MINUTE`} | ${$`SECOND`} `;
 
 export const dateDef = _` "'" [0-9] [0-9] [0-9] [0-9] "-" [0-9] [0-9] "-" [0-9] [0-9] "'" `;
 
-export const getColumnNames = ({
-  optRecWS,
-  optNonRecWS,
-  ws,
-}: {
-  optRecWS: GBNFRule | undefined;
-  optNonRecWS: GBNFRule | undefined;
-  ws: GBNFRule;
-}) => _`
+export const columnNames = _`
 ${columnName}
 | ${validValue}
 | ${_`
     "(" 
-      ${optNonRecWS} 
+      ${nroptws} 
       ${FULL_SELECT_QUERY}
-      ${optNonRecWS} 
+      ${nroptws} 
     ")"
   `}
 | ${_`
@@ -79,27 +74,27 @@ ${columnName}
       | ${$`SUM`}
     `.wrap()}
     "("
-      ${optNonRecWS}
+      ${nroptws}
       ${_`
         ${$`DISTINCT`} 
         ${ws}
       `.wrap('?')}
       ${columnName}
       ${_`
-        ${optRecWS}
+        ${optws}
         ${arithmeticOps}
-        ${optRecWS}
+        ${optws}
         ${columnName}
-        ${optRecWS}
+        ${optws}
       `.wrap('*')}
-      ${optNonRecWS}
+      ${nroptws}
     ")"
   `}
 | ${_`
     ${$`COUNT`}
-    ${optNonRecWS}
+    ${nroptws}
     ${$`(`}
-    ${optNonRecWS}
+    ${nroptws}
     ${_`
       ${$`*`}
       | ${_`
@@ -109,14 +104,14 @@ ${columnName}
           `.wrap('?')}
           ${columnName}
           ${_`
-            ${optRecWS}
+            ${optws}
             ${arithmeticOps}
-            ${optRecWS}
+            ${optws}
             ${columnName}
           `.wrap('*')}
       `}
     `}
-    ${optNonRecWS}
+    ${nroptws}
     ${$`)`}
   `}
 `;

@@ -7,7 +7,6 @@ import {
 } from 'vitest';
 import {
   JSON2GBNF,
-  ROOT_ID
 } from "./json2gbnf.js";
 import GBNF from 'gbnf';
 import { hasDollarSchemaProp } from './type-guards.js';

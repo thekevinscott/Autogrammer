@@ -11,12 +11,12 @@ import {
   isSchemaArrayWithoutItems,
 } from '../type-guards.js';
 import {
-  array,
-  boolean,
-  nll,
-  number,
-  object,
-  string,
+  arrRule,
+  boolRule,
+  nullRule,
+  numRule,
+  objRule,
+  strRule,
 } from '../constants.js';
 
 const UNSUPPORTED_PROPERTIES: (keyof JSONSchemaArray)[] = [
@@ -42,16 +42,16 @@ export const parseArray = (
     throw new Error('boolean items is not supported, because prefixItems is not supported');
   }
   if (isSchemaArrayWithoutItems(schema)) {
-    return array();
+    return arrRule();
   }
   const types = ([] as PrimitiveType[]).concat(schema.items.type);
   const possibleValue = _`${types.map((type) => ({
-    string,
-    number,
-    array: array(),
-    boolean,
-    'null': nll,
-    object: object(),
+    string: strRule,
+    number: numRule,
+    array: arrRule(),
+    boolean: boolRule,
+    'null': nullRule,
+    object: objRule(),
   }[type]))}`.separate('|');
-  return array(possibleValue);
+  return arrRule(possibleValue);
 };

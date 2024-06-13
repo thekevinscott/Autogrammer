@@ -4,9 +4,9 @@ import {
 } from "gbnf/builder";
 import { JSONSchemaString, } from "../types.js";
 import {
-  char,
-  quote,
-  string,
+  charRule,
+  quoteRule,
+  strRule,
 } from "../constants.js";
 
 export const parseString = (schema: JSONSchemaString): GBNFRule => {
@@ -23,27 +23,27 @@ export const parseString = (schema: JSONSchemaString): GBNFRule => {
     if (minLength > maxLength) {
       throw new Error('minLength must be less than or equal to maxLength');
     }
-    const minChars = Array<GBNFRule>(minLength).fill(char);
-    const maxChars = Array<GBNFRule>(maxLength - minLength).fill(char.wrap('?'));
+    const minChars = Array<GBNFRule>(minLength).fill(charRule);
+    const maxChars = Array<GBNFRule>(maxLength - minLength).fill(charRule.wrap('?'));
     return _`
-      ${quote}
+      ${quoteRule}
       ${[...minChars, ...maxChars,]}
-      ${quote}
+      ${quoteRule}
     `;
   } else if (minLength) {
     return _`
-      ${quote}
-      ${Array(minLength - 1).fill(char)}
-      ${char.wrap('+')}
-      ${quote}
+      ${quoteRule}
+      ${Array(minLength - 1).fill(charRule)}
+      ${charRule.wrap('+')}
+      ${quoteRule}
     `;
   } else if (maxLength) {
     const rule = _`
-      ${quote}
-      ${Array(maxLength).fill(char.wrap('?'))}
-      ${quote}
+      ${quoteRule}
+      ${Array(maxLength).fill(charRule.wrap('?'))}
+      ${quoteRule}
     `;
     return rule;
   }
-  return string;
+  return strRule;
 };

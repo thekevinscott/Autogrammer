@@ -1,15 +1,15 @@
 import {
-  GBNFRule,
   _,
   $,
 } from 'gbnf/builder';
-export const getWhereClause = ({
+import {
   whereClauseInner,
+} from './where-clause-inner.js';
+import {
   ws,
-}: {
-  ws: GBNFRule;
-  whereClauseInner: GBNFRule;
-}): GBNFRule => _`
+} from '../constants.js';
+
+export const whereClause = _`
   ${ws}
   ${$`WHERE`}
   ${ws}

@@ -1,159 +1,108 @@
-import { getJoinClause, } from "../join/get-join-clause.js";
-import { getSelectQuery, } from "./get-select-query.js";
 import {
   $,
-  GBNFRule,
   _,
 } from "gbnf/builder";
-import { getOverStatement, } from "./get-over-statement.js";
-import { getWindowStatement, } from "./get-window-statement.js";
-import { getWhereClauseInner, } from "./get-where-clause-inner.js";
 import {
-  getAsAlias,
-  getEqualOps,
-  stringWithQuotes,
-  numericOps,
-  number,
-  boolean,
-  getColumnNames,
-} from "../constants.js";
-import { getWhereClause, } from "../where/get-where-clause.js";
-import { getOrderByClause, } from "../order/get-order-by-clause.js";
-import { FULL_SELECT_QUERY, } from "../keys.js";
-import { getLimitClause, } from "../limit/index.js";
-
-export const getSelectRule = ({
-  optRecWS,
-  optNonRecWS,
   ws,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  singleColumn = false,
-}: {
-  optRecWS: GBNFRule | undefined;
-  optNonRecWS: GBNFRule | undefined;
-  ws: GBNFRule;
-  singleColumn?: boolean;
-}
-): GBNFRule => {
-  const equalOps = getEqualOps(ws);
-  const asAlias = getAsAlias(ws);
-  const columnNames = getColumnNames({
-    ws,
-    optNonRecWS,
-    optRecWS,
-  });
+  optws,
+  tableWithAlias,
+  tableName,
+  asAlias,
+  columnNames,
+} from "../constants.js";
+import {
+  orderByClause,
+} from "../order/order-by-clause.js";
+import {
+  limitClause,
+} from "../limit/index.js";
+import {
+  joinClause,
+} from "../join/join-clause.js";
+import {
+  whereClause,
+} from "../where/where-clause.js";
+import {
+  groupByClause,
+} from '../group/index.js';
+import {
+  havingClause,
+} from '../having/index.js';
+import { overStatement, } from "./over-statement.js";
+import { windowStatement, } from "./get-window-statement.js";
+import {
+} from "../constants.js";
+import { FULL_SELECT_QUERY, } from "../keys.js";
 
-  const whereClauseInner = getWhereClauseInner({
-    optRecWS,
-    ws,
-    optNonRecWS,
-  });
-
-  const windowStatement = getWindowStatement({
-    optionalRecommendedWhitespace: optRecWS,
-    optionalNonRecommendedWhitespace: optNonRecWS,
-  });
-
-  const overStatement = getOverStatement({
-    optionalRecommendedWhitespace: optRecWS,
-    optionalNonRecommendedWhitespace: optNonRecWS,
-    whitespace: ws,
-  });
-
-  const possibleColumnsWithOver = _` 
-  ${columnNames} 
-  | ${windowStatement} 
-  | ${_` 
-      ${_`${columnNames} | ${windowStatement}`} 
-      ${ws} 
-      ${overStatement} `} 
-  `;
-  const possibleColsWithAlias = _` 
+const possibleColumnsWithOver = _` 
+${columnNames} 
+| ${windowStatement} 
+| ${_` 
+    ${_`${columnNames} | ${windowStatement}`} 
+    ${ws} 
+    ${overStatement} `} 
+`;
+const possibleColsWithAlias = _` 
+  ${possibleColumnsWithOver} 
+  | ${_`
     ${possibleColumnsWithOver} 
-    | ${_`
-      ${possibleColumnsWithOver} 
-      ${_`
-        ${ws} 
-        ${asAlias}
-      `.wrap('?')
-      }`
-    }`;
-  const projection = _`
-    ${possibleColsWithAlias} 
     ${_`
-      "," 
-      ${optRecWS} 
-      ${possibleColsWithAlias}
-    `.wrap('*')
-    }`;
-
-  return getSelectQuery({
-    joinClause: getJoinClause({
-      ws,
-      optNonRecWS,
-      whereClauseInner,
-    }),
-    limitClause: getLimitClause({
-      ws,
-      optRecWS,
-    }),
-    orderByClause: getOrderByClause({
-      ws,
-      optNonRecWS,
-      optRecWS,
-    }),
-    groupByClause: _`
       ${ws} 
-      ${$`GROUP BY`}
-      ${ws}
-      ${columnNames}
-      ${_`${ws} ${asAlias}`.wrap('?')}
-      ${_`"," ${optRecWS} ${columnNames}`.wrap('*')}
-    `,
-    whereClause: getWhereClause({
-      ws,
-      whereClauseInner,
-    }),
-    havingClause: _`
-      ${ws}
-      ${$`HAVING`}
-      ${ws}
-      ${columnNames}
-      ${_`${ws} ${asAlias}`.wrap('?')}
-      (
-        ${_`
-          ${ws} 
-          ${$`IS`} 
-          ${ws} 
-          ${_`${$`NOT`} ${ws}`.wrap('?')} 
-          ${$`NULL`}
-        `}
-        | ${_`
-          ${optRecWS} 
-          ${numericOps} 
-          ${optRecWS} 
-          ${_`
-            ${number} 
-            | ${stringWithQuotes}
-          `}
-        `}
-        | ${_`${ws} ${$`LIKE`} ${ws} ${stringWithQuotes}`}
-        | ${_`
-          ${optRecWS} 
-          ${equalOps} 
-          ${optRecWS} 
-          ${_`
-            ${stringWithQuotes} 
-            | ${boolean} 
-            | ${number}
-          `}
-        `}
-      )
-    `,
-    projection,
-    optionalRecommendedWhitespace: optRecWS,
-    ws: ws,
-  }).key(FULL_SELECT_QUERY);
-};
+      ${asAlias}
+    `.wrap('?')
+    }`
+  }`;
+const projection = _`
+  ${possibleColsWithAlias} 
+  ${_`
+    "," 
+    ${optws} 
+    ${possibleColsWithAlias}
+  `.wrap('*')
+  }`;
 
 
+const projectionOrStar = _` ${projection} | "*" `;
+const intoClause = _`
+  ${$`INTO`} 
+  ${ws} 
+  ${tableName} 
+  ${ws}
+`;
+const selectlist = _`
+  ${_`
+    ${_`
+      ${projectionOrStar} 
+      ${ws} 
+      ${intoClause.wrap('?')}
+    `}
+    | ${_`
+        ${intoClause.wrap('?')} 
+        ${projectionOrStar} 
+        ${ws}
+      `}
+  `}
+  ${$`FROM`}
+  ${ws}
+  ${tableWithAlias}
+  ${_`
+    ","
+    ${optws}
+    ${tableWithAlias}
+  `.wrap('*')}
+`;
+export const selectRule = _`
+  ${$`SELECT`}
+  ${ws}
+  ${_`${$`DISTINCT`} ${ws}`.wrap('?')}
+  ${selectlist}
+  ${_`
+    ${ws} 
+    ${joinClause}
+  `.wrap('*')}
+  ${_`${whereClause.wrap('?')}`}
+  ${_`${groupByClause.wrap('?')}`}
+  ${_`${havingClause.wrap('?')}`}
+  ${_`${orderByClause.wrap('?')}`}
+  ${_`${limitClause.wrap('?')}`}
+`.key(FULL_SELECT_QUERY);

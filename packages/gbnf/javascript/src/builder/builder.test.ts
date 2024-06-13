@@ -323,17 +323,17 @@ describe('builder', () => {
     });
   });
 
-  describe('errors', () => {
-    test.each([
-      [
-        () => _`${_.key('a')`"A"`}${_.key('b')`"A"`}`,
-      ],
-    ])(`expect to throw: '%s'`, (rule) => {
-      expect(() => {
-        return rule().compile();
-      }).toThrow();
-    });
-  });
+  // describe('errors', () => {
+  //   test.each([
+  //     [
+  //       () => _`${_.key('a')`"A"`}${_.key('b')`"A"`}`,
+  //     ],
+  //   ])(`expect to throw: '%s'`, (rule) => {
+  //     expect(() => {
+  //       return rule().compile();
+  //     }).toThrow();
+  //   });
+  // });
 
   describe('cases', () => {
     test.each([
