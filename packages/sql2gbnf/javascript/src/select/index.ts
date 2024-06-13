@@ -7,7 +7,7 @@ import {
 } from '../constants.js';
 import {
   selectRule,
-} from "./get-select-rule.js";
+} from "./select-rule.js";
 
 export const selectRuleWithUnion = _`
   ${selectRule}

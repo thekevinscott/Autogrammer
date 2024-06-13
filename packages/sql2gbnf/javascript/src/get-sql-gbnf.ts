@@ -15,6 +15,9 @@ import {
   deleteRule,
 } from "./delete/index.js";
 import {
+  updateRule,
+} from "./update/index.js";
+import {
   nroptws,
 } from "./constants.js";
 
@@ -28,6 +31,7 @@ export const getSQLGBNF = (
       ${selectRuleWithUnion}
       | ${insertRule} 
       | ${deleteRule}
+      | ${updateRule}
     `.wrap()}
     ${_`
       ${nroptws} 
