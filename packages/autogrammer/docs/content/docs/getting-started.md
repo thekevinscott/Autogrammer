@@ -1,12 +1,13 @@
 ---
 title: 'Getting Started'
 layout: 'layouts/page.html'
-displayOrder: 2
+displayOrder: 1
 
 eleventyNavigation:
+  parent: docs
   key: getting-started
-  parent: Docs
-  order: 0
+  title: "Getting Started"
+  order: 1
 ---
 
 ## Installation

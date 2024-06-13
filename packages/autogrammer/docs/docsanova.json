@@ -3,10 +3,6 @@
   "nav": {
     "left": [
       {
-        "text": "Autogrammer",
-        "url": "/"
-      },
-      {
         "text": "Docs",
         "url": "/docs/"
       }

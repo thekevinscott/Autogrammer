@@ -1,9 +1,14 @@
 {% extends "layouts/base.html" %} 
 {% block content %}
-<main tabindex="-1">
+<main tabindex="-1" id="page">
   {% include "partials/nav.html" %}
-  <article  class="markdown-body">
-
+  <article id="page-article" class="markdown-body">
+    <aside id="toc-mobile">
+      <div class="inner">
+      <label><span>On this page</span> <button id="toggle-toc" class="toggle" aria-label="Toggle the ToC" type="button"></button></label>
+      {{ content | toc | safe }}
+    </div>
+    </aside>
     <h1>{{ title }}</h1>
     {{ content | safe }}
 
@@ -30,7 +35,7 @@
   </article>
   {% if content | toc %}
 
-  <aside>
+  <aside id="toc-desktop">
     {{ content | toc | safe }}
   </aside>
   {% endif %}

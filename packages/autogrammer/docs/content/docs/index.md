@@ -3,9 +3,13 @@ title: 'Motivation'
 layout: 'layouts/page.html'
 displayOrder: 0
 eleventyNavigation:
-  key: Humans
-  parent: Mammals
+  parent: docs
+  key: motivation
+  title: "Motivation"
   order: 0
+---
+
+
 ---
 
 

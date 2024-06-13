@@ -4,9 +4,10 @@ layout: 'layouts/page.html'
 displayOrder: 4
 
 eleventyNavigation:
+  parent: docs
   key: support
-  parent: Docs
-  order: 0
+  title: "Support"
+  order: 4
 ---
 
 ## Bugs, feature requests, and questions​
