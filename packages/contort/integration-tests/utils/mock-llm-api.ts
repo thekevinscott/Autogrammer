@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { Server, } from "http";
 import express, {
   Express,
@@ -15,6 +16,8 @@ export default class MockLLMAPI {
   app: Express = express();
   server: Server;
   port: number;
+
+  completion?: typeof vi.fn;
 
   constructor() {
     this.app.use(express.json());
