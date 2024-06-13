@@ -1,16 +1,17 @@
 import path from 'path';
 import * as url from 'url';
 import {
-  pipeline, 
+  pipeline,
   env,
   PreTrainedModel,
   TextGenerationPipeline,
 } from '@xenova/transformers';
 
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-env.allowRemoteModels = false;
-env.allowLocalModels = true;
-env.localModelPath = path.resolve(__dirname, './');
+env.allowRemoteModels = true;
+env.allowLocalModels = false;
+// env.allowRemoteModels = false;
+// env.allowLocalModels = true;
+// env.localModelPath = path.resolve(url.fileURLToPath(new URL('.', import.meta.url)), './');
 
 const models = new Map();
 

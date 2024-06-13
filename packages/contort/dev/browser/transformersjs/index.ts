@@ -1,19 +1,29 @@
 import {
   pipeline,
   env,
+  TextGenerationPipeline,
 } from '@xenova/transformers';
-env.allowRemoteModels = false;
-env.allowLocalModels = true;
+env.allowRemoteModels = true;
+env.allowLocalModels = false;
+import Contortionist from '../../../src/index.js';
+import { _ } from 'gbnf/builder';
 
 // Specify a custom location for models (defaults to '/models/').
-env.localModelPath = '/';
-const model = await pipeline('text-generation', 'phi-1_5_dev');
+// env.localModelPath = '/';
+const model = await pipeline('text-generation', 'Xenova/gpt2');
+const contort = new Contortionist({
+  model,
+  grammar: _`
+    [-._a-zA-Z0-9 \\n]+
+  `,
+});
 
-const result = await model('Write me a list of numbers:\n');
-console.log('result', result);
+const result = await contort.execute('What is your name?\n', {
+  max_new_tokens: 1,
+});
+console.log(result);
 
 
-// import Contortionist from '../../../packages/contort/src/index.js';
 // // import chess from '../grammars/chess.gbnf?raw';
 // import json from '../grammars/json.gbnf?raw';
 

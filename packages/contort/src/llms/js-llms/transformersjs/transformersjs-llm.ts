@@ -71,7 +71,9 @@ export class TransformersJSLLM {
     const outputTokenIds = await (model.generate as GenerateFn)(input_ids, generate_kwargs, logitsProcessor, {
       inputs_attention_mask: attention_mask,
     });
-    const decoded = tokenizer.decode(outputTokenIds[0]);
+    const decoded = tokenizer.decode(outputTokenIds[0], {
+      skip_special_tokens: true,
+    });
     return decoded.slice(prompt.length);
   };
 };

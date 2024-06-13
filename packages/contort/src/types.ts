@@ -1,3 +1,6 @@
+import type {
+  GBNFRule,
+} from "gbnf/builder";
 import {
   type LlamaCPPPrompt,
   type LlamaCPPResponse,
@@ -57,7 +60,7 @@ export type LLMOpts<M extends ModelProtocol> =
   : Record<string, unknown>;
 
 export interface ConstructorOptions<M extends ModelProtocol | undefined = undefined> {
-  grammar?: Grammar;
+  grammar?: Grammar | GBNFRule;
   model?: ModelDefinition<M>;
 }
 
