@@ -85,7 +85,18 @@ export class GBNFRule {
     return this.compile();
   }
 
-  log = (opts: Parameters<typeof this.compile>[0] = {}) => {
+  log = ({
+    shuffle = true,
+    n = Infinity,
+    maxDepth = 20,
+    maxRunTime = 50,
+    ...opts
+  }: {
+    shuffle?: boolean;
+    n?: number;
+    maxDepth?: number;
+    maxRunTime?: number;
+  } & Parameters<typeof this.compile>[0] = {}) => {
     let gbnf = this.compile(opts);
     gbnf = gbnf.replaceAll(/\((.*?)\)\*/g, '($1)? ($1)? ($1)?');
     gbnf = gbnf.replaceAll(/\((.*?)\)\+/g, '($1)  ($1)? ($1)?');
@@ -94,6 +105,7 @@ export class GBNFRule {
     class Node {
       char: string;
       terminal = false;
+      reachedMaxDepth = false;
       children: Node[] = [];
 
       constructor(char = '') {
@@ -103,23 +115,39 @@ export class GBNFRule {
     const parseState = GBNF(gbnf);
     const rootNode = new Node('');
 
-    function traverseParseState(currentNode: Node, parseState: ParseState) {
+    let remaining = n;
+    const start = performance.now();
+    let reachedMaximumRunTime = false;
+    function traverseParseState(currentNode: Node, parseState: ParseState, remainingDepth = maxDepth) {
+      if (performance.now() - start > maxRunTime) {
+        reachedMaximumRunTime = true;
+        return;
+      }
+      if (remainingDepth <= 0) {
+        currentNode.reachedMaxDepth = true;
+        remaining -= 1;
+        return;
+      }
       for (const rule of parseState) {
+        if (remaining <= 0) {
+          return;
+        }
         if (isRuleChar(rule)) {
           for (const value of rule.value) {
             const char = Array.isArray(value) ? 'x' : String.fromCodePoint(value);
             const nextNode = new Node(char);
             currentNode.children.push(nextNode);
-            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0]) : char));
+            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0]) : char), remainingDepth - 1);
           }
         } else if (isRuleCharExcluded(rule)) {
           for (const value of rule.value) {
             const char = Array.isArray(value) ? '^' : String.fromCodePoint(value);
             const nextNode = new Node(char);
             currentNode.children.push(nextNode);
-            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0] - 1) : char));
+            traverseParseState(nextNode, parseState.add(Array.isArray(value) ? String.fromCodePoint(value[0] - 1) : char), remainingDepth - 1);
           }
         } else if (isRuleEnd(rule)) {
+          remaining -= 1;
           currentNode.terminal = true;
         }
       }
@@ -129,10 +157,13 @@ export class GBNFRule {
 
     const result = new Set<string>();
     function traverse(node: Node, path = '') {
-      if (node.terminal) {
+      if (result.size >= n) {
+        return;
+      }
+      if (node.terminal || node.reachedMaxDepth || (reachedMaximumRunTime && node.children.length === 0)) {
         result.add(path);
       }
-      for (const child of node.children) {
+      for (const child of (shuffle ? shuffleSort(node.children) : node.children)) {
         traverse(child, path + child.char);
       }
     }
@@ -174,3 +205,9 @@ export class GBNFRule {
   };
 }
 
+function shuffleSort<T>(arr: T[]): T[] {
+  return arr
+    .map(value => ({ value, sort: Math.random(), }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value, }) => value);
+}
