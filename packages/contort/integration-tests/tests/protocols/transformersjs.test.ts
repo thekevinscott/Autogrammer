@@ -23,7 +23,7 @@ describe('TransformersJS', async () => {
     model = _model;
   });
 
-  describe.only('Non-streaming', () => {
+  describe('Non-streaming', () => {
     test('it should return a response', async () => {
       const content = 'FOO BAR!';
       const n = 1;
