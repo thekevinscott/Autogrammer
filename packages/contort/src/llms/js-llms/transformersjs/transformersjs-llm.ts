@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import {
+import type {
   PreTrainedModel,
   PreTrainedTokenizer,
 } from "@xenova/transformers";

@@ -1,4 +1,4 @@
-import {
+import type {
   TextGenerationPipeline,
 } from "@xenova/transformers";
 import type {
@@ -10,7 +10,8 @@ import type {
 export const isTextGenerationPipeline = (model: unknown): model is TextGenerationPipeline => {
   // TODO: Can this be tightened without relying on "instance"?
   // If so, we could remove the hard dependency on transformers at runtime and load it dynamically
-  return model instanceof TextGenerationPipeline;
+  // return model instanceof TextGenerationPipeline;
+  return typeof model === 'function';
 };
 
 const isModelDefinitionTransformersJS = (model: unknown): model is BaseModelDefinition => {

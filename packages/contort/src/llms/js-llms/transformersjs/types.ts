@@ -1,4 +1,4 @@
-import {
+import type {
   Tensor as _Tensor,
   PreTrainedModel,
   PreTrainedTokenizer,
