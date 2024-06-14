@@ -89,6 +89,54 @@ describe('llama.cpp', async () => {
       resolveServer();
       expect(resultFn).not.toHaveBeenCalled();
     });
+
+    test('it should be able to abort a request without affecting other requests', async () => {
+      _mockLLMAPI = new MockLLMAPI();
+      const endpoint = `http://localhost:${_mockLLMAPI.port}/completion`;
+
+      const contortionist = new Contortionist({
+        model: {
+          protocol: 'llama.cpp',
+          endpoint,
+        },
+      });
+      const [resolveServer, serverPromise] = makePromise();
+      const [resolveServerCalled, serverCalledPromise] = makePromise();
+      _mockLLMAPI.app.post('/completion', async (req, res) => {
+        resolveServerCalled();
+        await serverPromise;
+        res.json(makeLlamaCPPResponse({
+          content: req.body.prompt,
+        }));
+      });
+      const abortController = new AbortController();
+      const resultFn = vi.fn();
+      const [resolveCatchPromise, catchPromise] = makePromise();
+      const catchFn = vi.fn().mockImplementation((err) => {
+        resolveCatchPromise();
+      });
+      const requests = [
+        contortionist.execute('prompt1', {
+          n_predict: 10,
+        }),
+        contortionist.execute('prompt2', {
+          n_predict: 10,
+        }),
+      ];
+      contortionist.execute('aborted prompt', {
+        n_predict: 10,
+        signal: abortController.signal,
+      }).then(resultFn).catch(catchFn);
+      await serverCalledPromise;
+      abortController.abort();
+      await catchPromise;
+      expect(catchFn).toHaveBeenCalledWithError('This operation was aborted', 'AbortError');
+      expect(resultFn).not.toHaveBeenCalled();
+      resolveServer();
+
+      expect(await requests[0]).toEqual('prompt1');
+      expect(await requests[1]).toEqual('prompt2');
+    });
   });
 
   describe('Streaming', () => {

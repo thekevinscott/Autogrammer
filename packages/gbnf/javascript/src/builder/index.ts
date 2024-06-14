@@ -6,7 +6,7 @@ export {
   GrammarBuilder,
 } from './grammar-builder.js';
 export {
-  type GBNFRule,
+  GBNFRule,
 } from './gbnf-rule.js';
 export type {
   CaseKind,

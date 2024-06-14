@@ -9,7 +9,9 @@ import gpt2Vocab from '../../__fixtures__/gpt2-vocab.json';
 import {
   TextGenerationPipeline,
 } from '@xenova/transformers';
-import { loadModel } from '../../__fixtures__/models/load.js';
+import { getFakePipeline } from '../../__fixtures__/models/fake-pipeline.js';
+import { _ } from 'gbnf/builder';
+// import { loadModel } from '../../__fixtures__/models/load.js';
 
 setLogLevel('warn')
 
@@ -17,164 +19,82 @@ describe('TransformersJS', async () => {
   let model: TextGenerationPipeline;
   beforeAll(async () => {
     const [_model] = await Promise.all([
-      loadModel('TinyLLama-v0'),
+      getFakePipeline(),
+      // loadModel('TinyLLama-v0'),
       buildContortionist(),
     ]);
     model = _model;
   });
 
-  describe('Non-streaming', () => {
-    test('it should return a response', async () => {
-      const content = 'FOO BAR!';
-      const n = 1;
-
-      const contortionist = new Contortionist({
-        model,
-      });
-
-      const result = await contortionist.execute('prompt', {
-        n,
-      });
-
-      expect(result).toEqual(expect.stringContaining(''));
+  test('it should return a response', async () => {
+    const contortionist = new Contortionist({
+      model,
     });
 
-    // test('it should return a response for an awaitable pipeline', async () => {
-    //   const content = 'FOO BAR!';
-    //   const n = 10;
+    const result = await contortionist.execute('abc');
 
-    //   const model = Promise.resolve(makeMockPipeline(content));
-
-    //   const contortionist = new Contortionist({
-    //     model,
-    //   });
-    //   const result = await contortionist.execute('prompt', {
-    //     n,
-    //   });
-    //   expect(result).toEqual(content);
-    // });
-
-    //   test('it should be able to abort, per request', async () => {
-    //     _mockLLMAPI = new MockLLMAPI();
-    //     const endpoint = `http://localhost:${_mockLLMAPI.port}/completion`;
-
-    //     const content = 'FOO BAR!';
-    //     _mockLLMAPI.app.post('/completion', async (req, res) => {
-    //       resolveServerCalled();
-    //       await serverPromise;
-    //       res.json(makeNonStreamingLlamafileResponse({
-    //         content,
-    //       }));
-    //     });
-
-    //     const contortionist = new Contortionist({
-    //       model: {
-    //         protocol: 'llamafile',
-    //         endpoint,
-    //       },
-    //     });
-
-    //     const [resolveServer, serverPromise] = makePromise();
-    //     const [resolveServerCalled, serverCalledPromise] = makePromise();
-    //     const abortController = new AbortController();
-    //     const resultFn = vi.fn();
-    //     const [resolveCatchPromise, catchPromise] = makePromise();
-    //     const catchFn = vi.fn().mockImplementation(() => {
-    //       resolveCatchPromise();
-    //     });
-    //     contortionist.execute('prompt', {
-    //       n: 10,
-    //       signal: abortController.signal,
-    //     }).then(resultFn).catch(catchFn);
-    //     await serverCalledPromise;
-    //     abortController.abort();
-    //     await catchPromise;
-    //     expect(catchFn).toHaveBeenCalledWithError('This operation was aborted', 'AbortError');
-    //     expect(resultFn).not.toHaveBeenCalled();
-
-    //     // test that the server resolving does not result in a response
-    //     resolveServer();
-    //     expect(resultFn).not.toHaveBeenCalled();
-    //   });
-    // });
-
-    // describe('Streaming', () => {
-    //   // // it should stream automatically if given a callback
-    //   test('it should stream and call callback', async () => {
-    //     const n = 3;
-    //     const content = 'abc';
-    //     const { endpoint, mockLLMAPI } = configureStreamingServer(content, n);
-    //     _mockLLMAPI = mockLLMAPI;
-    //     const contortionist = new Contortionist({
-    //       model: {
-    //         protocol: 'llamafile',
-    //         endpoint,
-    //       },
-    //     });
-    //     const callback = vi.fn();
-    //     const result = await contortionist.execute('prompt', {
-    //       n,
-    //       callback,
-    //     });
-    //     expect(result).toEqual(content);
-    //     expect(callback).toHaveBeenCalledTimes(n);
-    //     expect(callback).toHaveBeenNthCalledWith(1, { partial: 'a', chunk: makeStreamingLlamafileResponse({ content: 'a' }) });
-    //     expect(callback).toHaveBeenNthCalledWith(2, { partial: 'ab', chunk: makeStreamingLlamafileResponse({ content: 'b' }) });
-    //     expect(callback).toHaveBeenNthCalledWith(3, { partial: 'abc', chunk: makeStreamingLlamafileResponse({ content: 'c' }) });
-    //   });
-
-    //   test('it should be able to abort in the middle of a streaming request', async () => {
-    //     const n = 3;
-    //     _mockLLMAPI = new MockLLMAPI();
-    //     const content = 'abc';
-    //     const contortionist = new Contortionist({
-    //       model: {
-    //         protocol: 'llamafile',
-    //         endpoint: `http://localhost:${_mockLLMAPI.port}/completion`,
-    //       },
-    //     });
-    //     const [resolveServer, serverPromise] = makePromise();
-    //     const [resolveServerCalled, serverCalledPromise] = makePromise();
-    //     _mockLLMAPI.app.post('/completion', async (req, res) => {
-    //       for (let i = 0; i < n; i++) {
-    //         if (i > 1) {
-    //           resolveServerCalled();
-    //           await serverPromise;
-    //         }
-    //         res.write(`data: ${JSON.stringify(makeNonStreamingLlamafileResponse({
-    //           content: `${content[i]}`,
-    //         }))}\n`);
-
-    //         // TODO: Is there a way to avoid this?
-    //         await new Promise((r) => setTimeout(r, 10));
-    //       }
-    //       res.end();
-    //     });
-    //     const abortController = new AbortController();
-    //     const resultFn = vi.fn();
-    //     const [resolveCatchPromise, catchPromise] = makePromise();
-    //     const catchFn = vi.fn().mockImplementation(() => {
-    //       resolveCatchPromise();
-    //     });
-    //     const callback = vi.fn();
-    //     contortionist.execute('prompt', {
-    //       n,
-    //       signal: abortController.signal,
-    //       callback,
-    //     }).then(resultFn).catch(catchFn);
-    //     await serverCalledPromise;
-    //     abortController.abort();
-    //     await catchPromise;
-    //     expect(catchFn).toHaveBeenCalledWithError('This operation was aborted', 'AbortError');
-    //     expect(resultFn).not.toHaveBeenCalled();
-
-    //     // test that the server resolving does not result in a response
-    //     resolveServer();
-    //     expect(resultFn).not.toHaveBeenCalled();
-
-    //     expect(callback).toHaveBeenCalledTimes(2);
-    //     expect(callback).toHaveBeenNthCalledWith(1, { partial: 'a', chunk: makeNonStreamingLlamafileResponse({ content: 'a' }) });
-    //     expect(callback).toHaveBeenNthCalledWith(2, { partial: 'ab', chunk: makeNonStreamingLlamafileResponse({ content: 'b' }) });
-    //   });
+    expect(result).toEqual('bcd');
   });
+
+  test('it should return a response for an awaitable pipeline', async () => {
+    const awaitableModel = Promise.resolve(model);
+
+    const contortionist = new Contortionist({
+      model: awaitableModel,
+    });
+    const result = await contortionist.execute('abc');
+    expect(result).toEqual('bcd');
+  });
+
+  test('it should call back', async () => {
+    const contortionist = new Contortionist({
+      model,
+    });
+    const callback = vi.fn();
+    await contortionist.execute('abc', {
+      callback,
+    });
+    expect(callback).toHaveBeenCalledTimes(3);
+  });
+
+  // I don't think stopping criteria is supported for v2
+  // test('it should be able to abort', async () => {
+  //   const promise = new Promise((resolve) => {
+  //   });
+  //   const generate = async (prompt: number[], {
+  //     callback_function,
+  //   }) => {
+  //     callback_function([{
+  //       output_token_ids: [prompt[0] + 1],
+  //     }]);
+
+  //     contortionist.abort();
+  //     await promise;
+  //   };
+  //   const model = getFakePipeline({
+  //     generate,
+  //   });
+  //   const contortionist = new Contortionist({
+  //     model,
+  //   });
+
+  //   const callback = vi.fn().mockImplementation(() => {
+  //     contortionist.abort();
+  //   });
+  //   await contortionist.execute('abc', {
+  //     callback,
+  //   });
+  //   expect(callback).toHaveBeenCalledTimes(1);
+  // }, 100);
+
+  // test('it should leverage logits processor', async () => {
+  //   const contortionist = new Contortionist({
+  //     model,
+  //     grammar: _`
+  //       "foo" 
+  //     `.compile(),
+  //   });
+  //   const result = await contortionist.execute('abc');
+  //   expect(result).toEqual('foo');
+  // });
 });
