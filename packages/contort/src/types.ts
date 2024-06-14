@@ -1,6 +1,3 @@
-import type {
-  GBNFRule,
-} from "gbnf/builder";
 import {
   type LlamaCPPPrompt,
   type LlamaCPPResponse,
