@@ -1,6 +1,3 @@
-import type {
-  GBNFRule,
-} from "gbnf/builder";
 import {
   type LlamaCPPPrompt,
   type LlamaCPPResponse,
@@ -33,7 +30,6 @@ export interface ModelProtocolDefinition<M extends ModelProtocol> {
 
 export type ModelDefinition<M extends ModelProtocol | undefined> =
   TransformersJSModelDefinition
-  | Promise<TransformersJSModelDefinition>
   | WebLLMModelDefinition
   | Promise<WebLLMModelDefinition>
   | ModelProtocolDefinition<M>;

@@ -9,6 +9,11 @@ import type {
 import type {
   WebLLMModelDefinition,
 } from "./llms/js-llms/web-llm/types.js";
+import {
+  isModelDefinitionModelAndTokenizer,
+  isModelDefinitionPipeline,
+  isTextGenerationPipeline,
+} from "./llms/js-llms/transformersjs/type-guards.js";
 
 export function modelIsProtocolDefinition<M extends ModelProtocol>(model: ModelDefinition<M>): model is ModelProtocolDefinition<M> {
   return typeof model === 'object' && 'endpoint' in model && model.endpoint !== undefined;
@@ -19,8 +24,7 @@ export function isProtocol<M extends ModelProtocol>(protocol: M, model: ModelPro
 }
 
 export function isTransformersJSModelDefinition<M extends ModelProtocol>(model: ModelDefinition<M>): model is TransformersJSModelDefinition {
-  // TODO: Can this be tightened without relying on "instance"?
-  return typeof model === 'function';
+  return isTextGenerationPipeline(model) || isModelDefinitionPipeline(model) || isModelDefinitionModelAndTokenizer(model);
 };
 
 export function isWebLLMModelDefinition<M extends ModelProtocol>(model: ModelDefinition<M>): model is WebLLMModelDefinition {

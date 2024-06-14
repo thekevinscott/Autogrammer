@@ -1,5 +1,7 @@
 import type {
   Tensor as _Tensor,
+  PreTrainedModel,
+  PreTrainedTokenizer,
   TextGenerationConfig,
   TextGenerationPipeline,
 } from "@xenova/transformers";
@@ -83,4 +85,19 @@ export interface GenerationOutput {
 
 export type OutputTokenIds = number[][];
 
-export type TransformersJSModelDefinition = TextGenerationPipeline;
+export interface BaseModelDefinition {
+  protocol: 'transformers.js';
+}
+
+export type Pipeline = TextGenerationPipeline | Promise<TextGenerationPipeline>;
+
+export interface ModelDefinitionPipeline extends BaseModelDefinition {
+  pipeline: Pipeline;
+}
+
+export interface ModelDefinitionModelAndTokenizer extends BaseModelDefinition {
+  model: PreTrainedModel | Promise<PreTrainedModel>;
+  tokenizer: PreTrainedTokenizer | Promise<PreTrainedTokenizer>;
+}
+
+export type TransformersJSModelDefinition = Pipeline | ModelDefinitionPipeline | ModelDefinitionModelAndTokenizer;
