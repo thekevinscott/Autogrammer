@@ -26,3 +26,7 @@ export function isTransformersJSModelDefinition<M extends ModelProtocol>(model: 
 export function isWebLLMModelDefinition<M extends ModelProtocol>(model: ModelDefinition<M>): model is WebLLMModelDefinition {
   return typeof model === 'object' && 'pipeline' in model && 'tokenizer' in model['pipeline'];
 };
+
+export function isStringOrUndefined(val: unknown): val is string | undefined {
+  return typeof val === 'string' || val === undefined;
+}

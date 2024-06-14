@@ -8,6 +8,7 @@ import type {
   ModelProtocol,
   Prompt,
 } from "./types.js";
+import { isStringOrUndefined, } from "./type-guards.js";
 
 export class Contortionist<M extends ModelProtocol> {
   grammar?: Grammar;
@@ -85,7 +86,7 @@ export class Contortionist<M extends ModelProtocol> {
       prompt,
       stream: (callback && stream === undefined) ? true : !!stream,
       callback,
-      grammar: this.grammar,
+      grammar: (isStringOrUndefined(this.grammar)) ? this.grammar : this.grammar.compile(),
       signal: this.#getSignal(signal),
       llmOpts,
     });

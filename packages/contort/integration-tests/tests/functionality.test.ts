@@ -15,6 +15,7 @@ import {
 } from "../utils/bootstrap-server-mock.js";
 import MockLLMAPI from "../utils/mock-llm-api.js";
 import { buildContortionist } from "../utils/build-contortionist.js";
+import { _ } from "gbnf/builder";
 
 setLogLevel('verbose');
 const configureNonStreamingServer = (content: string) => _configureNonStreamingServer(content, makeLlamaCPPResponse);
@@ -289,6 +290,24 @@ describe('llama.cpp', async () => {
         expect(callback).toHaveBeenNthCalledWith(2, { partial: 'ab', chunk: makeLlamaCPPResponse({ content: 'b' }) });
       });
     });
+
+    test('it should accept a GBNF Rule', async () => {
+      const { endpoint, mockLLMAPI } = configureNonStreamingServer('');
+      _mockLLMAPI = mockLLMAPI;
+      const grammar = _`"FOO"`;
+
+      const contortionist = new Contortionist({
+        model: {
+          protocol: 'llama.cpp',
+          endpoint,
+        },
+        grammar,
+      });
+      await contortionist.execute('prompt',);
+      expect(mockLLMAPI).toHaveBeenCalledWithParameters({
+        grammar: grammar.compile(),
+      }, true);
+    })
   });
 });
 

@@ -37,7 +37,7 @@ export type ModelDefinition<M extends ModelProtocol | undefined> =
   | WebLLMModelDefinition
   | Promise<WebLLMModelDefinition>
   | ModelProtocolDefinition<M>;
-export type Grammar = string;
+export type Grammar = string | GBNFRule;
 
 export interface InternalExecuteOptions {
   n: number;
@@ -60,7 +60,7 @@ export type LLMOpts<M extends ModelProtocol> =
   : Record<string, unknown>;
 
 export interface ConstructorOptions<M extends ModelProtocol | undefined = undefined> {
-  grammar?: Grammar | GBNFRule;
+  grammar?: Grammar;
   model?: ModelDefinition<M>;
 }
 
