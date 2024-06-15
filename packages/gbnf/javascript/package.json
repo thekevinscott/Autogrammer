@@ -26,9 +26,11 @@
   "scripts": {
     "clean": "wireit",
     "lint": "wireit",
-    "test:unit": "wireit",
     "test": "wireit",
+    "test:unit": "wireit",
     "test:integration": "wireit",
+    "test:unit:watch": "wireit",
+    "test:integration:watch": "wireit",
     "build": "wireit",
     "build:check": "wireit",
     "build:esm": "wireit",
@@ -38,6 +40,9 @@
     "clean": {
       "command": "rimraf ./dist"
     },
+    "test:unit:watch": {
+      "command": "vitest --config ./vitest.config.unit.ts --hideSkippedTests"
+    },
     "test:unit": {
       "command": "vitest --config ./vitest.config.unit.ts run"
     },
@@ -46,6 +51,9 @@
     },
     "test:integration": {
       "command": "vitest --config ./vitest.config.integration.ts run"
+    },
+    "test:integration:watch": {
+      "command": "vitest --config ./vitest.config.integration.ts --hideSkippedTests"
     },
     "lint": {
       "command": "eslint -c .eslintrc.cjs src --ext .ts"

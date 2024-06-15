@@ -12,6 +12,7 @@ import { Graph, } from './grammar-graph/graph.js';
 import * as _Graph from './grammar-graph/graph.js';
 import { ParseState, } from './grammar-graph/parse-state.js';
 import * as _ParseState from './grammar-graph/parse-state.js';
+import { _ } from './builder/template-tags.js';
 
 vi.mock('./grammar-graph/parse-state.js', async () => {
   const actual = await vi.importActual('./grammar-graph/parse-state.js') as typeof _ParseState;
@@ -90,7 +91,7 @@ describe('GBNF', () => {
         rules = rules;
         symbolIds = symbolIds;
       }
-      return new MockRulesBuilder() as RulesBuilder;
+      return new MockRulesBuilder() as unknown as RulesBuilder;
     });
     class MockGraph { add = vi.fn().mockImplementation(() => 'foo') }
     const mockGraph = new MockGraph();
@@ -106,5 +107,33 @@ describe('GBNF', () => {
     expect(Graph).toHaveBeenCalledWith(grammar, rules, 1);
     expect(mockGraph.add).toHaveBeenCalledWith(initialString);
     expect(ParseState).toHaveBeenCalledWith(mockGraph, 'foo');
+  });
+
+  test('it builds parse state with a GBNF Rule as input', () => {
+    const grammar = _`"foo"`;
+    const initialString = 'foo';
+    const symbolIds = new Map();
+    symbolIds.set('root', 1);
+    const rules: InternalRuleDef[][] = [
+      [{ type: InternalRuleType.END }],
+      [{ type: InternalRuleType.CHAR, value: [97] }],
+    ];
+    vi.mocked(RulesBuilder).mockImplementation(() => {
+      class MockRulesBuilder {
+        rules = rules;
+        symbolIds = symbolIds;
+      }
+      return new MockRulesBuilder() as unknown as RulesBuilder;
+    });
+    class MockGraph { add = vi.fn().mockImplementation(() => 'foo') }
+    const mockGraph = new MockGraph();
+    vi.mocked(Graph).mockImplementation(() => mockGraph as unknown as Graph);
+    class MockParseState { }
+    const mockParseState = new MockParseState();
+    vi.mocked(ParseState).mockImplementation(() => mockParseState as ParseState);
+    vi.mocked(buildRuleStack).mockImplementation((rules) => rules as any);
+
+    expect(GBNF(grammar, initialString)).toEqual(mockParseState);
+    expect(Graph).toHaveBeenCalledWith(grammar.compile(), rules, 1);
   });
 });
