@@ -4,10 +4,9 @@ import {
   expect,
 } from 'vitest';
 import {
-  selectRule,
-} from './index.js';
+  fullSelectQuery,
+} from './full-select-query.js';
 import {
-  $,
   _,
 } from 'gbnf/builder';
 import GBNF, {
@@ -17,8 +16,11 @@ import {
   include,
 } from '../__fixtures__/includes.js';
 
-
-describe('select', () => {
+describe('fullSelectQuery', () => {
+  const grammar = _`${fullSelectQuery}`.compile({
+    include,
+    caseKind: 'any',
+  });
   test.each([
     'SELECT',
     'select',
@@ -29,13 +31,8 @@ describe('select', () => {
     'SELECT foo FROM table WHERE foo = "foo"',
     // you spent so much time wondering if you could, you never stopped to think if you should
     'SELECT (SELECT (SELECT (SELECT qux FROM table4) FROM table3) FROM table2) FROM table',
-  ])('it parses schema to grammar with input "%s"', (initial) => {
-    let parser = GBNF([
-      selectRule.compile({
-        include,
-        caseKind: 'any',
-      }),
-    ].join('\n'));
+  ])('it parses input "%s"', (initial) => {
+    let parser = GBNF(grammar);
     parser = parser.add(initial.split('\\n').join('\n'));
     expect(parser.size).toBeGreaterThan(0);
   });
@@ -44,16 +41,13 @@ describe('select', () => {
     'select;',
     'select .',
     `SELECT INTO newtable column1, column2 INTO newtable FROM sourcetable;`,
-    `SELECT * FROM foo WHERE name = foo.name\n\nAnd you.`,
-    `SELECT * FROM foo WHERE name = 'bar'\\n\\nAnd you like "bar"`,
-  ])('it rejects %s for a non-schema', (_initial) => {
-    let parser = GBNF([
-      selectRule.compile({
-        include,
-        caseKind: 'any',
-      }),
-    ].join('\n'));
+    `SELECT * FROM foo WHERE name = foo.name\\n\\nAnd you.`,
+    `SELECT * FROM foo WHERE name = 'bar'\\n\\nAnd you like "tar"`,
+  ])('rejects %s for bad input', (_initial) => {
+    let parser = GBNF(grammar);
     const initial = _initial.split('\\n').join('\n');
     expect(() => parser.add(initial)).toThrowInputParseError(initial);
   });
 });
+
+

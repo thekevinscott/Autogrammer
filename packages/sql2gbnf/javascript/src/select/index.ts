@@ -6,11 +6,11 @@ import {
   ws,
 } from '../constants.js';
 import {
-  selectRule,
-} from "./select-rule.js";
+  fullSelectQuery,
+} from "./full-select-query.js";
 
-export const selectRuleWithUnion = _`
-  ${selectRule}
+export const selectRule = _`
+  ${fullSelectQuery}
   ${_`
     ${ws} 
     ${$`UNION`} 
@@ -19,8 +19,7 @@ export const selectRuleWithUnion = _`
       ${$`ALL`} 
       ${ws}
     `.wrap('?')} 
-    ${selectRule}
+    ${fullSelectQuery}
   `.wrap('*')
   }
 `;
-

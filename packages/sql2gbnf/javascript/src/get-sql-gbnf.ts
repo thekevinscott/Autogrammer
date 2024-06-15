@@ -3,7 +3,7 @@ import {
   GBNFRule,
 } from "gbnf/builder";
 import {
-  selectRuleWithUnion,
+  selectRule,
 } from "./select/index.js";
 import type {
   Database,
@@ -25,18 +25,16 @@ export const getSQLGBNF = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   database?: Database,
   // schema?: string,
-): GBNFRule => {
-  const gbnf = _`
-    ${_`
-      ${selectRuleWithUnion}
-      | ${insertRule} 
-      | ${deleteRule}
-      | ${updateRule}
-    `.wrap()}
-    ${_`
-      ${nroptws} 
-      ";"
-    `.wrap('?')}
-  `;
-  return gbnf;
-};
+): GBNFRule => _`
+${nroptws}
+${_`
+  ${selectRule}
+  | ${insertRule} 
+  | ${deleteRule}
+  | ${updateRule}
+`.wrap()}
+${_`
+  ${nroptws} 
+  ";"
+`.wrap('?')}
+`;

@@ -45,6 +45,7 @@ const basicTests = [
   'SELECT col FROM table WHERE col = NULL;',
   'SELECT col FROM table WHERE col IS null;',
   'SELECT col FROM table WHERE col is NULL;',
+  `SELECT * FROM foo WHERE name = 'foo'`,
   'SELECT col FROM table WHERE col = \'foo\'',
   'SELECT col FROM table WHERE col = "foo"',
   'SELECT col FROM table WHERE col = \'foo\';',
