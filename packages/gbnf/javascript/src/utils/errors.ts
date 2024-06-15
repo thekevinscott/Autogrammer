@@ -44,21 +44,6 @@ export class GrammarParseError extends Error {
   }
 }
 
-export class InputParseError extends Error {
-  src: ValidInput;
-  pos: number;
-  constructor(src: ValidInput, pos: number) {
-    super([
-      `Failed to parse input string:`,
-      '',
-      ...buildErrorPosition(getInputAsString(src), pos),
-    ].join('\n'));
-    this.src = src;
-    this.pos = pos;
-    this.name = 'InputParseError';
-  }
-}
-
 const getInputAsString = (src: ValidInput) => {
   if (typeof src === 'string') {
     return src;
@@ -66,3 +51,21 @@ const getInputAsString = (src: ValidInput) => {
   const codePoints = Array.isArray(src) ? src : [src,];
   return codePoints.map(cp => String.fromCodePoint(cp)).join('');
 };
+export class InputParseError extends Error {
+  _src: ValidInput;
+  pos: number;
+  constructor(src: ValidInput, pos: number) {
+    super([
+      `Failed to parse input string:`,
+      '',
+      ...buildErrorPosition(getInputAsString(src), pos),
+    ].join('\n'));
+    this._src = src;
+    this.pos = pos;
+    this.name = 'InputParseError';
+  }
+
+  get src() {
+    return getInputAsString(this._src);
+  }
+}
