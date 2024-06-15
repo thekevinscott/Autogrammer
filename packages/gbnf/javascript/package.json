@@ -2,7 +2,7 @@
   "name": "gbnf",
   "type": "module",
   "description": "A library for parsing GBNF grammars",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "repository": {
     "type": "git",
     "url": "https://github.com/thekevinscott/autogrammer.git",
