@@ -1,4 +1,5 @@
 interface CustomMatchers<R = unknown> {
+  toThrowInputParseError(fn: () => void, str: string, errorPos?: number): R;
   toHaveBeenCalledWithError(message: string, type: string): R;
 }
 

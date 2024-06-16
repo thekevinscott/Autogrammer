@@ -4,7 +4,7 @@ import {
   _,
 } from "gbnf/builder";
 import {
-  selectRuleWithUnion,
+  selectRule,
 } from '../select/index.js';
 import {
   stringWithQuotes,
@@ -48,10 +48,10 @@ export const insertRule = _`
     | ${number} 
     | ${boolean} 
     | ${$`NULL`} 
-    | ${selectRuleWithUnion} 
+    | ${selectRule} 
     | "(" 
         ${nroptws} 
-        ${selectRuleWithUnion} 
+        ${selectRule} 
         ${nroptws} 
       ")"
   `.wrap())}
