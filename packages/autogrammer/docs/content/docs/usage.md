@@ -9,12 +9,30 @@ eleventyNavigation:
   order: 2
 ---
 
+Autogrammer needs a prompt, and you can additionally provide language options and chosen model.
+
+Read about the three parameters below:
+
+- [Prompts]()
+- [Languages]()
+- [Models]()
+
+## Prompts
+
+Which prompts work best depend a lot on the model you're using. Experimentation, having evaluation sets are important.
+
+Some specific Autogrammer tips:
+
+- Ensure you phrase the question to best help the model. If you are expecting JSON output, still explicitly mention that in the prompt.
+- If you are providing a schema, Autogrammer automatically includes it in the prompt. No need to re-supply it in the prompt.
+- 
+
 You create an instance of `Autogrammer` to do anything:
 
 ```javascript
-import Autogrammer from 'autogrammer';
+import {autogram} from 'autogrammer';
 
-const autogrammer = new Autogrammer();
+const autogrammer = autogram('Tell me model, what ails you?', _`"headache" | "cold"`)
 ```
 
 To begin to work with `autogrammer`, you need to choose a language and (optionally) a model.
@@ -88,69 +106,3 @@ const grammer = new Autogrammer({
 
 See the section on models for more.
 
-## API
-
-Autogrammer's primary method is the `execute` method.
-
-### `prompt`
-
-You prompt with:
-
-```javascript
-const grammer = new Autogrammer({
-  language: 'json',
-});
-console.log(await grammer.prompt('My prompt'))
-```
-
-By default, Autogrammer returns string output.
-
-#### Language Options
-
-You can pass in language options as `languageOptions` in the second argument:
-
-```javascript
-const grammer = new Autogrammer({
-  language: 'json',
-});
-
-console.log(await grammer.prompt('My prompt', {
-  languageOptions: {
-    type: 'object',
-    // some JSON schema
-  },
-}))
-```
-
-Each language accepts different options:
-
-- **JSON**: `languageOptions` can optionally be a JSON schema the output must adhere to. (Only a subset of JSON schema functionality is supported.)
-- **SQL**: `languageOptions` can optionally be a string database schema.
-
-#### Model Options
-
-You can pass in options for the model as `modelOptions` in the second argument:
-
-```javascript
-const grammer = new Autogrammer({
-  language: 'json',
-});
-
-console.log(await grammer.prompt('My prompt', {
-  modelOptions: {
-    n: 100,
-    temperature: 1,
-  }
-}))
-```
-
-Refer to each backend's API for model options. For your convenience, links are here:
-
-- Transformers.js 
-- web-llm
-- llama.cpp (exposed as a REST interface)
-- llamafile (exposed as a REST interface)
-
-## Plugins
-
-PLUGINS OH MY

@@ -1,13 +1,13 @@
 ---
 title: 'Support'
 layout: 'layouts/page.html'
-displayOrder: 4
+displayOrder: 7
 
 eleventyNavigation:
   parent: docs
   key: support
   title: "Support"
-  order: 4
+  order: 7
 ---
 
 ## Bugs, feature requests, and questions​
