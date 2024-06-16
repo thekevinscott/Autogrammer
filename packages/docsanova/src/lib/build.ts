@@ -69,7 +69,7 @@ export const build = async ({
 
   buildTSC(inputDir);
 
-  await symlinkNodeModules(inputDir, tmpInput, nodeModulesDir);
+  // await symlinkNodeModules(inputDir, tmpInput, nodeModulesDir);
 
   // For monitoring directories
   await Promise.all([

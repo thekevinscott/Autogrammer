@@ -17,7 +17,6 @@ import '@alenaksu/json-viewer';
 
 // import "https://cdn.jsdelivr.net/gh/vanillawc/wc-code@1.0.3/src/wc-code.js";
 // import Autogrammer from 'https://cdn.jsdelivr.net/npm/autogrammer/dist/index.js';
-import { liveExecute } from './live-execute.js';
 import { CodeEditorCodeMirror } from './code-mirror.js';
 // import type { WCCodeMirror } from '@vanillawc/wc-codemirror';
 // import * as webllm from "@mlc-ai/web-llm";

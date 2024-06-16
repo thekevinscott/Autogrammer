@@ -10,5 +10,4 @@ export const registerScript = (program: Command) => program.command('build')
   .option('-o, --output <string>', 'Output directory', './build')
   .option('-c, --contentDir <string>', 'Content directory', 'content')
   .option('-s, --srcDir <string>', 'src directory', 'src')
-  .option('-n, --nodeModulesDir <string>', 'node modules directory')
   .action(build);

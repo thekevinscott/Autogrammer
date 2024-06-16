@@ -9,15 +9,19 @@ document.querySelectorAll('nav button').forEach((button) => {
 });
 // page.html
 const toggleToc = document.getElementById('toggle-toc');
-const tocMobile = document.getElementById('toc-mobile');
-toggleToc.addEventListener('click', () => {
-  tocMobile.classList.toggle('open');
-});
+if (toggleToc) {
+  const tocMobile = document.getElementById('toc-mobile');
+  toggleToc.addEventListener('click', () => {
+    tocMobile.classList.toggle('open');
+  });
+}
 // head.html
 const backToMainMenuButton = document.getElementById('back-to-main-menu');
-backToMainMenuButton.addEventListener('click', () => {
-  backToMainMenuButton.closest('main').classList.add('main-menu');
-});
+if (backToMainMenuButton) {
+  backToMainMenuButton.addEventListener('click', () => {
+    backToMainMenuButton.closest('main').classList.add('main-menu');
+  });
+}
 // head.html
 docsearch({
   container: '#docsearch',

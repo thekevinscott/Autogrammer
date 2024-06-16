@@ -10,12 +10,14 @@ const {
   unlink,
   // realpath,
   // symlink,
+  copy,
 } = pkg;
 import os from 'os';
 
 export interface StartOpts extends Opts {
   port: number;
-  tmpRoot: string;
+  buildDir: string;
+  internalDir: string;
 }
 
 import path from 'path';
@@ -26,33 +28,34 @@ import { getCreateFile, } from './utils/get-create-file.js';
 import { getPromise, } from './utils/get-promise.js';
 import { isExcluded, } from './utils/is-excluded.js';
 import { TSCWatcher, } from './utils/tsc.js';
-import {
-  symlinkNodeModules,
-} from './utils/symlink-node-modules.js';
+// import {
+//   symlinkNodeModules,
+// } from './utils/symlink-node-modules.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const ROOT = path.resolve(__dirname, "../../");
-const CONTENT = path.resolve(ROOT, "content");
-const JS = path.resolve(ROOT, "js");
+const DOCSANOVA_ROOT = path.resolve(__dirname, "../../");
+const CONTENT = path.resolve(DOCSANOVA_ROOT, "content");
+const INTERNAL_JS_FOLDER = path.resolve(DOCSANOVA_ROOT, "js");
 
-const rand = Math.random().toString(36);
+// const rand = Math.random().toString(36);
 export const start = async ({
   port,
   input: inputDir,
   contentDir,
   srcDir,
-  tmpRoot = path.resolve(os.tmpdir(), rand),
-  nodeModulesDir = '_nm',
+  buildDir,
+  internalDir,
+  // nodeModulesDir = '_nm',
 }: StartOpts) => {
   if (!inputDir) {
     throw new Error('No input specified');
   }
-  const tmpInput = path.resolve(tmpRoot, 'input');
-  const tmpOutput = path.resolve(tmpRoot, 'output');
+  // const tmpInput = path.resolve(tmpRoot, 'input');
   const createFile = getCreateFile(inputDir);
   await Promise.all([
-    mkdirp(tmpInput),
-    mkdirp(tmpOutput),
+    // mkdirp(tmpInput),
+    mkdirp(buildDir),
+    mkdirp(internalDir),
   ]);
 
   // For monitoring individual files
@@ -60,12 +63,12 @@ export const start = async ({
   let written = 0;
   [
     {
-      input: path.resolve(inputDir, 'docsanova.json'),
-      output: path.resolve(tmpInput, '_data/docsanova.json'),
+      input: path.join(inputDir, 'docsanova.json'),
+      output: path.join(internalDir, '_data/docsanova.json'),
     },
     {
-      input: path.resolve(ROOT, 'eleventy.config.cjs.mustache'),
-      output: path.resolve(tmpInput, 'eleventy.config.cjs'),
+      input: path.join(DOCSANOVA_ROOT, 'eleventy.config.cjs.mustache'),
+      output: path.join(internalDir, 'eleventy.config.cjs'),
     },
   ].forEach(({ input, output, }) => {
     if (!(existsSync(input))) {
@@ -82,12 +85,9 @@ export const start = async ({
           readyCallback();
         }
         void createFile(input, output, contents => Mustache.render(contents, {
-          tmpInput,
-          tmpOutput,
-          NODE_MODULES_FOLDER: nodeModulesDir,
-          STYLES_FOLDER: 'styles',
-          INTERNAL_JS_FOLDER: '_internal_js',
-          JS_FOLDER: 'js',
+          USER_STYLES_FOLDER: path.join(internalDir, 'styles'),
+          USER_JS_FOLDER: path.join(internalDir, 'js'),
+          INTERNAL_JS_FOLDER: path.join(internalDir, '_internal_js'),
         }));
       } else if (!['addDir',].includes(event)) {
         console.log(event, path);
@@ -95,66 +95,50 @@ export const start = async ({
     });
   });
 
-  await symlinkNodeModules(inputDir, tmpInput, nodeModulesDir);
-
   // For monitoring directories
   [
     {
       input: path.resolve(inputDir, contentDir),
-      output: tmpInput,
+      output: path.resolve(internalDir),
     },
     {
       input: path.resolve(inputDir, srcDir, 'pages'),
-      output: tmpInput,
+      output: path.resolve(internalDir),
       transform: (content: string) => `
-{% extends "layouts/base.html" %} 
-{% block content %}
-${content}
-{% endblock %}
-`,
+    {% extends "layouts/base.html" %} 
+    {% block content %}
+    ${content}
+    {% endblock %}
+    `,
     },
     {
-      input: path.resolve(ROOT, CONTENT),
-      output: tmpInput,
+      input: path.resolve(DOCSANOVA_ROOT, CONTENT),
+      output: path.resolve(internalDir),
     },
     {
-      input: path.resolve(ROOT, JS),
-      output: path.resolve(tmpInput, '_internal_js'),
+      input: path.resolve(DOCSANOVA_ROOT, INTERNAL_JS_FOLDER),
+      output: path.resolve(internalDir, '_internal_js'),
     },
     {
       input: path.resolve(inputDir, srcDir, 'styles'),
-      output: path.resolve(tmpInput, 'styles'),
+      output: path.resolve(internalDir, 'styles'),
     },
-    {
-      input: path.resolve(inputDir, '.docsanova/js'),
-      output: path.resolve(tmpInput, 'js'),
-    },
-    // ...Object.keys(dependencies).filter(name => {
-    //   return !['docsanova'].includes(name);
-    // }).map((dir) => ({
-    //   input: path.resolve(inputDir, `node_modules/${dir}`),
-    //   output: path.resolve(tmpInput, `.node_modules/${dir}`),
-    // })),
+    // {
+    //   input: path.resolve(inputDir, '.docsanova/js'),
+    //   output: path.resolve(tmpInput, 'js'),
+    // },
   ].forEach(({ input, output, transform, }: { input: string; output: string; transform?: (content: string) => string; }) => {
     chokidar.watch(input, {
       ignorePermissionErrors: false,
     }).on('all', (event, inputFilepath) => {
-      // if (
-      //   inputFilepath.includes('packages/autogrammer/docs/node_modules/autogrammer')
-      //   && !inputFilepath.includes('packages/autogrammer/docs/node_modules/autogrammer/node_modules')
-      // ) {
-      //   console.log(inputFilepath.slice(58), !isExcluded(inputFilepath));
-      // }
       if (!isExcluded(inputFilepath)) {
-        // console.log('event', event, inputFilepath);
         if (event === 'add' || event === 'change') {
           const filepath = inputFilepath.split(`${input}/`)[1];
-          const outputFilepath = path.resolve(tmpInput, output, filepath);
-          // console.log('event', event, inputFilepath, outputFilepath);
+          const outputFilepath = path.resolve(internalDir, output, filepath);
           void createFile(inputFilepath, outputFilepath, transform);
         } else if (event === 'unlink') {
           const filepath = inputFilepath.split(`${input}/`)[1];
-          const outputFilepath = path.resolve(tmpInput, output, filepath);
+          const outputFilepath = path.resolve(internalDir, output, filepath);
           void unlink(outputFilepath);
         } else if (!['addDir',].includes(event)) {
           console.log(event, path);
@@ -164,14 +148,15 @@ ${content}
   });
 
 
+
   new TSCWatcher(inputDir);
 
   await ready;
-  const elev = new Eleventy(tmpInput, tmpOutput, {
+  const elev = new Eleventy(internalDir, buildDir, {
     source: "cli",
     runMode: 'serve',
     quietMode: false,
-    configPath: path.resolve(tmpInput, 'eleventy.config.cjs'),
+    configPath: path.resolve(internalDir, 'eleventy.config.cjs'),
     // pathPrefix: undefined,
     // dryRun: false,
 
