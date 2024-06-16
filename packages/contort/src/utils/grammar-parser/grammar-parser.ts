@@ -4,40 +4,37 @@ import GBNF from "gbnf";
 import { GrammarParserNode, } from "./grammar-parser-node.js";
 import { BidirectionalMap, } from "../bidirectional-map.js";
 import type {
-  // GetDecodedByteForChar,
   GetToken,
 } from "./types.js";
 
 export type GetNextTokenIds = () => Set<number>;
 export type AddToken = (token: string) => void;
 
+const DEFAULT_MAXIMUM_DEPTH = 6;
+
 export class GrammarParser {
   #parseState: ParseState;
-  root: GrammarParserNode;
-  vocab = new BidirectionalMap<number, string>();
+  #root: GrammarParserNode;
+  #vocab = new BidirectionalMap<number, string>();
   constructor({
     vocabSize,
     stopTokenId,
     getToken,
-    // getDecodedByteForChar,
   }: {
     vocabSize: number,
     stopTokenId: number,
     getToken: GetToken;
-    // getDecodedByteForChar: GetDecodedByteForChar;
   }) {
-    this.root = new GrammarParserNode(stopTokenId);
+    this.#root = new GrammarParserNode(stopTokenId);
     for (let tokenId = 0; tokenId < vocabSize; tokenId++) {
       const token = getToken(tokenId);
-      this.vocab.set(tokenId, token);
-      this.root.add(tokenId, token
-        // , getDecodedByteForChar
-      );
+      this.#vocab.set(tokenId, token);
+      this.#root.add(tokenId, token);
     }
   }
 
-  getTokens = (state: ParseState, maximumDepth?: number) => {
-    const tokenIds = this.root.getTokens(state, { maximumDepth, });
+  getTokens = (state: ParseState, maximumDepth: number) => {
+    const tokenIds = this.#root.getTokens(state, { maximumDepth, });
     if (tokenIds.size === 0) {
       throw new Error('Grammar is incorrect; no rule was found.');
     }
@@ -54,5 +51,5 @@ export class GrammarParser {
 
   initialize = (grammar: Grammar) => this.parseState = GBNF(grammar);
   addToken: AddToken = (token) => this.parseState = this.parseState.add(token);
-  getNextTokenIds: GetNextTokenIds = () => this.getTokens(this.parseState, 1);
+  getNextTokenIds: GetNextTokenIds = (maximumDepth: number = DEFAULT_MAXIMUM_DEPTH) => this.getTokens(this.parseState, maximumDepth);
 }
