@@ -26,15 +26,15 @@ export const getSQLGBNF = (
   database?: Database,
   // schema?: string,
 ): GBNFRule => _`
-${nroptws}
-${_`
-  ${selectRule}
-  | ${insertRule} 
-  | ${deleteRule}
-  | ${updateRule}
-`.wrap()}
-${_`
-  ${nroptws} 
-  ";"
-`.wrap('?')}
+  ${nroptws}
+  ${_`
+    ${selectRule}
+    | ${insertRule} 
+    | ${deleteRule}
+    | ${updateRule}
+  `.wrap()}
+  ${_`
+    ${nroptws} 
+    ";"
+  `.wrap('?')}
 `;
