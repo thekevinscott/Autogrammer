@@ -6,7 +6,8 @@
     "dev": "wireit",
     "copy:autogrammer": "wireit",
     "start": "wireit",
-    "build": "wireit"
+    "build": "wireit",
+    "serve": "wireit"
   },
   "wireit": {
     "dev": {
@@ -28,6 +29,9 @@
         "../../bundled-autogrammer:build",
         "../../docsanova:build"
       ]
+    },
+    "serve": {
+      "command": "pnpx serve ./build"
     }
   },
   "dependencies": {
