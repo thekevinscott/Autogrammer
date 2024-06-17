@@ -12,6 +12,7 @@
   --border-radius: 8px;
 
   --color-heavy: black;
+  --color-home-buttons: black;
   --color-default: rgba(0, 0, 0, 0.8);
   --color-default-bg: white;
   --color-header-bg: rgba(255, 255, 255, 0.6);
@@ -41,6 +42,7 @@
   color-scheme: dark;
 
   --color-heavy: white;
+  --color-home-buttons: black;
   --color-home-h1: #cfedff;
   --color-default: rgb(227, 227, 227);
   --color-default-bg: #152539;

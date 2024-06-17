@@ -3,19 +3,27 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "wireit",
+    "copy:autogrammer": "wireit",
     "start": "wireit",
     "build": "wireit"
   },
   "wireit": {
+    "dev": {
+      "command": "pnpm start"
+    },
+    "copy:autogrammer": {
+      "command": "mkdir -p ./.docsanova/.staging/js/autogrammer && cp -r ./node_modules/bundled-autogrammer/dist/* ./.docsanova/.staging/js/autogrammer/"
+    },
     "start": {
-      "command": "docsanova start --port 8080 -n _nm",
+      "command": "pnpm copy:autogrammer && docsanova start --port 8080",
       "dependencies": [
         "../../bundled-autogrammer:build",
         "../../docsanova:build"
       ]
     },
     "build": {
-      "command": "docsanova build --output build -n _nm",
+      "command": "pnpm copy:autogrammer && docsanova build --output build",
       "dependencies": [
         "../../bundled-autogrammer:build",
         "../../docsanova:build"

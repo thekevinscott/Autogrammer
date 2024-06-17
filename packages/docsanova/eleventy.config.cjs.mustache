@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const util = require('util');
 
@@ -8,73 +7,6 @@ const markdownIt = require('markdown-it');
 const markdownItAnchor = require('markdown-it-anchor');
 const pluginTOC = require('eleventy-plugin-nesting-toc');
 const slugify = require("slugify");
-
-
-// function autoCollection(eleventyConfig = {}, pluginConfig = {}) {
-//   const { baseDir, fileGlob } = pluginConfig;
-
-//   const categoryPrefix = 'category';
-//   const breadcrumbPrefix = 'breadcrumb';
-
-//   // console.log('baseDir', baseDir);
-//   // const addDirsForPath = (baseDir, ancestors = []) => {
-//   //   fs
-//   //     .readdirSync(baseDir, { withFileTypes: true })
-//   //     .reduce((acc, file) => {
-//   //       if (
-//   //         file.isDirectory()
-//   //         && !file.name.includes('node_modules')
-//   //         && !file.name.startsWith('.')
-//   //         && !file.name.startsWith('_')
-//   //         && ![
-//   //           'js',
-//   //           'styles',
-//   //         ].includes(file.name)
-//   //       ) {
-//   //         const name = [
-//   //           categoryPrefix,
-//   //           ...ancestors.map(({ name }) => name),
-//   //           file.name,
-//   //         ].join('_');
-//   //         // add a collection for this folder
-//   //         // console.log('name', name)
-//   //         eleventyConfig.addCollection(name, collectionApi => collectionApi.getFilteredByGlob(
-//   //           path.join(baseDir, file.name, fileGlob),
-//   //         ));
-
-//   //         addDirsForPath(
-//   //           path.resolve(baseDir, file.name),
-//   //           ancestors.concat([{
-//   //             name: file.name,
-//   //             fullPath: path.resolve(baseDir, file.name),
-//   //           }]),
-//   //         );
-//   //       } else if (file.name.endsWith('.md')) {
-//   //         // const name = [breadcrumbPrefix, ...ancestors.map(({ name }) => name), file.name].join('_');
-//   //         // const filePaths = ancestors.map(({ fullPath }) => fullPath).concat(path.resolve(baseDir, file.name));
-//   //         // console.log(filePaths);
-//   //         // eleventyConfig.addCollection(name, collectionApi => {
-//   //         //   const breadcrumbs = collectionApi.getAll().filter(page => {
-//   //         //     // const title = page.data.title;
-//   //         //     // console.log(title);
-//   //         //     return filePaths.includes(page.inputPath);
-//   //         //   })
-//   //         //   console.log(`number of breadcrumbs for "${name}"`, breadcrumbs.length);
-//   //         //   return breadcrumbs;
-
-//   //         //   // return collectionApi.getAll().filter((item) => {
-//   //         //   //   console.log(item.inputPath);
-//   //         //   //   return false;
-//   //         //   //   // return item.inputPath === filePath;
-//   //         //   // });
-//   //         // });
-
-//   //       }
-//   //       return acc;
-//   //     }, {});
-//   // };
-//   addDirsForPath(baseDir);
-// };
 
 const sortByOrder = (values) => {
   if (values === undefined) {
@@ -181,30 +113,16 @@ module.exports = function (eleventyConfig) {
     return util.inspect(value);
   });
 
-  eleventyConfig.ignores.add("**/_nm/**/*.md");
-  eleventyConfig.ignores.add("**/_nm/**/*.html");
+  eleventyConfig.setServerPassthroughCopyBehavior("passthrough");
 
   eleventyConfig.addFilter('sortByOrder', sortByOrder);
   eleventyConfig.addPlugin(syntaxHighlight);
   eleventyConfig.addPlugin(codeEditor);
 
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{JS_FOLDER}}}'));
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{INTERNAL_JS_FOLDER}}}'));
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{STYLES_FOLDER}}}'));
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.js'), {
-    expand: true,
-  });
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.cjs'), {
-    expand: true,
-  });
-  eleventyConfig.addPassthroughCopy(path.resolve('{{{tmpInput}}}', '{{{NODE_MODULES_FOLDER}}}/**/*.css'), {
-    expand: true,
-  });
+  eleventyConfig.addPassthroughCopy('{{{USER_JS_FOLDER}}}');
+  eleventyConfig.addPassthroughCopy('{{{USER_STYLES_FOLDER}}}');
+  eleventyConfig.addPassthroughCopy('{{{INTERNAL_JS_FOLDER}}}');
 
-  // eleventyConfig.addPlugin(autoCollection, {
-  //   baseDir: "{{{tmpInput}}}",
-  //   fileGlob: "*.md",
-  // });
   eleventyConfig.setUseGitIgnore(false);
   eleventyConfig.addFilter("bust", (url) => {
     const [urlPart, paramPart] = url.split("?");

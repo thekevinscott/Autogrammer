@@ -654,7 +654,7 @@ a.button {
     padding: calc(var(--padding) * 2) calc(var(--padding) * 4);
     /* border: none; */
     font-size: 1.4rem;
-    color: var(--color-heavy);
+    color: var(--color-home-buttons);
 
     background-color: #eeeeee;
     transition-duration: 0.2s;
@@ -729,7 +729,6 @@ a.button {
     a {
       font-size: 16px;
       line-height: 2.25;
-      /* color: var(--color-heavy); */
       color: var(--color-nav-anchor);
       line-height: 1.25;
       padding: 0.5rem .75rem;

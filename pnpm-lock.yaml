@@ -335,16 +335,6 @@ importers:
         specifier: ^0.14.0
         version: 0.14.4
 
-  packages/contort/tmp/node:
-    dependencies:
-      contort:
-        specifier: workspace:*
-        version: link:../..
-    devDependencies:
-      tslib:
-        specifier: 2.6.1
-        version: 2.6.1
-
   packages/docsanova:
     dependencies:
       '@11ty/eleventy-dev-server':
@@ -4003,6 +3993,7 @@ packages:
 
   rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@3.0.2:
@@ -4436,9 +4427,6 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
-
-  tslib@2.6.1:
-    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
 
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
@@ -9107,8 +9095,6 @@ snapshots:
       typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-
-  tslib@2.6.1: {}
 
   tslib@2.6.2: {}
 
