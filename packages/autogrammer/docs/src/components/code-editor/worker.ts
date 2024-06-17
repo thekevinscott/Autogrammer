@@ -76,7 +76,7 @@ self.onconnect = (e) => {
       // TODO: One day it'd be great to resolve this using import maps
       // https://github.com/WICG/import-maps/issues/2
       const MAPPED_NAME: Record<string, string> = {
-        'autogrammer': `${root}/_nm/bundled-autogrammer/dist/index.js`,
+        'autogrammer': `${root}/js/autogrammer/index.js`,
         '@xenova/transformers': 'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js',
       }
       try {

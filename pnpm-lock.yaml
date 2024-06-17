@@ -60,6 +60,9 @@ importers:
       contort:
         specifier: workspace:*
         version: link:../../contort
+      gbnf:
+        specifier: workspace:*
+        version: link:../../gbnf/javascript
       json2gbnf:
         specifier: workspace:*
         version: link:../../json2gbnf/javascript

@@ -4,3 +4,4 @@ export {
   isSupportedLanguage,
 } from './type-guards.js';
 export type * from './types.js';
+export * from 'gbnf/builder';
