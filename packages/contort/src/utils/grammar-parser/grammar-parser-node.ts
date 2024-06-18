@@ -1,5 +1,7 @@
-import { ParseState, } from "gbnf";
-import { RuleType, } from "gbnf";
+import {
+  type ParseState,
+  RuleType,
+} from "gbnf";
 
 import { iterateOverNumericValue, } from "./iterate-over-numeric-value.js";
 // import { GetDecodedByteForChar, } from "./types.js";
@@ -17,7 +19,13 @@ export class GrammarParserNode {
     this.char = char;
   }
 
-  get = (codePoint: number): GrammarParserNode | undefined => this.#nodes.get(codePoint);
+  get = (input: number | string): GrammarParserNode | undefined => {
+    if (typeof input === 'string') {
+      return this.#nodes.get(input.codePointAt(0));
+    }
+    return this.#nodes.get(input);
+  };
+
   *getNot(excluded: Set<number>): IterableIterator<GrammarParserNode> {
     for (const [key, value,] of this.#nodes) {
       if (!excluded.has(key)) {
