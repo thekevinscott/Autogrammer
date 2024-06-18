@@ -8,11 +8,10 @@ import type {
 export type ParseInputTokens = (input_tokens: number[]) => BigInt64Array;
 export class GrammarLogitsProcessor {
   tokenizer: PreTrainedTokenizer;
-  prompt: string;
   parser: GrammarParser;
   lastLen: number = 0;
 
-  constructor(prompt: string, parser: GrammarParser, tokenizer: PreTrainedTokenizer) {
+  constructor(prompt: string, parser: GrammarParser, tokenizer: PreTrainedTokenizer, public maximumDepth?: number) {
     this.parser = parser;
     this.tokenizer = tokenizer;
     this.lastLen = prompt.length;
@@ -22,7 +21,7 @@ export class GrammarLogitsProcessor {
     const token = decoded.slice(this.lastLen);
     this.parser.addToken(token);
     this.lastLen += token.length;
-    return this.parser.getNextTokenIds();
+    return this.parser.getNextTokenIds(this.maximumDepth);
   }
 
   processors = [(inputTokens: number[], logits: Tensor<Float32Array>) => {

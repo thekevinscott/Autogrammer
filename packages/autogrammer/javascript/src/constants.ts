@@ -1,7 +1,5 @@
 
-export const SUPPORTED_LANGUAGES: string[] = [
+export const SUPPORTED_SYNTAXES: string[] = [
   'sql',
-  // 'python', 
-  // 'javascript', 
   'json',
 ];

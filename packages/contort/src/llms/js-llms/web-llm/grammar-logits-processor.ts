@@ -15,6 +15,7 @@ export class GrammarLogitsProcessor implements LogitProcessor {
   constructor(
     prompt: string,
     parser: GrammarParser,
+    public maximumDepth?: number
   ) {
     this.parser = parser;
     this.lastLen = prompt.length;
@@ -34,7 +35,7 @@ export class GrammarLogitsProcessor implements LogitProcessor {
       this.parser.addToken(token);
       this.lastLen += token.length;
     }
-    return this.parser.getNextTokenIds();
+    return this.parser.getNextTokenIds(this.maximumDepth);
   }
 
   processLogits(logits: Float32Array): Float32Array {

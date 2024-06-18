@@ -62,7 +62,9 @@ export type Callback = _Callback<'transformers.js', null>;
 export interface TransformersJSExecuteOptions extends Omit<InternalExecuteOptions, 'stream'> {
   prompt: TransformersJSPrompt;
   callback: Callback;
-  llmOpts?: TransformersJSOpts;
+  llmOpts?: {
+    maximumDepth?: number;
+  } & TransformersJSOpts;
 }
 
 export interface TransformersJSError {

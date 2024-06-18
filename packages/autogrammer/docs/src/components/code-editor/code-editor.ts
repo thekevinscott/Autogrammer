@@ -89,8 +89,13 @@ export class CodeEditor extends LitElement {
       // border-top: 1px solid rgba(0,0,0,0.4); 
       background-color: rgba(0,0,0,0.1);
       flex: 1;
-      padding: 5px 10px;
+      padding: 0;
+      transition-duration: 0.2s;
       color: red;
+    }
+
+    #output-inner.active {
+      padding: 5px 10px;
     }
 
     .chat-bubble {
@@ -99,7 +104,7 @@ export class CodeEditor extends LitElement {
       box-shadow: 0 3px 3px rgba(0,0,0,0.1);
       padding: calc(var(--padding) * 4);
       border-radius: calc(var(--padding) * 2);
-      max-width: 50%;
+      // max-width: 50%;
     }
 
     form {
@@ -123,18 +128,19 @@ export class CodeEditor extends LitElement {
     sl-button#run {
       max-width: 150px;
       justify-self: end;
+      cursor: pointer;
     }
-    sl-button {
-      & #loading::part(base) {
+    sl-button#loading {
+      &::part(base) {
         width: 100%;
         background-color: transparent;
         border-color: transparent;
-        // color: red;
       }
+    }
+    sl-button {
 
       &::part(base) {
         border-radius: 8px;
-        cursor: pointer;
 
         &:hover {
           color: black;
@@ -298,8 +304,8 @@ export class CodeEditor extends LitElement {
             @mouseout=${this.mouseout}
           >${this.running ? html`Abort` : html`Run <span>(⌘+⏎)</span>`}</sl-button>
         </form>
+          <div id="output-inner" class="${this.output.length > 0 || this.running ? 'active' : ''}">
         ${this.output.length ? html`
-          <div id="output-inner" >
           <div class="chat-bubble" >
           ${this.output.map((output) => {
       // <json-viewer .data=${output}></json-viewer>
@@ -313,14 +319,12 @@ export class CodeEditor extends LitElement {
           `;
     })}
           </div>
-          </div>
           ` : this.running ? html`
-          <div id="output-inner" >
           <div class="chat-bubble" >
           <sl-button id="loading" loading></sl-button>
           </div>
-          </div>
           ` : html``}
+          </div>
 
         </div>
         </div>

@@ -8,18 +8,16 @@
     "url": "https://github.com/thekevinscott/autogrammer.git",
     "directory": "packages/autogrammer"
   },
-  "main": "./dist/index.umd.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/umd/index.umd.cjs",
+  "module": "./dist/esm/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/umd/index.umd.cjs"
     }
   },
   "scripts": {
-    "clean": "wireit",
     "copy": "wireit",
-    "copy:gbnf": "wireit",
     "copy:assets": "wireit",
     "lint": "wireit",
     "test:unit": "wireit",
@@ -50,23 +48,11 @@
         "../../sql2gbnf/javascript:build"
       ]
     },
-    "clean": {
-      "command": "rimraf ./dist"
-    },
     "test": {
       "command": "pnpm test:unit"
     },
     "copy": {
-      "command": "pnpm copy:gbnf && pnpm copy:assets"
-    },
-    "copy:gbnf": {
-      "command": "cpx \"./src/**/*.gbnf\" ./dist -v",
-      "files": [
-        "./src/**/*.gbnf"
-      ],
-      "output": [
-        "./dist/**/*.gbnf"
-      ]
+      "command": "pnpm copy:assets"
     },
     "copy:assets": {
       "command": "cp ../../../LICENSE ./LICENSE ",
@@ -78,16 +64,38 @@
       ]
     },
     "build:check": {
-      "command": "ls ./dist && path-exists ./dist/index.js && path-exists ./dist/index.umd.cjs && path-exists ./dist/index.d.ts && path-exists ./LICENSE"
+      "command": "ls ./dist && path-exists ./dist/esm/index.js && path-exists ./dist/umd/index.umd.cjs && path-exists ./dist/esm/index.d.ts && path-exists ./LICENSE"
     },
     "build:esm": {
-      "command": "vite build -c vite.config.esm.ts"
+      "command": "rimraf ./dist/esm && vite build -c vite.config.esm.ts",
+      "files": [
+        "./src/**/*.ts",
+        "!./src/**/*.test.ts",
+        "package.json",
+        "vite.config.esm.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "./LICENSE",
+        "./dist/esm/**"
+      ]
     },
     "build:umd": {
-      "command": "vite build -c vite.config.umd.ts"
+      "command": "rimraf ./dist/umd && vite build -c vite.config.umd.ts",
+      "files": [
+        "./src/**/*.ts",
+        "!./src/**/*.test.ts",
+        "package.json",
+        "vite.config.umd.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "./LICENSE",
+        "./dist/umd/**"
+      ]
     },
     "build": {
-      "command": "pnpm clean && pnpm build:contort && pnpm build:umd && pnpm build:esm && pnpm copy",
+      "command": "pnpm build:contort && pnpm build:esm && pnpm build:umd && pnpm copy",
       "dependencies": [
         "../../gbnf/javascript:build",
         "../../json2gbnf/javascript:build",
@@ -97,7 +105,8 @@
         "./src/**/*.ts",
         "!./src/**/*.test.ts",
         "package.json",
-        "vite.config.ts",
+        "vite.config.umd.ts",
+        "vite.config.esm.ts",
         "tsconfig.json"
       ],
       "output": [

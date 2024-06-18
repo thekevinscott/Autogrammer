@@ -1,4 +1,7 @@
-import type { ContortionistOptions, ModelProtocol, } from "contort";
+import type {
+  ContortionistOptions,
+  ModelProtocol,
+} from "contort";
 import type {
   JSONSchema,
   SchemaOpts as JSONSchemaOpts,
@@ -8,24 +11,22 @@ import type {
   SchemaOpts as SQLSchemaOpts,
 } from 'sql2gbnf';
 
-export type SupportedLanguage =
+export type SupportedSyntax =
   'sql' |
-  // 'python' | 
-  // 'javascript' | 
   'json';
 
-export interface ConstructorOptions<L extends SupportedLanguage> {
-  language?: L;
+export interface ConstructorOptions<L extends SupportedSyntax> {
+  syntax?: L;
   model?: ContortionistOptions<ModelProtocol>['model'];
 }
 
-export interface SQLLanguageOptions {
+export interface SQLSyntaxOptions {
   schema?: DBMLSchemaOpts;
   options?: SQLSchemaOpts;
 }
 
-export interface JSONLanguageOptions {
+export interface JSONSyntaxOptions {
   schema?: JSONSchema;
   options?: JSONSchemaOpts;
 }
-export type LanguageOptions<L extends SupportedLanguage> = L extends 'sql' ? SQLLanguageOptions : JSONLanguageOptions;
+export type LanguageOptions<L extends SupportedSyntax> = L extends 'sql' ? SQLSyntaxOptions : JSONSyntaxOptions;
