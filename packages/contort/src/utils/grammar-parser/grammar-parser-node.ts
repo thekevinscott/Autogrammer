@@ -75,9 +75,9 @@ export class GrammarParserNode {
   }: {
     tokenIds?: Set<number>;
     currentDepth?: number;
-    maximumDepth?: number;
-  } = {}): Set<number> => {
-    if (maximumDepth !== undefined && currentDepth > maximumDepth) {
+    maximumDepth: number;
+  }): Set<number> => {
+    if (currentDepth > maximumDepth - 1) {
       return tokenIds;
     }
     for (const rule of state) {
@@ -93,6 +93,8 @@ export class GrammarParserNode {
             const node = this.get(codePoint);
             if (node) {
               node.getTokens(state.add(char), { maximumDepth, tokenIds, currentDepth: currentDepth + 1, });
+
+              // TODO: Remove this bit, it's adding duplicates
               if (node.#terminalTokenId !== undefined && (maximumDepth === undefined || currentDepth < maximumDepth)) {
                 for (const tokenId of node.#terminalTokenId) {
                   tokenIds.add(tokenId);
@@ -102,6 +104,11 @@ export class GrammarParserNode {
           }
         }
       } else if (rule.type === RuleType.CHAR_EXCLUDE) {
+        if (this.#terminalTokenId.length !== 0) {
+          for (const tokenId of this.#terminalTokenId) {
+            tokenIds.add(tokenId);
+          }
+        }
         const excluded = new Set<number>();
         for (const value of rule.value) {
           for (const codePoint of iterateOverNumericValue(value)) {
