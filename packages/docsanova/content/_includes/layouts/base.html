@@ -45,6 +45,11 @@
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"/></pre></li>
       <link rel="expect" blocking="render" href="main">
 
+      <script type="module">
+        import { getBasePath, setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+      
+        setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace/cdn');
+      </script>
   </head>
   <body>
     <script type="module">

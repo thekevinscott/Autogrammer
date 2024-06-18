@@ -49,7 +49,8 @@ export class CodeEditor extends LitElement {
     }
 
     #container {
-      display: block;
+      display: flex;
+      flex-direction: column;
       position: relative;
       max-width: var(--ce-max-width);
       margin: var(--ce-margin);
@@ -81,8 +82,20 @@ export class CodeEditor extends LitElement {
       overflow-y: scroll;
     }
 
+    #fullscreen {
+      z-index: 100;
+      cursor: pointer;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+
     #output.active {
-      height: 260px;
+      min-height: 260px;
+    }
+
+    .fullscreen #output.active {
+      flex: 1;
     }
 
     #output-inner {
@@ -281,10 +294,31 @@ export class CodeEditor extends LitElement {
   }
 
   ref: Ref<CodeEditorCodeMirror> = createRef();
+  container: Ref<HTMLDivElement> = createRef();
+
+  @state()
+  protected fullscreen = false;
+  toggleFullscreen = async () => {
+    if (!document.fullscreenElement) {
+      this.container.value?.requestFullscreen().then(() => {
+        this.fullscreen = true;
+      }).catch((err) => {
+        alert(
+          `Error attempting to enable fullscreen mode: ${err.message} (${err.name})`,
+        );
+      });
+    } else {
+      document.exitFullscreen();
+      this.fullscreen = false;
+    }
+  }
 
   protected render() {
     return html`
-      <div id="container" @keydown=${this.handleKeydown}>
+      <div id="container" class="${this.fullscreen ? 'fullscreen' : ''}" @keydown=${this.handleKeydown} ${ref(this.container)}>
+      <sl-button id="fullscreen" circle @click=${this.toggleFullscreen}>
+        <sl-icon name="arrows-fullscreen"></sl-icon>
+      </sl-button>
       <div id="codemirror-container">
         <code-editor-wc-codemirror
           theme="${this.mode}"
