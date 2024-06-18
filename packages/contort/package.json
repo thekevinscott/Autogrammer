@@ -1,7 +1,7 @@
 {
   "name": "contort",
   "type": "module",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Control what LLMs can, and can't, say",
   "repository": {
     "type": "git",
