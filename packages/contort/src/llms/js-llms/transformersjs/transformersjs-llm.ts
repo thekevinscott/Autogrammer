@@ -51,11 +51,9 @@ export class TransformersJSLLM {
     });
   }
 
-  constructor(public modelDefinition: TransformersJSModelDefinition) {
-    void this.setup();
-  }
+  constructor(public modelDefinition: TransformersJSModelDefinition) { }
 
-  setup = async () => {
+  setupGrammarParser = async () => {
     const tokenizer = await this.tokenizer;
     const stopTokenId = tokenizer.model.convert_tokens_to_ids([tokenizer.getToken('eos_token'),])[0];
     const vocabSize = tokenizer.model.vocab.length;
@@ -72,9 +70,12 @@ export class TransformersJSLLM {
     prompt,
     grammar,
     callback,
-    llmOpts = {},
     // signal,
+    llmOpts = {},
   }: TransformersJSExecuteOptions) {
+    if (!this.grammarParser && grammar) {
+      await this.setupGrammarParser();
+    }
     const [model, tokenizer,] = await Promise.all([this.model, this.tokenizer,]);
     const callbackFunction = callback ? (beams: Beam[]) => {
       for (const beam of beams) {
