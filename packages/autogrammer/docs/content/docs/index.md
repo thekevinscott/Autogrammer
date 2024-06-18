@@ -10,8 +10,7 @@ eleventyNavigation:
 ---
 
 
-
-**LLMs don't always do what you tell them to do.**
+## LLMs don't always cooperate.
 
 Try asking an LLM to generate some JSON output:
 
@@ -29,23 +28,35 @@ console.log(result[0].generated_text)
 
 ```
 
-Sometimes it'll generate what you want; but sometimes it won't. Sometimes it'll wrap it in surrounding text; sometimes it won't. 
+Sometimes it generates the text you ask for, sometimes it doesn't. Sometimes it gives it to you but wraps it in explanatory surrounding text.
 
 The smaller the model, the harder it is to control its output.
 
-`autogrammer` constrains a model's output to a pre-defined pattern using a _grammar_. The LLM must generate a specific subset tokens in specific orders, resulting in syntactically valid output. Specifying a JSON schema or SQL database can constrain the output even further.
+## Autogrammer
 
-This means you can run a smaller model, and the smaller model, the more effectively it runs in the browser.
+`autogrammer` constrains a model's output to a pre-defined pattern using a [_grammar_](https://en.wikipedia.org/wiki/Context-free_grammar). The LLM is forced to choose from a limited subset of tokens in specific orders, resulting in syntactically valid output.
 
-Live code generation in the browser opens up some interesting use cases, including:
+Autogrammer accepts JSON schemas or SQL databases to constrain the model's output even further.
+
+## Use Cases
+
+Constraining a model's output means you can run a smaller model that will be more capable, and the smaller model, the more effectively it runs in the browser.
+
+Try it:
+
+```javascript
+
+import { autogram } from 'autogrammer';
+const result = await autogram('Write me a JSON array of 3 numbers:\n', 'json')
+console.log(result)
+
+```
+
+Live code generation in the browser opens up some interesting use cases. Here's some that I can think of:
 
 - 💻 Live code generation in the browser
 - 🗣️ Natural language to SQL conversion
 - 🎇 Generating visualizations from text descriptions
 - 🌳 Offline apps
 - 🕵️ When you want your data staying private
-- OpenAPI spec to JSON output.
-
-And more.
-
-[Get started with Autogrammer now](getting-started/).
+- 📄 OpenAPI spec to JSON output.

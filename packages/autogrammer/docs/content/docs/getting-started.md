@@ -29,3 +29,5 @@ const prompt = `Return the following address in a JSON object:
 const result = await autogram(prompt, 'json')
 console.log(result)
 ```
+
+You can read more about how to [specify a model](usage#models), how to use [SQL](usage#), and how to specify a [JSON schema](usage#).
