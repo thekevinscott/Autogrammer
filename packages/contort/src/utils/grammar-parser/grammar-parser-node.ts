@@ -8,7 +8,7 @@ export const customInspectSymbol = Symbol.for('nodejs.util.inspect.custom');
 export class GrammarParserNode {
   #nodes = new Map<number, GrammarParserNode>();
   #childTokenIds = new Set<number>();
-  #terminalTokenId?: number;
+  #terminalTokenId: number[] = [];
   char?: string;
 
   stopTokenId: number;
@@ -54,7 +54,7 @@ export class GrammarParserNode {
     }
 
     if (pos === token.length - 1) {
-      node.#terminalTokenId = tokenId;
+      node.#terminalTokenId.push(tokenId);
     } else {
       node.#childTokenIds.add(tokenId);
       // node.add(tokenId, token, getDecodedByteForChar, pos + 1);
@@ -87,7 +87,9 @@ export class GrammarParserNode {
     for (const rule of state) {
       if (rule.type === RuleType.CHAR) {
         if (this.#terminalTokenId !== undefined) {
-          tokenIds.add(this.#terminalTokenId);
+          for (const tokenId of this.#terminalTokenId) {
+            tokenIds.add(tokenId);
+          }
         }
         for (const value of rule.value) {
           for (const codePoint of iterateOverNumericValue(value)) {
@@ -96,7 +98,9 @@ export class GrammarParserNode {
             if (node) {
               node.getTokens(state.add(char), { maximumDepth, tokenIds, currentDepth: currentDepth + 1, });
               if (node.#terminalTokenId !== undefined && (maximumDepth === undefined || currentDepth < maximumDepth)) {
-                tokenIds.add(node.#terminalTokenId);
+                for (const tokenId of node.#terminalTokenId) {
+                  tokenIds.add(tokenId);
+                }
               }
             }
           }
@@ -114,7 +118,9 @@ export class GrammarParserNode {
             tokenIds.add(tokenId);
           }
           if (node.#terminalTokenId !== undefined) {
-            tokenIds.add(node.#terminalTokenId);
+            for (const tokenId of node.#terminalTokenId) {
+              tokenIds.add(tokenId);
+            }
           }
         }
       } else if (rule.type === RuleType.END) {
