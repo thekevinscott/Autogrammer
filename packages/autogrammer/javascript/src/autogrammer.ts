@@ -3,7 +3,6 @@ import Contortionist, {
   type ModelDefinition,
   type ModelProtocol,
 } from 'contort';
-import type * as transformers from '@xenova/transformers';
 import type {
   ConstructorOptions,
   LanguageOptions,
@@ -68,7 +67,7 @@ export class Autogrammer {
 
   get model(): Promise<Contortionist<ModelProtocol>> | Contortionist<ModelProtocol> {
     if (!this.#contortionist) {
-      return loadTransformersJS().then(pipeline => {
+      return loadTransformersJS().then(({ pipeline, }) => {
         this.#contortionist = new Contortionist({
           model: pipeline('text-generation', 'Xenova/WizardCoder-1B-V1.0'),
         });

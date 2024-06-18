@@ -29,7 +29,7 @@ interface SQLSyntaxOptions extends _SQLSyntaxOptions {
   syntax: 'sql';
 }
 const isSyntaxOptions = (opts: unknown): opts is JSONSyntaxOptions | SQLSyntaxOptions => {
-  return !(opts instanceof GBNFRule) && typeof opts === 'object' && 'syntax' in opts && ['json', 'sql',].includes((opts as any).syntax);
+  return !(opts instanceof GBNFRule) && opts !== null && typeof opts === 'object' && 'syntax' in opts && typeof opts.syntax === 'string' && ['json', 'sql',].includes(opts.syntax);
 };
 type SyntaxOptions = string | GBNFRule | GBNFRuleFn | JSONSyntaxOptions | SQLSyntaxOptions;
 const getSyntax = (syntaxDefinition?: SyntaxOptions): undefined | string | GBNFRule => {

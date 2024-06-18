@@ -4,7 +4,7 @@ export function loadLibrary<T>(url: string) {
   return import(url).then((module: T) => module);
 }
 
-export const loadTransformersJS = async () => {
+export const loadTransformersJS = async (): Promise<typeof transformers> => {
   const transformersJS = await loadLibrary<typeof transformers>(
     'https://cdn.jsdelivr.net/npm/@xenova/transformers/dist/transformers.min.js'
   );

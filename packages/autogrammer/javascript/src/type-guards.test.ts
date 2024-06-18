@@ -3,17 +3,17 @@ import {
   it,
   expect,
 } from 'vitest';
-import { isSupportedLanguage } from './type-guards';
+import { isSupportedSyntax } from './type-guards';
 
-describe('isSupportedLanguage', () => {
+describe('isSupportedSyntax', () => {
   it('should return true for supported languages', () => {
-    expect(isSupportedLanguage('sql')).toBe(true);
-    expect(isSupportedLanguage('json')).toBe(true);
+    expect(isSupportedSyntax('sql')).toBe(true);
+    expect(isSupportedSyntax('json')).toBe(true);
   });
 
   it('should return false for unsupported languages', () => {
-    expect(isSupportedLanguage('java')).toBe(false);
-    expect(isSupportedLanguage('c')).toBe(false);
-    expect(isSupportedLanguage('c++')).toBe(false);
+    expect(isSupportedSyntax('java')).toBe(false);
+    expect(isSupportedSyntax('c')).toBe(false);
+    expect(isSupportedSyntax('c++')).toBe(false);
   })
 })
