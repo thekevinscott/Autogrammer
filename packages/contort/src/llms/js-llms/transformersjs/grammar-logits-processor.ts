@@ -24,7 +24,7 @@ export class GrammarLogitsProcessor {
     return this.parser.getNextTokenIds(this.maximumDepth);
   }
 
-  processors = [(inputTokens: number[], logits: Tensor<Float32Array>) => {
+  processors = [async (inputTokens: number[], logits: Tensor<Float32Array>) => {
     if (!inputTokens) {
       throw new Error('No input tokens provided');
     }
@@ -32,6 +32,7 @@ export class GrammarLogitsProcessor {
     const allowedTokenIds = this.getAllowedTokenIds(decoded);
     // console.log('allowedTokenIds', allowedTokenIds, [...allowedTokenIds,].map(tokenId => this.tokenizer.decode([tokenId,])));
     logits.data = maskLogits(logits.data, allowedTokenIds);
+    await requestAnimationFrame();
     return logits;
   },];
 
@@ -39,3 +40,5 @@ export class GrammarLogitsProcessor {
     return this.processors.values();
   }
 }
+
+const requestAnimationFrame = () => new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
