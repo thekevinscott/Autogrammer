@@ -24,5 +24,5 @@
     "vite-plugin-node-polyfills": "^0.21.0",
     "wireit": "^0.14.4"
   },
-  "packageManager": "pnpm@9.1.4"
+  "packageManager": "pnpm@9.4.0"
 }
