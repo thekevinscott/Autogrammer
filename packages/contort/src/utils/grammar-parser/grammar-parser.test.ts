@@ -1,4 +1,11 @@
-import { makeMockTextGenerationPipeline as _makeMockTextGenerationPipeline } from "../../llms/js-llms/transformersjs/__mocks__/mock-text-generation-pipeline.js";
+import {
+  describe,
+  expect,
+  test,
+} from 'vitest';
+import {
+  makeMockTextGenerationPipeline as _makeMockTextGenerationPipeline
+} from "../../llms/js-llms/transformersjs/__mocks__/mock-text-generation-pipeline.js";
 
 import GBNF from "gbnf";
 import { GrammarParser } from "./grammar-parser.js";
@@ -90,7 +97,7 @@ describe('GrammarParser', () => {
     ])('CHAR: %s, %s', (grammar, words, expected) => {
       const trie = new GrammarParser(buildOptsForWords(words))
       const parseState = GBNF(grammar);
-      const tokens = trie.getTokens(parseState);
+      const tokens = trie.getTokens(parseState, Infinity);
       expect(getWordsOfIds(words, tokens)).toEqual(new Set(expected));
     });
 
@@ -108,14 +115,14 @@ describe('GrammarParser', () => {
     ])('RANGE: %s, %s', (grammar, words, expected) => {
       const trie = new GrammarParser(buildOptsForWords(words))
       const parseState = GBNF(grammar);
-      expect(getWordsOfIds(words, trie.getTokens(parseState))).toEqual(new Set(expected));
+      expect(getWordsOfIds(words, trie.getTokens(parseState, Infinity))).toEqual(new Set(expected));
     });
 
     test('END', () => {
       const words = ['foo'];
       const trie = new GrammarParser(buildOptsForWords(words))
       const parseState = GBNF(`root ::= "foo"`, 'foo');
-      expect(getWordsOfIds(words, trie.getTokens(parseState))).toEqual(new Set([STOP_TOKEN]));
+      expect(getWordsOfIds(words, trie.getTokens(parseState, Infinity))).toEqual(new Set([STOP_TOKEN]));
     });
 
     describe('MODIFIERS', () => {
@@ -131,7 +138,7 @@ describe('GrammarParser', () => {
         const words = ['a', 'b', 'c', 'd'];
         const trie = new GrammarParser(buildOptsForWords(words))
         const parseState = GBNF(grammar, initial);
-        expect(getWordsOfIds(words, trie.getTokens(parseState))).toEqual(new Set(expected));
+        expect(getWordsOfIds(words, trie.getTokens(parseState, Infinity))).toEqual(new Set(expected));
       });
 
     });
@@ -151,7 +158,7 @@ describe('GrammarParser', () => {
         const words = ['a', 'b', 'c', 'd'];
         const trie = new GrammarParser(buildOptsForWords(words))
         const parseState = GBNF(grammar, initial);
-        expect(getWordsOfIds(words, trie.getTokens(parseState))).toEqual(new Set(expected));
+        expect(getWordsOfIds(words, trie.getTokens(parseState, Infinity))).toEqual(new Set(expected));
       });
 
       test('it throws if no valid tokens exist', () => {
@@ -159,7 +166,7 @@ describe('GrammarParser', () => {
         const words = ['a', 'b', 'c', 'd'];
         const trie = new GrammarParser(buildOptsForWords(words))
         const parseState = GBNF(grammar);
-        expect(() => trie.getTokens(parseState)).toThrow();
+        expect(() => trie.getTokens(parseState, Infinity)).toThrow();
       });
 
     });
@@ -205,7 +212,7 @@ describe('GrammarParser', () => {
       ])('%s, %s', (grammar, words, expected, initial) => {
         const trie = new GrammarParser(buildOptsForWords(words))
         const parseState = GBNF(grammar.split('\\n').join('\n'), initial);
-        expect(getWordsOfIds(words, trie.getTokens(parseState))).toEqual(new Set(expected));
+        expect(getWordsOfIds(words, trie.getTokens(parseState, Infinity))).toEqual(new Set(expected));
       });
 
     });
