@@ -21,9 +21,9 @@ export class GrammarParserNode {
 
   get = (input: number | string): GrammarParserNode | undefined => {
     if (typeof input === 'string') {
-      return this.nodes.get(input.codePointAt(0));
+      return this.#nodes.get(input.codePointAt(0));
     }
-    return this.nodes.get(input);
+    return this.#nodes.get(input);
   };
 
   *getNot(excluded: Set<number>): IterableIterator<GrammarParserNode> {
