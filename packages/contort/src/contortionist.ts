@@ -86,7 +86,7 @@ export class Contortionist<M extends ModelProtocol> {
       prompt,
       stream: (callback && stream === undefined) ? true : !!stream,
       callback,
-      grammar: (isStringOrUndefined(this.grammar)) ? this.grammar : this.grammar.compile(),
+      grammar: (isStringOrUndefined(this.grammar)) ? this.grammar : this.grammar.toString(),
       signal: this.#getSignal(signal),
       llmOpts,
     });

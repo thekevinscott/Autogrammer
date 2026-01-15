@@ -33,16 +33,10 @@
       "command": "rimraf ./dist"
     },
     "lint": {
-      "command": "eslint -c ./.eslintrc.cjs src --ext .ts",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ]
+      "command": "eslint -c ./.eslintrc.cjs src --ext .ts"
     },
     "test:unit": {
-      "command": "vitest --config ./vitest.config.unit.ts run",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ]
+      "command": "vitest --config ./vitest.config.unit.ts run"
     },
     "test": {
       "command": "pnpm test:unit && pnpm test:integration "
@@ -68,9 +62,6 @@
     },
     "build": {
       "command": "pnpm clean && pnpm build:esm && pnpm build:umd && pnpm copy:package-files && pnpm build:check",
-      "dependencies": [
-        "../gbnf/javascript:build"
-      ],
       "files": [
         "../../README.md",
         "../../LICENSE",
@@ -100,7 +91,7 @@
     "grammar"
   ],
   "dependencies": {
-    "gbnf": "workspace:*"
+    "gbnf": "^0.1.41"
   },
   "devDependencies": {
     "@mlc-ai/web-llm": "^0.2.35",

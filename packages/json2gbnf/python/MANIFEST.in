@@ -1,2 +1,0 @@
-include README.md
-recursive-include json2gbnf/js *.js
