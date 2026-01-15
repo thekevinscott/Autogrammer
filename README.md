@@ -14,9 +14,7 @@ _Autogrammer is still being actively developed and should be considered in alpha
 
 ## Why Autogrammer?
 
-Structured output is technically rigorous but underserved in JS. Server-side solutions exist (Outlines, guidance), but browser LLMs had nothing.
-
-Autogrammer is an end-to-end solution: [GBNF](https://github.com/thekevinscott/GBNF) handles grammar parsing and schema constraints, `contortionist` manipulates logits at inference time, and `autogrammer` ties it together for Transformers.js and web-llm.
+Browser-side structured output is underserved in JS. Server-side solutions exist (Outlines, guidance), but browser LLMs had nothing.
 
 ## Use Cases
 
