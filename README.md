@@ -12,6 +12,12 @@ By leveraging grammars, Autogrammer ensures that an LLM generates output adherin
 
 _Autogrammer is still being actively developed and should be considered in alpha_
 
+## Why Autogrammer?
+
+Structured output is technically rigorous but underserved in JS. Server-side solutions exist (Outlines, guidance), but browser LLMs had nothing.
+
+Autogrammer is an end-to-end solution: [GBNF](https://github.com/thekevinscott/GBNF) handles grammar parsing and schema constraints, `contortionist` manipulates logits at inference time, and `autogrammer` ties it together for Transformers.js and web-llm.
+
 ## Use Cases
 
 - 💻 Live code generation in the browser
@@ -62,11 +68,14 @@ console.log(response) // { ... json object }
 
 ## Packages
 
-Autogrammer is made up of a number of subpackages that each make up the library:
+Autogrammer is made up of several packages:
 
-- [`gbnf`](packages/gbnf/README.md) - Parses a GBNF grammar into a graph of rules, which can be used to determine the validity of a next token. Also enables the creation of GBNF grammars dynamically.
-- [`json2gbnf`](packages/json2gbnf/javascript) - Generates a GBNF grammar for JSON, with optional JSON schema
-- [`sql2gbnf`](packages/sql2gbnf/javascript) - Generates a GBNF grammar for SQL, with optional database schema
+**Grammar packages** (in [GBNF repo](https://github.com/thekevinscott/GBNF)):
+- [`gbnf`](https://github.com/thekevinscott/GBNF) - Parses a GBNF grammar into a graph of rules, which can be used to determine the validity of a next token. Also enables the creation of GBNF grammars dynamically.
+- [`json2gbnf`](https://github.com/thekevinscott/GBNF) - Generates a GBNF grammar for JSON, with optional JSON schema
+- [`sql2gbnf`](https://github.com/thekevinscott/GBNF) - Generates a GBNF grammar for SQL, with optional database schema
+
+**Orchestration packages** (in this repo):
 - [`contortionist`](packages/contort/README.md) - Implements a Logits post-processor that restricts LLM output to only include valid next tokens
 - [`autogrammer`](packages/autogrammer/javascript/) - Orchestrates support for SQL and JSON grammar generation with a variety of LLM models.
 

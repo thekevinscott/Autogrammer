@@ -1,3 +1,0 @@
-root  ::= (expr "=" term "\n")+
-expr  ::= term ([-+*/] term)*
-term  ::= [0-9]+

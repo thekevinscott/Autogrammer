@@ -10,7 +10,7 @@ import {
   TextGenerationPipeline,
 } from '@xenova/transformers';
 import { getFakePipeline } from '../../__fixtures__/models/fake-pipeline.js';
-import { _ } from 'gbnf/builder';
+import { g } from 'gbnf/builder';
 // import { loadModel } from '../../__fixtures__/models/load.js';
 
 setLogLevel('warn')
