@@ -12,3 +12,4 @@ coverage
 __pycache__
 .pnpm-debug.log
 vite.config.*.timestamp-*
+notes/

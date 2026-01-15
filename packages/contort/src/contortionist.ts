@@ -71,7 +71,7 @@ export class Contortionist<M extends ModelProtocol> {
   async execute<S extends boolean>(prompt: Prompt<M>, {
     stream,
     callback,
-    signal: signal,
+    signal,
     llmOpts,
   }: ExternalExecuteOptions<M, S> = {}): Promise<string> {
     const _llm = this.llm;
@@ -84,7 +84,7 @@ export class Contortionist<M extends ModelProtocol> {
     const llm = await _llm;
     return llm.execute({
       prompt,
-      stream: (callback && stream === undefined) ? true : !!stream,
+      stream: (callback && stream === undefined) ? true : Boolean(stream),
       callback,
       grammar: (isStringOrUndefined(this.grammar)) ? this.grammar : this.grammar.toString(),
       signal: this.#getSignal(signal),
