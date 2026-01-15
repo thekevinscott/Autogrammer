@@ -17,7 +17,7 @@
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.35",
     "@vanillawc/wc-monaco-editor": "^1.10.15",
-    "@xenova/transformers": "github:xenova/transformers.js"
+    "@xenova/transformers": "^2.17.1"
   },
   "devDependencies": {
     "vite": "^5.1.5",

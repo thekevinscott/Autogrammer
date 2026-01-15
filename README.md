@@ -14,7 +14,11 @@ _Autogrammer is still being actively developed and should be considered in alpha
 
 ## Why Autogrammer?
 
-Browser-side structured output is underserved in JS. Server-side solutions exist (Outlines, guidance), but browser LLMs had nothing.
+LLMs produce a probability distribution over possible next tokens. By manipulating this distribution, you can constrain what the LLM outputs, for example by only allowing syntactically valid next tokens. For smaller LLMs (like ones that run in a browser) this is particularly valuable. It's a harness that guides them toward correct output.
+
+GBNF is a grammar format for defining syntactic validity. At inference time, Autogrammer uses the GBNF grammar to mask invalid tokens from the model's logits, guaranteeing parseable output.
+
+Similar packages exist in the Python ecosystem: [Outlines](https://github.com/dottxt-ai/outlines) and [guidance](https://github.com/guidance-ai/guidance).
 
 ## Use Cases
 
