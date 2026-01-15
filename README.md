@@ -78,7 +78,7 @@ Autogrammer is made up of several packages:
 - [`sql2gbnf`](https://github.com/thekevinscott/GBNF) - Generates a GBNF grammar for SQL, with optional database schema
 
 **Orchestration packages** (in this repo):
-- [`contortionist`](packages/contort/README.md) - Implements a Logits post-processor that restricts LLM output to only include valid next tokens
+- [`contort`](packages/contort/README.md) - Implements a Logits post-processor that restricts LLM output to only include valid next tokens
 - [`autogrammer`](packages/autogrammer/javascript/) - Orchestrates support for SQL and JSON grammar generation with a variety of LLM models.
 
 ## License
